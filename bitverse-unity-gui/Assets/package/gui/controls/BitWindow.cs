@@ -220,7 +220,7 @@ public class BitWindow : BitContainerControl
         }
     }
 
-    protected override void DoLayaout()
+    protected override void DoLayout()
     {
         if (!MinSize.IsEmpty && Size < MinSize)
         {

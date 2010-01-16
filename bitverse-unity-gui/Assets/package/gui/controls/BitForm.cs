@@ -128,7 +128,7 @@ public class BitForm : MonoBehaviour
 
     public void SetFocus()
     {
-        _window.SetFocus();
+        _window.Focus = true;
     }
 
     public void ShowModal()
