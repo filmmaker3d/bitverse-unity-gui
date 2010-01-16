@@ -5,16 +5,7 @@ using Bitverse.Unity.Gui;
 [ExecuteInEditMode]
 public class BitForm : MonoBehaviour
 {
-
-    #region Private Variables
-
-    private BitWindow _window;
-    [SerializeField]
-    private bool _visible = false;
-
-    #endregion
-
-    #region Public Properties
+	#region Accessibility
 
     public Guid ID
     {
@@ -25,12 +16,25 @@ public class BitForm : MonoBehaviour
     {
         get { return _window.WindowId; }
     }
+    
+	#endregion
 
-    public object Tag
+
+	#region Appearance
+
+    public GUISkin DefaultSkin
     {
-        get { return _window.Tag; }
-        set { _window.Tag = value; }
+        get { return _window.DefaultSkin; }
+        set { _window.DefaultSkin = value; }
     }
+
+	#endregion
+
+
+	#region Behaviour
+
+    [SerializeField]
+    private bool _visible = true;
 
     public WindowModes WindowMode
     {
@@ -44,11 +48,113 @@ public class BitForm : MonoBehaviour
         private set { _window.FormMode = value; }
     }
 
+    public bool Enabled
+    {
+        get { return _window.Enabled; }
+        set { _window.Enabled = value; }
+    }
+
+    public bool Disabled
+    {
+        get { return _window.Disabled; }
+        set { _window.Disabled = value; }
+    }
+    
+    public bool Visible
+    {
+        get { return _visible; }
+		set
+		{
+			_visible = value;
+			SetFocus();
+		}
+    }
+
+
+    public bool Draggable
+    {
+        get { return _window.Draggable; }
+        set { _window.Draggable = value; }
+    }
+
+    public void ShowModal()
+    {
+        FormMode = FormModes.Modal;
+        BitFormsManager.PushModal(this);
+        Visible = true;
+    }
+    
+    public void Close()
+    {
+        if (FormMode == FormModes.Modal)
+            BitFormsManager.PopModal();
+        BitFormsManager.CloseForm(this);
+        Destroy(this);
+    }
+    
+    #endregion
+
+    #region Control
+    
+    private BitWindow _window;
+
+    public virtual void Initialize() 
+    { 
+    }
+
+	protected virtual void BeforeOnGUI()
+	{
+	}
+
+	protected virtual void AfterOnGUI()
+	{
+	}
+
+	public virtual void OnLoad()
+	{
+	}
+
+	public virtual void OnClose()
+	{
+	}
+
+	#endregion
+
+
+	#region Data
+
+    public object Tag
+    {
+        get { return _window.Tag; }
+        set { _window.Tag = value; }
+    }
+
     public string Text
     {
         get { return _window.Text; }
         set { _window.Text = value; }
     }
+
+    public BitControl AddControl(BitControl control)
+    {
+        //return _window.AddControl(control);
+        return null;
+    }
+
+	#endregion
+
+
+	#region Focus
+
+    public void SetFocus()
+    {
+        _window.Focus = true;
+    }
+
+	#endregion
+
+
+	#region Layout
 
     public Size Size
     {
@@ -68,39 +174,9 @@ public class BitForm : MonoBehaviour
         set { _window.Location = value; }
     }
 
-    public bool Enabled
-    {
-        get { return _window.Enabled; }
-        set { _window.Enabled = value; }
-    }
-
-    public bool Disabled
-    {
-        get { return _window.Disabled; }
-        set { _window.Disabled = value; }
-    }
-
-    public bool Visible
-    {
-        get { return _visible; }
-        private set { _visible = value; }
-    }
-
-    public GUISkin DefaultSkin
-    {
-        get { return _window.DefaultSkin; }
-        set { _window.DefaultSkin = value; }
-    }
-
-    public bool Draggable
-    {
-        get { return _window.Draggable; }
-        set { _window.Draggable = value; }
-    }
-
     #endregion
 
-    #region MonoBehaviour Methods
+    #region MonoBehaviour
 
     public void OnGUI()
     {
@@ -125,18 +201,6 @@ public class BitForm : MonoBehaviour
 
     #region Public Methods
 
-    public void SetFocus()
-    {
-        _window.Focus = true;
-    }
-
-    public void ShowModal()
-    {
-        FormMode = FormModes.Modal;
-        BitFormsManager.PushModal(this);
-        Show();
-
-    }
 
     public void Show()
     {
@@ -144,41 +208,15 @@ public class BitForm : MonoBehaviour
         SetFocus();
     }
 
-    public void Close()
-    {
-        if (FormMode == FormModes.Modal)
-            BitFormsManager.PopModal();
-        BitFormsManager.CloseForm(this);
-        Destroy(this);
-    }
 
     public void Hide()
     {
         _visible = false;
     }
 
-    public BitControl AddControl(BitControl control)
-    {
-        //return _window.AddControl(control);
-        return null;
-    }
 
     #endregion
 
-    #region Abstract Methods
-
-    public virtual void Initialize() { }
-
-    #endregion
-
-    #region Virtual Methods
-
-    protected virtual void BeforeOnGUI() { }
-    protected virtual void AfterOnGUI() { }
-    public virtual void OnLoad() { }
-    public virtual void OnClose() { }
-
-    #endregion
 }
 
 

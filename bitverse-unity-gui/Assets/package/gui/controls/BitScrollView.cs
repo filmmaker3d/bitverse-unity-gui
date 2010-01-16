@@ -1,6 +1,5 @@
-﻿using System;
-using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitScrollView : BitContainer

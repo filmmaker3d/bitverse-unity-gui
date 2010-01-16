@@ -5,18 +5,30 @@ using Bitverse.Unity.Gui;
 
 public class BitWindow : BitContainer
 {
-    #region Private Variables
-
-    private Dictionary<string, BitControl> _controDictionary;
-
-    private string _lastTooltip = "";
+	#region Accessibility
 
     private int _windowId = ++_windowsCount;
 
-    private static int _windowsCount = 0;
+    public int WindowId
+    {
+        get { return _windowId; }
+    }
+    
+	#endregion
+
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "window"; }
+	}
+
+	#endregion
+
+	#region Behaviour
 
     [SerializeField]
-    public bool _draggable = true;
+    private bool _draggable = true;
 
     [SerializeField]
     private FormModes _formMode = FormModes.Modeless;
@@ -24,32 +36,12 @@ public class BitWindow : BitContainer
     [SerializeField]
     private WindowModes _windowMode = WindowModes.Window;
 
-    //private WindowStates _windowState = WindowStates.Normal;
-    //private StartPositions _startPosition = StartPositions.Manual;
-
-    [SerializeField]
-    private Vector2 _maxSize;
-    [SerializeField]
-    private Vector2 _minSize;
-
     private Rect _viewPosition;
-
-
-    #endregion
-
-    #region Public Properties
-
 
     public FormModes FormMode
     {
         get { return _formMode; }
         set { _formMode = value; }
-    }
-
-
-    public int WindowId
-    {
-        get { return _windowId; }
     }
 
     public WindowModes WindowMode
@@ -58,35 +50,10 @@ public class BitWindow : BitContainer
         set { _windowMode = value; }
     }
 
-
-    public string Text
-    {
-        get { return Content.text; }
-        set { Content.text = value; }
-    }
-
-    public Texture Image
-    {
-        get { return Content.image; }
-        set { Content.image = value; }
-    }
-
     public bool Draggable
     {
         get { return _draggable; }
         set { _draggable = value; }
-    }
-
-    public Size MaxSize
-    {
-        get { return new Size(_maxSize.x, _maxSize.y); }
-        set { _maxSize.x = value.Width; _maxSize.y = value.Height; }
-    }
-
-    public Size MinSize
-    {
-        get { return new Size(_minSize.x, _minSize.y); }
-        set { _minSize.x = value.Width; _minSize.y = value.Height; }
     }
 
     public Size ViewSize
@@ -108,13 +75,17 @@ public class BitWindow : BitContainer
     public BitWindow()
     {
         _windowId = ++_windowsCount;
-        _controDictionary = new Dictionary<string, BitControl>();
+        //_controDictionary = new Dictionary<string, BitControl>();
         //AddDictionaryControl(this);
     }
 
     #endregion
 
-    #region Private Methods
+	#region Control
+
+    private string _lastTooltip = "";
+	private static int _windowsCount;
+
 
     private void DoWindow(int w)
     {
@@ -188,22 +159,40 @@ public class BitWindow : BitContainer
         }
     }
 
-    #endregion
+	#endregion
 
-    #region Implements
+	#region Data
+
+    private readonly Dictionary<string, BitControl> _controDictionary;
+
+    public string Text
+    {
+        get { return Content.text; }
+        set { Content.text = value; }
+    }
+
+    public Texture Image
+    {
+        get { return Content.image; }
+        set { Content.image = value; }
+    }
+
+	#endregion
+
+	#region Draw
 
     public override void DoDraw()
     {
-        GUI.color = this.Color;
+		GUI.color = Color;
         if (WindowMode == WindowModes.Window)
         {
             if (Style != null)
             {
-                Position = UnityEngine.GUI.Window(_windowId, Position, DoWindow, Content, Style);
+				Position = GUI.Window(_windowId, Position, DoWindow, Content, Style);
             }
             else
             {
-                Position = UnityEngine.GUI.Window(_windowId, Position, DoWindow, Content);
+				Position = GUI.Window(_windowId, Position, DoWindow, Content);
             }
             if (!Disabled)
             {
@@ -220,6 +209,11 @@ public class BitWindow : BitContainer
         }
     }
 
+	#endregion
+
+
+	#region Layout
+	
     protected override void DoLayout()
     {
         if (!MinSize.IsEmpty && Size < MinSize)
@@ -256,7 +250,35 @@ public class BitWindow : BitContainer
 
     #endregion
 
-    #region Internal Methods
+
+    #region TODO
+
+    //private WindowStates _windowState = WindowStates.Normal;
+    //private StartPositions _startPosition = StartPositions.Manual;
+
+    [SerializeField]
+    private Vector2 _maxSize;
+    [SerializeField]
+    private Vector2 _minSize;
+
+
+    public Size MaxSize
+    {
+        get { return new Size(_maxSize.x, _maxSize.y); }
+        set { _maxSize.x = value.Width; _maxSize.y = value.Height; }
+    }
+
+    public Size MinSize
+    {
+        get { return new Size(_minSize.x, _minSize.y); }
+        set { _minSize.x = value.Width; _minSize.y = value.Height; }
+    }
+
+
+
+    #endregion
+    
+    #region Private Methods
 
     //internal void AddDictionaryControl(Control source)
     //{

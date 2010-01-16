@@ -4,7 +4,24 @@ using Bitverse.Unity.Gui;
 
 public class BitRepeatButton : BitControl
 {
-    public event MouseClickEventHandler ButtonClick;
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "button"; }
+	}
+
+	#endregion
+
+
+	#region Events
+
+	public event MouseClickEventHandler ButtonClick;
+
+	#endregion
+
+
+	#region Data
 
     public string Text
     {
@@ -18,6 +35,11 @@ public class BitRepeatButton : BitControl
         set { Content.image = value; }
     }
 
+	#endregion
+
+
+	#region Draw
+
     public override void DoDraw()
     {
         bool button = false;
@@ -26,11 +48,11 @@ public class BitRepeatButton : BitControl
 
         if (Style == null)
         {
-            button = UnityEngine.GUI.RepeatButton(Position, Content);
+			GUI.RepeatButton(Position, Content);
         }
         else
         {
-            button = UnityEngine.GUI.RepeatButton(Position, Content, Style);
+			GUI.RepeatButton(Position, Content, Style);
         }
 
         //doubleClick = Event.current.isMouse && Event.current.clickCount == 2;
@@ -45,6 +67,6 @@ public class BitRepeatButton : BitControl
         }
     }
 
-
+	#endregion
 }
 

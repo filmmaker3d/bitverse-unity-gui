@@ -4,13 +4,24 @@ using Bitverse.Unity.Gui;
 
 public class BitList : BitControl
 {
+
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "list"; }
+	}
+
+	#endregion
+	
     protected BitControl GetRenderer()
     {
         for (int i = 0, count = transform.childCount; i < count; i++)
         {
             Transform ch = transform.GetChild(i);
             BitControl c = (BitControl)ch.GetComponent(typeof(BitControl));
-            if (c != null) return c;
+			if (c != null)
+				return c;
         }
         return null;
     }
@@ -24,7 +35,7 @@ public class BitList : BitControl
         if (r == null)
             return;
 
-        Rect cp = this.Position;
+		Rect cp = Position;
         Rect rp = r.Position;
         if (Style != null)
         {

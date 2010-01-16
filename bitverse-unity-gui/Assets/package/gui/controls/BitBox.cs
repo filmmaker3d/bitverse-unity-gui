@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class BitBox: BitControl
 {
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "box"; }
+	}
+
+	#endregion
+	
     #region Data
 
     public string Text

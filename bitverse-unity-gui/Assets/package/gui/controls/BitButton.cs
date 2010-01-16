@@ -2,6 +2,15 @@ using UnityEngine;
 
 public class BitButton : BitControl
 {
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "button"; }
+	}
+
+	#endregion
+
 
 	#region Data
 

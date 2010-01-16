@@ -4,11 +4,31 @@ using Bitverse.Unity.Gui;
 
 public class BitPasswordField : BitControl
 {
-    public event ValueChangedEventHandler TextChanged;
+	#region Appearance
 
-    //private string _text = "";
+	protected override string DefaultStyleName
+	{
+		get { return "textfield"; }
+	}
+
+	#endregion
+
+	#region Behaviour
+
     [SerializeField]
     private int _maxLenght = -1;
+    
+    public int MaxLenght
+    {
+        get { return _maxLenght; }
+        set { _maxLenght = value; }
+    }
+
+	#endregion
+
+
+	#region Data
+
     [SerializeField]
     private char _maskChar = '*';
 
@@ -18,21 +38,23 @@ public class BitPasswordField : BitControl
         set
         {
             Content.text = value;
-            if (TextChanged != null) TextChanged(this, new ValueChangedEventArgs(Text));
+			if (TextChanged != null)
+				TextChanged(this, new ValueChangedEventArgs(Text));
         }
     }
 
-    public int MaxLenght
-    {
-        get { return _maxLenght; }
-        set { _maxLenght = value; }
-    }
+
 
     public char MaskChar
     {
         get { return _maskChar; }
         set { _maskChar = value; }
     }
+
+	#endregion
+
+
+	#region Draw
 
     public override void DoDraw()
     {
@@ -67,5 +89,12 @@ public class BitPasswordField : BitControl
         }
     }
 
+	#endregion
 
+
+	#region Events
+
+	public event ValueChangedEventHandler TextChanged;
+
+	#endregion
 }
