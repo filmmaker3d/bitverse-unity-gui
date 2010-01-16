@@ -1,24 +1,17 @@
-﻿using UnityEngine;
+﻿
+using Bitverse.Unity.Gui;
+using UnityEngine;
 
-/// <summary>
-/// 
-/// </summary>
 public class BitBox: BitControl
 {
-    #region Public Properties
+    #region Data
 
-    /// <summary>
-    /// 
-    /// </summary>
     public string Text
     {
         get { return Content.text; }
         set { Content.text = value; }
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public Texture Image
     {
         get { return Content.image; }
@@ -27,11 +20,8 @@ public class BitBox: BitControl
 
     #endregion
 
-    #region Impmements Control
+	#region Draw
 
-    /// <summary>
-    /// 
-    /// </summary>
     public override void DoDraw()
     {
         if (Style != null)

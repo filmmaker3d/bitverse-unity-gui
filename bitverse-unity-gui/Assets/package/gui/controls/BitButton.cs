@@ -1,10 +1,9 @@
-using System;
 using UnityEngine;
-using System.Collections;
 
-//[ExecuteInEditMode]
 public class BitButton : BitControl
 {
+
+	#region Data
 
     public string Text
     {
@@ -18,6 +17,10 @@ public class BitButton : BitControl
         set { Content.image = value; }
     }
 
+	#endregion
+
+	#region Draw
+
     public override void DoDraw()
     {
         GUIStyle style = Style;
@@ -30,11 +33,8 @@ public class BitButton : BitControl
             GUI.Button(Position, Content);
         }
     }
-
-    public void SetText(string ntext)
-    {
-        Text = ntext;
-    }
+    
+	#endregion
 
 
 }
