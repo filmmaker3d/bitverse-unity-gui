@@ -3,7 +3,8 @@ using UnityEngine;
 using System.Collections;
 using Bitverse.Unity.Gui;
 
-public class BitLabel : BitControl {
+public class BitLabel : BitControl
+{
 
     public string Text
     {

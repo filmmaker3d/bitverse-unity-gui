@@ -52,12 +52,12 @@ public class BitWindow : BitContainerControl
         get { return _windowId; }
     }
 
-    public WindowModes  WindowMode
+    public WindowModes WindowMode
     {
         get { return _windowMode; }
         set { _windowMode = value; }
     }
-    
+
 
     public string Text
     {
@@ -91,12 +91,12 @@ public class BitWindow : BitContainerControl
 
     public Size ViewSize
     {
-        get 
+        get
         {
             if (IsInvalidated)
                 Layout();
 
-            return new Size(_viewPosition.width, _viewPosition.height);  
+            return new Size(_viewPosition.width, _viewPosition.height);
         }
 
     }
@@ -115,10 +115,10 @@ public class BitWindow : BitContainerControl
     #endregion
 
     #region Private Methods
-   
+
     private void DoWindow(int w)
     {
-        
+
         GUIClip.Push(_viewPosition);
 
         DrawChildren();
@@ -190,7 +190,7 @@ public class BitWindow : BitContainerControl
 
     #endregion
 
-    #region Implements 
+    #region Implements
 
     public override void DoDraw()
     {

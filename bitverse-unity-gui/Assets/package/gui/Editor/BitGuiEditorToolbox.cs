@@ -8,13 +8,14 @@ public class BitGuiEditorToolbox : EditorWindow
     [MenuItem("Tools/XGui Toolbox")]
     public static void X()
     {
-     
+
         EditorWindow window = EditorWindow.GetWindow(typeof(BitGuiEditorToolbox));
-        window.Show ();
+        window.Show();
     }
 
-    void OnGUI () {
-        GUILayout.Label ("Base Settings", EditorStyles.boldLabel);
+    void OnGUI()
+    {
+        GUILayout.Label("Base Settings", EditorStyles.boldLabel);
         AddComponent(typeof(BitForm), "Form");
         AddComponent(typeof(BitLabel), "Label");
         AddComponent(typeof(BitButton), "Button");
@@ -34,11 +35,11 @@ public class BitGuiEditorToolbox : EditorWindow
         AddComponent(typeof(BitGroup), "Group");
         AddComponent(typeof(BitList), "List");
         BitControlEditor.SnapToGrid = EditorGUILayout.Toggle("Snap to grid", BitControlEditor.SnapToGrid);
-        if(BitControlEditor.SnapToGrid)
+        if (BitControlEditor.SnapToGrid)
         {
             BitControlEditor.Grid = EditorGUILayout.Vector2Field("Grid", BitControlEditor.Grid);
         }
-        
+
     }
     void AddComponent(Type component, string name)
     {
@@ -53,6 +54,6 @@ public class BitGuiEditorToolbox : EditorWindow
                 c.Size = new Bitverse.Unity.Gui.Size(80, 20);
             }
         }
-        
+
     }
 }

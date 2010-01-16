@@ -3,7 +3,8 @@ using UnityEngine;
 using System.Collections;
 
 //[ExecuteInEditMode]
-public class BitButton : BitControl {
+public class BitButton : BitControl
+{
 
     public string Text
     {

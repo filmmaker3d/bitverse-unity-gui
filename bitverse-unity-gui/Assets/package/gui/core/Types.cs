@@ -88,7 +88,7 @@ namespace Bitverse.Unity.Gui
 
         public override string ToString()
         {
-            return string.Format ("{0}, {1}", X, Y);
+            return string.Format("{0}, {1}", X, Y);
         }
 
         public static Point Empty
@@ -113,7 +113,7 @@ namespace Bitverse.Unity.Gui
     [System.Serializable]
     public struct Size
     {
-        private bool _isNotEmpty ;
+        private bool _isNotEmpty;
 
         public float Width;
         public float Height;
@@ -158,7 +158,7 @@ namespace Bitverse.Unity.Gui
                    && ((Size)obj)._isNotEmpty == _isNotEmpty;
         }
 
-        public static bool operator < (Size v1, Size v2)
+        public static bool operator <(Size v1, Size v2)
         {
             return v1.Height < v2.Height || v1.Width < v2.Width;
         }
