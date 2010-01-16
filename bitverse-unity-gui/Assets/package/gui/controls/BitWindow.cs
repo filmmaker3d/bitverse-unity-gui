@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Bitverse.Unity.Gui;
 
-public class BitWindow : BitContainerControl
+public class BitWindow : BitContainer
 {
     #region Private Variables
 

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Bitverse.Unity.Gui;
 using UnityEngine;
-using System.Collections.Generic;
 
 
-public class BitGroup : BitContainerControl
+public class BitGroup : BitContainer
 {
-
+	#region Data
+	
     public string Text
     {
         get { return Content.text; }
@@ -17,6 +17,11 @@ public class BitGroup : BitContainerControl
         get { return Content.image; }
         set { Content.image = value; }
     }
+
+	#endregion
+
+
+	#region Draw
 
     public override void DoDraw()
     {
@@ -33,6 +38,6 @@ public class BitGroup : BitContainerControl
 
         GUI.EndGroup();
     }
-
+	#endregion
 }
 

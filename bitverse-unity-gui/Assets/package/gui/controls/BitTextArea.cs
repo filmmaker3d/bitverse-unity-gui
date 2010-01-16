@@ -4,10 +4,31 @@ using Bitverse.Unity.Gui;
 
 public class BitTextArea : BitControl
 {
-    public event ValueChangedEventHandler TextChanged;
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "textarea"; }
+	}
+
+	#endregion
+
+
+	#region Behaviour
 
     [SerializeField]
     private int _maxLenght = -1;
+    
+    public int MaxLenght
+    {
+        get { return _maxLenght; }
+        set { _maxLenght = value; }
+    }
+    
+	#endregion
+
+
+	#region Data
 
     public string Text
     {
@@ -15,16 +36,15 @@ public class BitTextArea : BitControl
         set
         {
             Content.text = value;
-            if (TextChanged != null) TextChanged(this, new ValueChangedEventArgs(Content.text));
+			if (TextChanged != null)
+				TextChanged(this, new ValueChangedEventArgs(Content.text));
         }
     }
 
-    public int MaxLenght
-    {
-        get { return _maxLenght; }
-        set { _maxLenght = value; }
-    }
+	#endregion
 
+
+	#region Draw
 
     public override void DoDraw()
     {
@@ -59,4 +79,12 @@ public class BitTextArea : BitControl
         }
     }
 
+	#endregion
+
+
+	#region Events
+
+	public event ValueChangedEventHandler TextChanged;
+
+	#endregion
 }

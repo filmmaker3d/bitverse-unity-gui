@@ -4,6 +4,16 @@ using Bitverse.Unity.Gui;
 
 public class BitVerticalScrollbar : BitControl
 {
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "verticalscrollbar"; }
+	}
+
+	#endregion
+
+
 	#region Behaviour
 
 

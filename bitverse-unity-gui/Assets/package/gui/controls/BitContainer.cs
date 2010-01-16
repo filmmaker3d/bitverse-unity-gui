@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-public abstract class BitContainerControl : BitControl
+public abstract class BitContainer : BitControl
 {
     //private List<Control> _controlList;
 

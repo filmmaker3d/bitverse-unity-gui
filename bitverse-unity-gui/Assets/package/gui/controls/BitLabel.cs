@@ -1,11 +1,20 @@
-using System;
 using UnityEngine;
-using System.Collections;
-using Bitverse.Unity.Gui;
+
 
 public class BitLabel : BitControl
 {
+	#region Appearance
 
+	protected override string DefaultStyleName
+	{
+		get { return "label"; }
+	}
+
+	#endregion
+
+
+	#region Data
+	
     public string Text
     {
         get { return Content.text; }
@@ -17,6 +26,11 @@ public class BitLabel : BitControl
         get { return Content.image; }
         set { Content.image = value; }
     }
+
+	#endregion
+
+
+	#region Draw
 
     public override void DoDraw()
     {
@@ -30,12 +44,7 @@ public class BitLabel : BitControl
         }
     }
 
-    public void SetText(string ntext)
-    {
-        Text = ntext;
-    }
-
-
+	#endregion
 }
 
 

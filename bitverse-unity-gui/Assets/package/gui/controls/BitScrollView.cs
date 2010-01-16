@@ -3,8 +3,10 @@ using UnityEngine;
 using Bitverse.Unity.Gui;
 
 
-public class BitScrollView : BitContainerControl
+public class BitScrollView : BitContainer
 {
+	#region Behaviour
+
     [SerializeField]
     private Vector2 _scrollPosition;
     [SerializeField]
@@ -22,21 +24,26 @@ public class BitScrollView : BitContainerControl
         set { _viewRect = value; }
     }
 
+	#endregion
+
+	#region Draw
+
     public override void DoDraw()
     {
 
         if (Style != null)
         {
-            ScrollPosition = UnityEngine.GUI.BeginScrollView(Position, ScrollPosition, _viewRect, Style, Style);
+			ScrollPosition = GUI.BeginScrollView(Position, ScrollPosition, _viewRect, Style, Style);
         }
         else
         {
-            ScrollPosition = UnityEngine.GUI.BeginScrollView(Position, ScrollPosition, _viewRect);
+			ScrollPosition = GUI.BeginScrollView(Position, ScrollPosition, _viewRect);
         }
 
         DrawChildren();
 
-        UnityEngine.GUI.EndScrollView();
+		GUI.EndScrollView();
+	}
 
-    }
+	#endregion
 }

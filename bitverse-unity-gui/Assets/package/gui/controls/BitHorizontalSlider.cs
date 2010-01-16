@@ -4,29 +4,27 @@ using Bitverse.Unity.Gui;
 
 public class BitHorizontalSlider : BitControl
 {
-    public event ValueChangedEventHandler ValueChanged;
+	#region Appearance
 
-    [SerializeField]
-    private float _value = 0;
+	protected override string DefaultStyleName
+	{
+		get { return "horizontalslider"; }
+	}
+
+	#endregion
+
+
+	#region Behaviour
+
     [SerializeField]
     private ValueType _valueType = ValueType.Float;
+    
     [SerializeField]
     private float _max = 100;
+    
     [SerializeField]
-    private float _min = 0;
+    private float _min;
 
-    public float Value
-    {
-        get { return _value; }
-        set
-        {
-            _value = value;
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(_value));
-            }
-        }
-    }
 
     public ValueType ValueType
     {
@@ -45,6 +43,30 @@ public class BitHorizontalSlider : BitControl
         get { return _min; }
         set { _min = value; }
     }
+	#endregion
+	
+	#region Data
+
+    [SerializeField]
+    private float _value;
+    
+	public float Value
+    {
+        get { return _value; }
+        set
+        {
+            _value = value;
+            if (ValueChanged != null)
+            {
+                ValueChanged(this, new ValueChangedEventArgs(_value));
+            }
+        }
+    }
+	
+	#endregion
+
+
+	#region Draw
 
     public override void DoDraw()
     {
@@ -79,5 +101,12 @@ public class BitHorizontalSlider : BitControl
         }
     }
 
+	#endregion]
 
+
+	#region Events
+
+	public event ValueChangedEventHandler ValueChanged;
+
+	#endregion
 }

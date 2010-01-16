@@ -1,13 +1,34 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Bitverse.Unity.Gui;
 
 
 public class BitTextField : BitControl
 {
-    public event ValueChangedEventHandler TextChanged;
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "textfield"; }
+	}
+
+	#endregion
+
+
+	#region Behaviour
 
     [SerializeField]
     private int _maxLenght = -1;
+
+	public int MaxLenght
+	{
+		get { return _maxLenght; }
+		set { _maxLenght = value; }
+	}
+
+	#endregion
+
+
+	#region Data
 
     public string Text
     {
@@ -15,15 +36,15 @@ public class BitTextField : BitControl
         set
         {
             Content.text = value;
-            if (TextChanged != null) TextChanged(this, new ValueChangedEventArgs(Content.text));
+			if (TextChanged != null)
+				TextChanged(this, new ValueChangedEventArgs(Content.text));
         }
     }
 
-    public int MaxLenght
-    {
-        get { return _maxLenght; }
-        set { _maxLenght = value; }
-    }
+	#endregion
+
+
+	#region Draw
 
     public override void DoDraw()
     {
@@ -56,8 +77,14 @@ public class BitTextField : BitControl
         {
             Text = t;
         }
+	}
 
-    }
+	#endregion
 
 
+	#region Events
+
+	public event ValueChangedEventHandler TextChanged;
+
+	#endregion
 }

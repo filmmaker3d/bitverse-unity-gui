@@ -383,14 +383,26 @@ public abstract class BitControl : MonoBehaviour
 
 	[SerializeField]
 	private Rect _position;
+
+	[SerializeField]
+	private int _anchor = -1;
 	
-    #endregion
+	/// <summary>
+	/// A bitwise property that anchors the control at one or more sides.
+	/// All possible options are in <see cref="AnchorStyles"/>.
+	/// </summary>
+	public virtual int Anchor
+	{
+		get { return _anchor; }
+		set
+		{
+			_anchor = value;
+			//CalculateAnchors();
+		}
+	}
+	
 
-    #region Public Properties
-
-
-
-		/// <summary>
+	/// <summary>
 	/// Component position is the Rect that contains exactly the control.
 	/// </summary>
 	public Rect Position

@@ -180,4 +180,12 @@ namespace Bitverse.Unity.Gui
         }
     }
 
+	public static class AnchorStyles
+	{
+		public const short None = 0x00;
+		public const short Top = 0x01;
+		public const short Left = 0x02;
+		public const short Bottom = 0x04;
+		public const short Right = 0x08;
+	}
 }

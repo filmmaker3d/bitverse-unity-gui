@@ -4,6 +4,15 @@ using Bitverse.Unity.Gui;
 
 public class BitToggle : BitControl
 {
+	#region Appearance
+
+	protected override string DefaultStyleName
+	{
+		get { return "toggle"; }
+	}
+
+	#endregion
+
 
 	#region Data
 
