@@ -4,10 +4,11 @@ using Bitverse.Unity.Gui;
 
 public class BitToggle : BitControl
 {
-    public event ValueChangedEventHandler ValueChanged;
+
+	#region Data
 
     [SerializeField]
-    private bool _value = false;
+    private bool _value;
 
     public string Text
     {
@@ -27,9 +28,15 @@ public class BitToggle : BitControl
         set
         {
             _value = value;
-            if (ValueChanged != null) ValueChanged(this, new ValueChangedEventArgs(_value));
+            if (ValueChanged != null)
+				ValueChanged(this, new ValueChangedEventArgs(_value));
         }
     }
+    
+	#endregion
+
+
+	#region Draw
 
     public override void DoDraw()
     {
@@ -37,11 +44,11 @@ public class BitToggle : BitControl
 
         if (Style != null)
         {
-            val = UnityEngine.GUI.Toggle(Position, Value, Content, Style);
+            val = GUI.Toggle(Position, Value, Content, Style);
         }
         else
         {
-            val = UnityEngine.GUI.Toggle(Position, Value, Content);
+            val = GUI.Toggle(Position, Value, Content);
         }
 
         if (val != Value)
@@ -49,7 +56,14 @@ public class BitToggle : BitControl
             Value = val;
         }
     }
+    
+	#endregion
 
 
+	#region Events
+
+    public event ValueChangedEventHandler ValueChanged;
+
+	#endregion
 }
 

@@ -3,20 +3,19 @@
 
 public class BitDrawTexture : BitControl
 {
+	#region Appearance
 
-    [SerializeField]
-    private Texture _image;
     [SerializeField]
     private ScaleMode _scaleMode = ScaleMode.StretchToFill;
     [SerializeField]
     private bool _alphaBlend = true;
     [SerializeField]
-    private float _imageAspect = 0;
+    private float _imageAspect;
 
     public Texture Image
     {
-        get { return _image; }
-        set { _image = value; }
+		get { return Content.image; }
+		set { Content.image = value; }
     }
 
     public ScaleMode ScaleMode
@@ -36,12 +35,18 @@ public class BitDrawTexture : BitControl
         get { return _imageAspect; }
         set { _imageAspect = value; }
     }
+    
+	#endregion
 
+
+	#region Draw
+	
     public override void DoDraw()
     {
         if (Image != null)
-            UnityEngine.GUI.DrawTexture(Position, Image, ScaleMode, AlphaBlend, ImageAspect);
+            GUI.DrawTexture(Position, Image, ScaleMode, AlphaBlend, ImageAspect);
     }
 
+	#endregion
 
 }

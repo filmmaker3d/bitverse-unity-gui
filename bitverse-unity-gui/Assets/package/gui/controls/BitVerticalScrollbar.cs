@@ -4,28 +4,15 @@ using Bitverse.Unity.Gui;
 
 public class BitVerticalScrollbar : BitControl
 {
-    public event ValueChangedEventHandler ValueChanged;
+	#region Behaviour
 
-    [SerializeField]
-    private float _value = 0;
+
     [SerializeField]
     private ValueType _valueType = ValueType.Float;
+    
     [SerializeField]
-    private float _visibleSize = 0;
-    [SerializeField]
-    private float _top = 100;
-    [SerializeField]
-    private float _botton = 0;
+    private float _visibleSize;
 
-    public float Value
-    {
-        get { return _value; }
-        set
-        {
-            _value = value;
-            if (ValueChanged != null) ValueChanged(this, new ValueChangedEventArgs(_value));
-        }
-    }
 
     public ValueType ValueType
     {
@@ -39,7 +26,31 @@ public class BitVerticalScrollbar : BitControl
         set { _visibleSize = value; }
     }
 
+	#endregion
 
+
+	#region Data
+	
+    [SerializeField]
+    private float _value;
+    
+    [SerializeField]
+    private float _top = 100;
+    
+    [SerializeField]
+    private float _botton;
+
+    public float Value
+    {
+        get { return _value; }
+        set
+        {
+            _value = value;
+            if (ValueChanged != null)
+            	ValueChanged(this, new ValueChangedEventArgs(_value));
+        }
+    }
+    
     public float Top
     {
         get { return _top; }
@@ -52,6 +63,11 @@ public class BitVerticalScrollbar : BitControl
         set { _botton = value; }
     }
 
+	#endregion
+
+
+	#region Draw
+
     public override void DoDraw()
     {
         float val;
@@ -60,22 +76,22 @@ public class BitVerticalScrollbar : BitControl
         {
             if (Style != null)
             {
-                val = UnityEngine.GUI.VerticalScrollbar(Position, Value, VisibleSize, Top, Botton, Style);
+				val = GUI.VerticalScrollbar(Position, Value, VisibleSize, Top, Botton, Style);
             }
             else
             {
-                val = UnityEngine.GUI.VerticalScrollbar(Position, Value, VisibleSize, Top, Botton);
+				val = GUI.VerticalScrollbar(Position, Value, VisibleSize, Top, Botton);
             }
         }
         else
         {
             if (Style != null)
             {
-                val = UnityEngine.GUI.VerticalScrollbar(Position, (int)Value, VisibleSize, Top, Botton, Style);
+				val = GUI.VerticalScrollbar(Position, (int) Value, VisibleSize, Top, Botton, Style);
             }
             else
             {
-                val = UnityEngine.GUI.VerticalScrollbar(Position, (int)Value, VisibleSize, Top, Botton);
+				val = GUI.VerticalScrollbar(Position, (int) Value, VisibleSize, Top, Botton);
             }
         }
 
@@ -86,7 +102,13 @@ public class BitVerticalScrollbar : BitControl
         }
     }
 
+	#endregion
 
 
+	#region Events
+
+    public event ValueChangedEventHandler ValueChanged;
+
+	#endregion
 }
 
