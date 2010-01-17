@@ -6,7 +6,7 @@ public class BitMenu : BitContainer
 {
 	#region Appearance
 
-	protected override string DefaultStyleName
+    public override string DefaultStyleName
 	{
 		get { return "box"; }
 	}

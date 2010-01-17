@@ -6,7 +6,7 @@ public class BitToggle : BitControl
 {
 	#region Appearance
 
-	protected override string DefaultStyleName
+    public override string DefaultStyleName
 	{
 		get { return "toggle"; }
 	}

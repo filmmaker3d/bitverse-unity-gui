@@ -1,12 +1,11 @@
-﻿
-using Bitverse.Unity.Gui;
+﻿using Bitverse.Unity.Gui;
 using UnityEngine;
 
-public class BitBox: BitControl
+public class BitBox : BitControl
 {
 	#region Appearance
 
-	protected override string DefaultStyleName
+    public override string DefaultStyleName
 	{
 		get { return "box"; }
 	}

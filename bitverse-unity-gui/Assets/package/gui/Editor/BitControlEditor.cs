@@ -1,42 +1,58 @@
 ﻿using System;
+using Bitverse.Unity.Gui;
 using UnityEditor;
 using UnityEngine;
-using Bitverse.Unity.Gui;
+using Object = UnityEngine.Object;
 
 public class BitControlEditor : Editor
 {
-    enum Corner
-    {
-        None,
-        Top, Left, Bottom, Right,
-        TopLeft, TopRight, BottomLeft, BottomRight
-    }
+	private enum Corner
+	{
+		None,
+		Top,
+		Left,
+		Bottom,
+		Right,
+		TopLeft,
+		TopRight,
+		BottomLeft,
+		BottomRight
+	}
 
 
-    public void Awake()
-    {
-    }
-
-    private void Callback()
-    {
-        Debug.Log("funfa");
-    }
-
-    private BitControl underMouse;
+    private BitControl _underMouse;
     public static bool SnapToGrid = true;
     public static Vector2 Grid = new Vector2(4, 4);
-    public Vector2 mouseDownPosition;
-    private Corner mouseCorner = Corner.None;
-    private Rect originalPosition;
-    private bool SnapToControls = true;
-    Vector3 line1p1 = Vector3.zero;
-    Vector3 line1p2 = Vector3.zero;
-    Vector3 line2p1 = Vector3.zero;
-    Vector3 line2p2 = Vector3.zero;
-    private static bool delayedMouseDown = false;
+    public Vector2 MouseDownPosition;
+    private Corner _mouseCorner = Corner.None;
+    private Rect _originalPosition;
+    private bool _snapToControls = true;
+    private Vector3 _line1P1 = Vector3.zero;
+    private Vector3 _line1P2 = Vector3.zero;
+    private Vector3 _line2P1 = Vector3.zero;
+    private Vector3 _line2P2 = Vector3.zero;
+    private static bool _delayedMouseDown;
+
+	public static bool DrawPadding;
+	public static bool DrawMargin;
+	private static Color _lineColor = new Color(1f, 0f, 0f, 0.4f);
+
 
     public void OnSceneGUI()
     {
+		if (_delayedMouseDown)
+		{
+			if (BitGuiEditorToolbox.ControlTypeToCreate != null)
+			{
+				Point mousePosition = GetMousePosition();
+				if (_underMouse is BitContainer)
+					BitGuiEditorToolbox.CreateComponent((BitContainer)_underMouse, mousePosition);
+				BitGuiEditorToolbox.ControlTypeToCreate = null;
+			}
+		}
+
+		//menu.ShowMenu(-300, 0);
+
         if (target == null)
             return;
         BitControl c = (BitControl)target;
@@ -56,64 +72,67 @@ public class BitControlEditor : Editor
         corner = CornerStuff(corner, Corner.Bottom, new Rect(r.xMin + rmh, r.yMax - rmh, r.width - rm, rm), MouseCursor.ResizeVertical);
         Handles.EndGUI();
 
-        object[] comps = FindObjectsOfType(typeof(BitControl));
+        Object[] comps = FindObjectsOfType(typeof(BitControl));
+
+		BitControl compUnderMouse = GetCompUnderMouse(comps);
 
         if (Event.current.type == EventType.MouseUp)
         {
-            line1p1 = line1p2 = line2p1 = line2p2 = new Vector3(10000, 10000, 10000);
+            _line1P1 = _line1P2 = _line2P1 = _line2P2 = new Vector3(10000, 10000, 10000);
+            // ??
+			c.Size = c.Size;
         }
-        if (delayedMouseDown)
+        if (_delayedMouseDown)
         {
-            mouseCorner = corner;
-            originalPosition = c.AbsolutePosition;
-            //Debug.Log("a = " + originalPosition);
+            _mouseCorner = corner;
+            _originalPosition = c.AbsolutePosition;
+			//Debug.Log("a = " + _originalPosition);
         }
 
 
         if (Event.current.type == EventType.KeyDown)
             if (Event.current.keyCode == KeyCode.LeftControl)
-                SnapToControls = false;
+                _snapToControls = false;
         if (Event.current.type == EventType.KeyUp)
             if (Event.current.keyCode == KeyCode.LeftControl)
-                SnapToControls = true;
+                _snapToControls = true;
         if (Event.current.type == EventType.MouseMove)
         {
-            BitControl n = GetCompUnderMouse(comps);
-            if (n != underMouse)
+			//BitControl n = GetCompUnderMouse(comps);
+			if (compUnderMouse != _underMouse)
             {
-                underMouse = n;
-                if (underMouse != null)
-                    EditorUtility.SetDirty(underMouse);
+				_underMouse = compUnderMouse;
+                if (_underMouse != null)
+                    EditorUtility.SetDirty(_underMouse);
             }
         }
 
-        if (corner == Corner.None && delayedMouseDown && Event.current.button == 0)
+        if (corner == Corner.None && _delayedMouseDown && Event.current.button == 0)
         {
-            BitControl best = GetCompUnderMouse(comps);
-            if (best != null && best != c)
+			//BitControl best = GetCompUnderMouse(comps);
+			if (compUnderMouse != null && compUnderMouse != c)
             {
-                Selection.activeGameObject = best.gameObject;
+				Selection.activeGameObject = compUnderMouse.gameObject;
                 return;
             }
-            if (best == null)
+			if (compUnderMouse == null)
             {
                 Selection.activeGameObject = c.gameObject;
             }
 
         }
-        delayedMouseDown = false;
+        _delayedMouseDown = false;
         if (Event.current.type == EventType.MouseDown)
         {
-            delayedMouseDown = true;
-            BitControl best = GetCompUnderMouse(comps);
-            if (best != null && corner == Corner.None)
+            _delayedMouseDown = true;
+			//BitControl best = GetCompUnderMouse(comps);
+			if (compUnderMouse != null && corner == Corner.None)
             {
-                originalPosition = best.AbsolutePosition;
-                //Debug.Log("a = " + originalPosition);
+				_originalPosition = compUnderMouse.AbsolutePosition;
             }
         }
 
-        Vector3 op = new Vector3(originalPosition.x, 0, originalPosition.y);
+        Vector3 op = new Vector3(_originalPosition.x, 0, _originalPosition.y);
         Vector3 pos = Handles.FreeMoveHandle(op, Quaternion.identity, 10000, new Vector3(1, 1, 1), Handles.RectangleCap);
         Handles.color = Color.yellow;
         Handles.DrawLine(op, pos);
@@ -121,44 +140,40 @@ public class BitControlEditor : Editor
         Handles.DrawLine(op - 4 * Vector3.right, op + 4 * Vector3.right);
         Handles.DrawLine(pos - 4 * Vector3.forward, pos + 4 * Vector3.forward);
         Handles.DrawLine(pos - 4 * Vector3.right, pos + 4 * Vector3.right);
-        if (op == pos)
-        {
-            //Debug.Log("SSSS");
-        }
+
         if (op != pos)
         {
-            pos = DoSnapping(pos, c, comps, mouseCorner);
+            pos = DoSnapping(pos, c, comps, _mouseCorner);
             Vector3 dif = pos - op;
-            //Debug.Log("AAAA" + op + " " + b + " " + pos + " " + dif);
 
-            switch (mouseCorner)
+            switch (_mouseCorner)
             {
                 case Corner.None:
-                    c.AbsolutePosition = new Rect(dif.x + originalPosition.x, dif.z + originalPosition.y, originalPosition.width, originalPosition.height);
+                    c.AbsolutePosition = new Rect(dif.x + _originalPosition.x, dif.z + _originalPosition.y, _originalPosition.width, _originalPosition.height);
                     break;
                 case Corner.Right:
-                    c.Size = new Bitverse.Unity.Gui.Size(dif.x + originalPosition.width, originalPosition.height);
+                    c.Size = new Size(dif.x + _originalPosition.width, _originalPosition.height);
                     break;
                 case Corner.Left:
-                    c.AbsolutePosition = new Rect(dif.x + originalPosition.x, originalPosition.y, originalPosition.width - dif.x, c.Size.Height);
+                    c.AbsolutePosition = new Rect(dif.x + _originalPosition.x, _originalPosition.y, _originalPosition.width - dif.x, c.Size.Height);
                     break;
                 case Corner.Bottom:
-                    c.Size = new Size(originalPosition.width, dif.z + originalPosition.height);
+                    c.Size = new Size(_originalPosition.width, dif.z + _originalPosition.height);
                     break;
                 case Corner.Top:
-                    c.AbsolutePosition = new Rect(originalPosition.x, dif.z + originalPosition.y, c.Size.Width, -dif.z + originalPosition.height);
+                    c.AbsolutePosition = new Rect(_originalPosition.x, dif.z + _originalPosition.y, c.Size.Width, -dif.z + _originalPosition.height);
                     break;
                 case Corner.BottomRight:
-                    c.Size = new Size(dif.x + originalPosition.width, dif.z + originalPosition.height);
+                    c.Size = new Size(dif.x + _originalPosition.width, dif.z + _originalPosition.height);
                     break;
                 case Corner.TopLeft:
-                    c.AbsolutePosition = new Rect(dif.x + originalPosition.x, dif.z + originalPosition.y, -dif.x + originalPosition.width, -dif.z + originalPosition.height);
+                    c.AbsolutePosition = new Rect(dif.x + _originalPosition.x, dif.z + _originalPosition.y, -dif.x + _originalPosition.width, -dif.z + _originalPosition.height);
                     break;
                 case Corner.TopRight:
-                    c.AbsolutePosition = new Rect(originalPosition.x, dif.z + originalPosition.y, dif.x + originalPosition.width, -dif.z + originalPosition.height);
+                    c.AbsolutePosition = new Rect(_originalPosition.x, dif.z + _originalPosition.y, dif.x + _originalPosition.width, -dif.z + _originalPosition.height);
                     break;
                 case Corner.BottomLeft:
-                    c.AbsolutePosition = new Rect(dif.x + originalPosition.x, originalPosition.y, -dif.x + originalPosition.width, dif.z + originalPosition.height);
+                    c.AbsolutePosition = new Rect(dif.x + _originalPosition.x, _originalPosition.y, -dif.x + _originalPosition.width, dif.z + _originalPosition.height);
                     break;
             }
             if (GUI.changed)
@@ -168,28 +183,46 @@ public class BitControlEditor : Editor
 
         foreach (BitControl comp in comps)
         {
-            if (comp == underMouse)
+			if (comp.Style != null)
+			{
+				Rect rect = comp.AbsolutePosition;
+				if (DrawPadding)
+				{
+					RectOffset border = comp.Style.padding;
+					DrawBorder(new Color(1f, 1f, 0f, 0.2f), new Rect(rect.x + border.left, rect.y + border.top, rect.width - border.right - border.left, rect.height - border.bottom - border.top));
+				}
+				if (DrawMargin)
+				{
+					RectOffset border = comp.Style.margin;
+					DrawBorder(new Color(0f, 1f, 1f, 0.2f), new Rect(rect.x - border.left, rect.y - border.top, rect.width + border.right + border.left, rect.height + border.bottom + border.top));
+				}
+			}
+
+            if (comp == _underMouse)
             {
-                Handles.color = Color.yellow;
-                DrawBorder(comp);
+				DrawBorder(Color.yellow, comp.AbsolutePosition);
             }
             if (comp == c)
             {
-                Handles.color = Color.blue;
-                DrawBorder(comp);
+				DrawBorder(Color.blue, comp.AbsolutePosition);
             }
             else
             {
                 EditorGUIUtility.AddCursorRect(ToGuiRect(comp.AbsolutePosition), MouseCursor.Link);
             }
-            //comp.Draw();
+
             Handles.color = Color.white;
             Handles.Label(new Vector3(comp.AbsolutePosition.x, 0, comp.AbsolutePosition.y), comp.gameObject.name);
         }
-        Handles.color = Color.blue;
-        Handles.DrawLine(line1p1, line1p2);
-        Handles.DrawLine(line2p1, line2p2);
+		Handles.color = _lineColor;
+        Handles.DrawLine(_line1P1, _line1P2);
+        Handles.DrawLine(_line2P1, _line2P2);
+	}
 
+	private static Point GetMousePosition()
+	{
+		Ray raio = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+		return new Point(raio.origin.x, raio.origin.z);
     }
 
     private Vector3 DoSnapping(Vector3 pos, BitControl control, object[] comps, Corner corner)
@@ -197,7 +230,7 @@ public class BitControlEditor : Editor
         Vector3 changedPos = pos;
         float bestx = float.MaxValue;
         float besty = float.MaxValue;
-        if (SnapToControls)
+        if (_snapToControls)
         {
             foreach (BitControl comp in comps)
             {
@@ -211,8 +244,8 @@ public class BitControlEditor : Editor
                     {
                         changedPos.x = comp.AbsolutePosition.x;
                         bestx = delta;
-                        line1p1 = new Vector3(changedPos.x, 0, Math.Min(comp.AbsolutePosition.yMin, control.AbsolutePosition.yMin));
-                        line1p2 = new Vector3(changedPos.x, 0, Math.Max(comp.AbsolutePosition.yMax, control.AbsolutePosition.yMax));
+                        _line1P1 = new Vector3(changedPos.x, 0, Math.Min(comp.AbsolutePosition.yMin, control.AbsolutePosition.yMin));
+                        _line1P2 = new Vector3(changedPos.x, 0, Math.Max(comp.AbsolutePosition.yMax, control.AbsolutePosition.yMax));
                     }
                 }
                 if (corner == Corner.Top || corner == Corner.None || corner == Corner.TopLeft || corner == Corner.TopRight)
@@ -224,38 +257,40 @@ public class BitControlEditor : Editor
 
                         changedPos.z = comp.AbsolutePosition.y;
                         besty = delta;
-                        line2p1 = new Vector3(Math.Min(comp.AbsolutePosition.xMin, control.AbsolutePosition.xMin), 0, changedPos.z);
-                        line2p2 = new Vector3(Math.Max(comp.AbsolutePosition.xMax, control.AbsolutePosition.xMax), 0, changedPos.z);
+                        _line2P1 = new Vector3(Math.Min(comp.AbsolutePosition.xMin, control.AbsolutePosition.xMin), 0, changedPos.z);
+                        _line2P2 = new Vector3(Math.Max(comp.AbsolutePosition.xMax, control.AbsolutePosition.xMax), 0, changedPos.z);
                     }
                 }
                 if (corner == Corner.Right || corner == Corner.None || corner == Corner.TopRight || corner == Corner.BottomRight)
                 {
-                    float delta = Math.Abs(dif = comp.AbsolutePosition.xMax - (pos.x + originalPosition.width));
+                    float delta = Math.Abs(dif = comp.AbsolutePosition.xMax - (pos.x + _originalPosition.width));
                     if (delta < 10 && delta < bestx)
                     {
                         changedPos.x = pos.x + dif;
                         bestx = delta;
-                        line1p1 = new Vector3(comp.AbsolutePosition.xMax, 0, Math.Min(comp.AbsolutePosition.yMin, control.AbsolutePosition.yMin));
-                        line1p2 = new Vector3(comp.AbsolutePosition.xMax, 0, Math.Max(comp.AbsolutePosition.yMax, control.AbsolutePosition.yMax));
+                        _line1P1 = new Vector3(comp.AbsolutePosition.xMax, 0, Math.Min(comp.AbsolutePosition.yMin, control.AbsolutePosition.yMin));
+                        _line1P2 = new Vector3(comp.AbsolutePosition.xMax, 0, Math.Max(comp.AbsolutePosition.yMax, control.AbsolutePosition.yMax));
                     }
                 }
                 if (corner == Corner.Bottom || corner == Corner.None || corner == Corner.BottomLeft || corner == Corner.BottomRight)
                 {
-                    float delta = Math.Abs(dif = comp.AbsolutePosition.yMax - (pos.z + originalPosition.height));
+                    float delta = Math.Abs(dif = comp.AbsolutePosition.yMax - (pos.z + _originalPosition.height));
                     if (delta < 10 && delta < besty)
                     {
                         changedPos.z = pos.z + dif;
                         besty = delta;
-                        line2p1 = new Vector3(Math.Min(comp.AbsolutePosition.xMin, control.AbsolutePosition.xMin), 0, comp.AbsolutePosition.yMax);
-                        line2p2 = new Vector3(Math.Max(comp.AbsolutePosition.xMax, control.AbsolutePosition.xMax), 0, comp.AbsolutePosition.yMax);
+                        _line2P1 = new Vector3(Math.Min(comp.AbsolutePosition.xMin, control.AbsolutePosition.xMin), 0, comp.AbsolutePosition.yMax);
+                        _line2P2 = new Vector3(Math.Max(comp.AbsolutePosition.xMax, control.AbsolutePosition.xMax), 0, comp.AbsolutePosition.yMax);
                     }
                 }
             }
         }
         if (SnapToGrid)
         {
-            if (bestx == float.MaxValue) changedPos.x = changedPos.x - (changedPos.x % Grid.x);
-            if (besty == float.MaxValue) changedPos.z = changedPos.z - (changedPos.z % Grid.y);
+			if (bestx == float.MaxValue)
+				changedPos.x = changedPos.x - (changedPos.x % Grid.x);
+			if (besty == float.MaxValue)
+				changedPos.z = changedPos.z - (changedPos.z % Grid.y);
         }
         return changedPos;
     }
@@ -286,19 +321,19 @@ public class BitControlEditor : Editor
         return new Rect(v.x, v.y, s.x - z.x, s.y - z.y);
     }
 
-    private void DrawBorder(BitControl comp)
-    {
-        Rect cp = comp.AbsolutePosition;
-        float m = 1;
-        Handles.DrawPolyLine(new Vector3[]
-                                 {
-                                     new Vector3(cp.xMin+m, 0, cp.yMin+m), 
-                                     new Vector3(cp.xMax-m, 0, cp.yMin+m), 
-                                     new Vector3(cp.xMax-m, 0, cp.yMax-m), 
-                                     new Vector3(cp.xMin+m, 0, cp.yMax-m), 
-                                     new Vector3(cp.xMin+m, 0, cp.yMin+m), 
-                                 });
-    }
+	private void DrawBorder(Color color, Rect cp)
+	{
+		Handles.color = color;
+		float m = 1;
+		Handles.DrawPolyLine(new Vector3[]
+		                     	{
+		                     		new Vector3(cp.xMin + m, 0, cp.yMin + m),
+		                     		new Vector3(cp.xMax - m, 0, cp.yMin + m),
+		                     		new Vector3(cp.xMax - m, 0, cp.yMax - m),
+		                     		new Vector3(cp.xMin + m, 0, cp.yMax - m),
+		                     		new Vector3(cp.xMin + m, 0, cp.yMin + m),
+		                     	});
+	}
 
 
     private BitControl GetCompUnderMouse(object[] comps)
@@ -326,41 +361,135 @@ public class BitControlEditor : Editor
         return best;
     }
 
+	private BitControl GetCompUnderMouseExcept(object[] comps, object except)
+	{
+		Ray r = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+		Vector2 mousePosition = new Vector2(r.origin.x, r.origin.z);
+		BitControl best = null;
+		float bestDist = float.MaxValue;
+		foreach (BitControl comp in comps)
+		{
+			if (!comp.Equals(except) && comp.AbsolutePosition.Contains(mousePosition))
+			{
+				float mx = mousePosition.x;
+				float my = mousePosition.y;
+				float d = Math.Min(Math.Abs(comp.AbsolutePosition.xMin - mx), Math.Abs(comp.AbsolutePosition.xMax - mx));
+				d = Math.Min(Math.Abs(comp.AbsolutePosition.yMin - my), d);
+				d = Math.Min(Math.Abs(comp.AbsolutePosition.yMax - my), d);
+				if (d < bestDist)
+				{
+					best = comp;
+					bestDist = d;
+				}
+			}
+		}
+		return best;
+	}
 }
 
 [CustomEditor(typeof(BitButton))]
-public class BitButtonEditor : BitControlEditor { }
+public class BitButtonEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitBox))]
-public class BitBoxEditor : BitControlEditor { }
+public class BitBoxEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitControl))]
-public class BitControlEditor2 : BitControlEditor { }
+public class BitControlEditor2 : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitLabel))]
-public class BitLabelEditor : BitControlEditor { }
+public class BitLabelEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitPasswordField))]
-public class BitPasswordFieldEditor : BitControlEditor { }
+public class BitPasswordFieldEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitRepeatButton))]
-public class BitRepeatButtonEditor : BitControlEditor { }
+public class BitRepeatButtonEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitScrollView))]
-public class BitScrollViewEditor : BitControlEditor { }
+public class BitScrollViewEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitTextArea))]
-public class BitTextAreaEditor : BitControlEditor { }
+public class BitTextAreaEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitDrawTexture))]
-public class BitDrawTextureEditor : BitControlEditor { }
+public class BitDrawTextureEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitGroup))]
-public class BitGroupEditor : BitControlEditor { }
+public class BitGroupEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitTextField))]
-public class BitTextFieldEditor : BitControlEditor { }
+public class BitTextFieldEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitHorizontalScrollbar))]
-public class BitHorizontalScrollbarEditor : BitControlEditor { }
+public class BitHorizontalScrollbarEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitHorizontalSlider))]
-public class BitHorizontalSliderEditor : BitControlEditor { }
+public class BitHorizontalSliderEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitToggle))]
-public class BitToggleEditor : BitControlEditor { }
+public class BitToggleEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitWindow))]
-public class BitWindowEditor : BitControlEditor { }
+public class BitWindowEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitVerticalScrollbar))]
-public class BitVerticalScrollbarEditor : BitControlEditor { }
+public class BitVerticalScrollbarEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitVerticalSlider))]
-public class BitXVerticalSliderEditor : BitControlEditor { }
+public class BitVerticalSliderEditor : BitControlEditor
+{
+}
+
+
 [CustomEditor(typeof(BitList))]
-public class BitListEditor : BitControlEditor { }
+public class BitListEditor : BitControlEditor
+{
+}

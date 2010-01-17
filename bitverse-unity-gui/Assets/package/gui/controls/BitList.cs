@@ -7,7 +7,7 @@ public class BitList : BitControl
 
 	#region Appearance
 
-	protected override string DefaultStyleName
+    public override string DefaultStyleName
 	{
 		get { return "list"; }
 	}

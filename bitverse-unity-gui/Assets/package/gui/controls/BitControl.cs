@@ -69,7 +69,7 @@ public abstract class BitControl : MonoBehaviour
 	/// <summary>
 	/// Default style name.
 	/// </summary>
-	protected virtual string DefaultStyleName
+	public virtual string DefaultStyleName
 	{
 		get { return null; }
 	}
