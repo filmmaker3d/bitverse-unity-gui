@@ -1,14 +1,31 @@
-﻿using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitRepeatButton : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "button"; }
+		get { return GUI.skin.button; }
+	}
+
+	#endregion
+
+
+	#region Data
+
+	private bool _value;
+
+	#endregion
+
+
+	#region Draw
+
+	protected override void DoDraw()
+	{
+		_value = GUI.RepeatButton(Position, Content, Style ?? DefaultStyle);
 	}
 
 	#endregion
@@ -16,57 +33,26 @@ public class BitRepeatButton : BitControl
 
 	#region Events
 
-	public event MouseClickEventHandler ButtonClick;
+	public event MouseClickEventHandler MouseClick;
 
-	#endregion
+	private void RaiseMouseClick(int mouseButton)
+	{
+		if (MouseClick == null)
+		{
+			return;
+		}
+		MouseClick(this, new MouseClickEventArgs(mouseButton));
+	}
 
-
-	#region Data
-
-    public string Text
-    {
-        get { return Content.text; }
-        set { Content.text = value; }
-    }
-
-    public Texture Image
-    {
-        get { return Content.image; }
-        set { Content.image = value; }
-    }
-
-	#endregion
-
-
-	#region Draw
-
-    public override void DoDraw()
-    {
-        bool button = false;
-        int currentButton = -1;
-        //bool doubleClick = false;
-
-        if (Style == null)
-        {
-			GUI.RepeatButton(Position, Content);
-        }
-        else
-        {
-			GUI.RepeatButton(Position, Content, Style);
-        }
-
-        //doubleClick = Event.current.isMouse && Event.current.clickCount == 2;
-        currentButton = Event.current.button;
-
-        if (button)
-        {
-            if (ButtonClick != null)
-            {
-                ButtonClick(this, new MouseClickEventArgs((MouseButtons)currentButton));
-            }
-        }
-    }
+	protected override bool UserEventsAfterDraw()
+	{
+		if (!_value)
+		{
+			return false;
+		}
+		RaiseMouseClick(Event.current.button);
+		return true;
+	}
 
 	#endregion
 }
-

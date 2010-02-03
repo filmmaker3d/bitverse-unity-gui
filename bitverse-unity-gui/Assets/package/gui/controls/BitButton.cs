@@ -1,12 +1,14 @@
+using Bitverse.Unity.Gui;
 using UnityEngine;
+
 
 public class BitButton : BitControl
 {
 	#region Appearance
 
-	public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "button"; }
+		get { return GUI.skin.button; }
 	}
 
 	#endregion
@@ -14,39 +16,55 @@ public class BitButton : BitControl
 
 	#region Data
 
-    public string Text
-    {
-        get { return Content.text; }
-        set { Content.text = value; }
-    }
-
-    public Texture Image
-    {
-        get { return Content.image; }
-        set { Content.image = value; }
-    }
+	private bool _value;
 
 	#endregion
+
 
 	#region Draw
 
-    public override void DoDraw()
-    {
-        GUIStyle style = Style;
-        if (style != null)
-        {
-            GUI.Button(Position, Content, style);
-        }
-        else
-        {
-            GUI.Button(Position, Content);
-        }
-    }
-    
+	protected override void DoDraw()
+	{
+		_value = GUI.Button(Position, Content, Style ?? DefaultStyle);
+		//switch (Event.current.type)
+		//{
+		//    case EventType.mouseDown:
+		//        _value = true;
+		//        break;
+		//    case EventType.MouseUp:
+		//        _value = false;
+		//        break;
+		//    case EventType.repaint:
+		//        (Style ?? DefaultStyle).Draw(Position, Content, Position.Contains(Event.current.mousePosition), _value, false, Focus);
+		//        break;
+		//}
+
+	}
+
 	#endregion
 
 
+	#region Events
+
+	public event MouseClickEventHandler MouseClick;
+
+	private void RaiseMouseClick(int mouseButton)
+	{
+		if (MouseClick != null)
+		{
+			MouseClick(this, new MouseClickEventArgs(mouseButton));
+		}
+	}
+
+	protected override bool UserEventsAfterDraw()
+	{
+		if (!_value)
+		{
+			return false;
+		}
+		RaiseMouseClick(Event.current.button);
+		return true;
+	}
+
+	#endregion
 }
-
-
-

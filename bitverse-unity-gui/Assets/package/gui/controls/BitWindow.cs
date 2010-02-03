@@ -1,290 +1,247 @@
-﻿using System;
-using UnityEngine;
-using System.Collections.Generic;
 using Bitverse.Unity.Gui;
+using UnityEngine;
+
 
 public class BitWindow : BitContainer
 {
 	#region Accessibility
 
-    private int _windowId = ++_windowsCount;
+	private int _windowID = ++WindowsCount;
 
-    public int WindowId
-    {
-        get { return _windowId; }
-    }
-    
-	#endregion
-
-	#region Appearance
-
-    public override string DefaultStyleName
+	public int WindowID
 	{
-		get { return "window"; }
+		get { return _windowID; }
 	}
 
 	#endregion
 
-	#region Behaviour
 
-    [SerializeField]
-    private bool _draggable = true;
+	#region Appearance
 
-    [SerializeField]
-    private FormModes _formMode = FormModes.Modeless;
-
-    [SerializeField]
-    private WindowModes _windowMode = WindowModes.Window;
-
-    private Rect _viewPosition;
-
-    public FormModes FormMode
-    {
-        get { return _formMode; }
-        set { _formMode = value; }
-    }
-
-    public WindowModes WindowMode
-    {
-        get { return _windowMode; }
-        set { _windowMode = value; }
-    }
-
-    public bool Draggable
-    {
-        get { return _draggable; }
-        set { _draggable = value; }
-    }
-
-    public Size ViewSize
-    {
-        get
-        {
-            if (IsInvalidated)
-                Layout();
-
-            return new Size(_viewPosition.width, _viewPosition.height);
-        }
-
-    }
-
-    #endregion
-
-    #region Constructors
-
-    public BitWindow()
-    {
-        _windowId = ++_windowsCount;
-        //_controDictionary = new Dictionary<string, BitControl>();
-        //AddDictionaryControl(this);
-    }
-
-    #endregion
-
-	#region Control
-
-    private string _lastTooltip = "";
-	private static int _windowsCount;
-
-
-    private void DoWindow(int w)
-    {
-
-        GUIClip.Push(_viewPosition);
-
-        DrawChildren();
-
-        GUIClip.Pop();
-
-        if (Disabled)
-        {
-            GUI.BringWindowToBack(WindowId);
-        }
-        else
-        {
-            if (_draggable)
-            {
-                GUI.DragWindow();
-            }
-
-            //    if (Event.current.type == EventType.repaint && GUI.tooltip != _lastTooltip)
-            //    {
-            //        if (_lastTooltip != "" && _controDictionary.ContainsKey(_lastTooltip))
-            //        {
-            //            _controDictionary[_lastTooltip].RaiseEventMouseOut();
-            //        }
-
-            //        if (GUI.tooltip != "" && _controDictionary.ContainsKey(GUI.tooltip))
-            //        {
-            //            _controDictionary[GUI.tooltip].RaiseEventMouseOver();
-            //        }
-
-            //        _lastTooltip = GUI.tooltip;
-            //    }
-        }
-    }
-
-    private void DoWindowLess()
-    {
-
-        if (Style != null)
-        {
-            GUI.BeginGroup(Position, Content, Style);
-        }
-        else
-        {
-            GUI.BeginGroup(Position, Content);
-        }
-
-        DrawChildren();
-
-        GUI.EndGroup();
-
-        if (!Disabled)
-        {
-            if (Event.current.type == EventType.repaint && GUI.tooltip != _lastTooltip)
-            {
-                if (_lastTooltip != "" && _controDictionary.ContainsKey(_lastTooltip))
-                {
-                    _controDictionary[_lastTooltip].RaiseEventMouseOut();
-                }
-
-                if (GUI.tooltip != "" && _controDictionary.ContainsKey(GUI.tooltip))
-                {
-                    _controDictionary[GUI.tooltip].RaiseEventMouseOver();
-                }
-
-                _lastTooltip = GUI.tooltip;
-            }
-        }
-    }
+	public override GUIStyle DefaultStyle
+	{
+		get { return GUI.skin.window; }
+	}
 
 	#endregion
+
+
+	#region Behaviour
+
+	private static int WindowsCount;
+
+	[SerializeField]
+	private bool _draggable = true;
+
+	[SerializeField]
+	private FormModes _formMode = FormModes.Modeless;
+
+	//private string _lastTooltip = "";
+
+	private Rect _viewPosition;
+
+	[SerializeField]
+	private WindowModes _windowMode = WindowModes.Window;
+
+	public FormModes FormMode
+	{
+		get { return _formMode; }
+		set { _formMode = value; }
+	}
+
+	public WindowModes WindowMode
+	{
+		get { return _windowMode; }
+		set { _windowMode = value; }
+	}
+
+	public bool Draggable
+	{
+		get { return _draggable; }
+		set { _draggable = value; }
+	}
+
+	public Size ViewSize
+	{
+		get
+		{
+			if (IsInvalidated)
+				LayoutItself();
+
+			return new Size(_viewPosition.width, _viewPosition.height);
+		}
+	}
+
+	#endregion
+
 
 	#region Data
 
-    private readonly Dictionary<string, BitControl> _controDictionary;
+	//private readonly Dictionary<string, BitControl> _controDictionary = new Dictionary<string, BitControl>();
 
-    public string Text
-    {
-        get { return Content.text; }
-        set { Content.text = value; }
-    }
+	public string Text
+	{
+		get { return Content.text; }
+		set { Content.text = value; }
+	}
 
-    public Texture Image
-    {
-        get { return Content.image; }
-        set { Content.image = value; }
-    }
+	public Texture Image
+	{
+		get { return Content.image; }
+		set { Content.image = value; }
+	}
 
 	#endregion
 
+
 	#region Draw
 
-    public override void DoDraw()
-    {
+	protected override void DoDraw()
+	{
 		GUI.color = Color;
-        if (WindowMode == WindowModes.Window)
-        {
-            if (Style != null)
-            {
-				Position = GUI.Window(_windowId, Position, DoWindow, Content, Style);
-            }
-            else
-            {
-				Position = GUI.Window(_windowId, Position, DoWindow, Content);
-            }
-            if (!Disabled)
-            {
-                if (FormMode == FormModes.Modal || Focus)
-                {
-                    GUI.BringWindowToFront(WindowId);
-                    GUI.FocusWindow(WindowId);
-                }
-            }
-        }
-        else
-        {
-            DoWindowLess();
-        }
-    }
+		if (WindowMode == WindowModes.Window)
+		{
+			Position = GUI.Window(_windowID, Position, DoWindow, Content, Style ?? DefaultStyle);
+
+			if (!Disabled)
+			{
+				if (FormMode == FormModes.Modal || Focus)
+				{
+					GUI.BringWindowToFront(WindowID);
+					GUI.FocusWindow(WindowID);
+				}
+			}
+		}
+		else
+		{
+			DoWindowLess();
+		}
+	}
+
+
+	private void DoWindow(int w)
+	{
+		//DrawTiles(Style ?? Skin.window, true);
+
+		GUIClip.Push(_viewPosition);
+
+		DrawChildren();
+
+		GUIClip.Pop();
+
+		if (Disabled)
+		{
+			GUI.BringWindowToBack(WindowID);
+		}
+		else
+		{
+			if (_draggable)
+			{
+				GUI.DragWindow();
+			}
+
+			//    if (Event.current._type == EventType.repaint && GUI.tooltip != _lastTooltip)
+			//    {
+			//        if (_lastTooltip != "" && _controDictionary.ContainsKey(_lastTooltip))
+			//        {
+			//            _controDictionary[_lastTooltip].RaiseMouseExitEvent();
+			//        }
+
+			//        if (GUI.tooltip != "" && _controDictionary.ContainsKey(GUI.tooltip))
+			//        {
+			//            _controDictionary[GUI.tooltip].RaiseMouseOverEvent();
+			//        }
+
+			//        _lastTooltip = GUI.tooltip;
+			//    }
+		}
+	}
+
+	private void DoWindowLess()
+	{
+		GUIStyle s = Style ?? DefaultStyle;
+
+		if (s != null)
+		{
+			GUI.BeginGroup(Position, Content, s);
+		}
+		else
+		{
+			GUI.BeginGroup(Position, Content);
+		}
+
+		DrawChildren();
+
+		GUI.EndGroup();
+
+		//if (!Disabled)
+		//{
+		//    if (Event.current.type == EventType.repaint && GUI.tooltip != _lastTooltip)
+		//    {
+		//        if (_lastTooltip != "" && _controDictionary.ContainsKey(_lastTooltip))
+		//        {
+		//            _controDictionary[_lastTooltip].RaiseMouseExit();
+		//        }
+
+		//        if (GUI.tooltip != "" && _controDictionary.ContainsKey(GUI.tooltip))
+		//        {
+		//            _controDictionary[GUI.tooltip].RaiseMouseOver();
+		//        }
+
+		//        _lastTooltip = GUI.tooltip;
+		//    }
+		//}
+	}
 
 	#endregion
 
 
 	#region Layout
-	
-    protected override void DoLayout()
-    {
-        if (!MinSize.IsEmpty && Size < MinSize)
-        {
-            float height = Size.Height;
-            float width = Size.Width;
 
-            if (Size.Height < MinSize.Height)
-            {
-                height = MinSize.Height;
-            }
+	protected override void LayoutItself()
+	{
+		base.LayoutItself();
+		CalculateViewRect();
+	}
 
-            if (Size.Width < MinSize.Width)
-            {
-                width = MinSize.Width;
-            }
+	internal override void LayoutChildren()
+	{
+		base.LayoutChildren();
+		CalculateViewRect();
+	}
 
-            Size = new Size(width, height);
-        }
+	private void CalculateViewRect()
+	{
+		GUIStyle s = Style ?? DefaultStyle;
 
-        GUISkin s = Skin;
+		_viewPosition = new Rect
+			(
+			s.padding.left,
+			s.padding.top,
+			Size.Width - s.padding.horizontal,
+			Size.Height - s.padding.vertical
+			);
+	}
 
-        if (s == null)
-            _viewPosition = new Rect(5, 5, Position.width - 10, Position.height - 10);
-        else
-            _viewPosition = new Rect
-                (
-                s.window.padding.left,
-                s.window.padding.top,
-                Size.Width - s.window.padding.horizontal,
-                Size.Height - s.window.padding.vertical
-                );
-    }
-
-    #endregion
+	#endregion
 
 
-    #region TODO
+	#region MonoBehaviour
 
-    //private WindowStates _windowState = WindowStates.Normal;
-    //private StartPositions _startPosition = StartPositions.Manual;
+	public override void Awake()
+	{
+		base.Awake();
+		_windowID = ++WindowsCount;
+	}
 
-    [SerializeField]
-    private Vector2 _maxSize;
-    [SerializeField]
-    private Vector2 _minSize;
+	public override void OnDrawGizmos()
+	{
+		Rect abs = AbsolutePosition;
+		DrawRect(Color.white, abs);
+		GUIStyle s = Style ?? DefaultStyle;
+		DrawRect(Color.gray, new Rect(abs.x + s.padding.left, abs.y + s.padding.top, abs.width - s.padding.left - s.padding.right - 2,
+									  abs.height - s.padding.top - s.padding.bottom - 2));
+	}
 
-
-    public Size MaxSize
-    {
-        get { return new Size(_maxSize.x, _maxSize.y); }
-        set { _maxSize.x = value.Width; _maxSize.y = value.Height; }
-    }
-
-    public Size MinSize
-    {
-        get { return new Size(_minSize.x, _minSize.y); }
-        set { _minSize.x = value.Width; _minSize.y = value.Height; }
-    }
-
-
-
-    #endregion
-    
-    #region Private Methods
-
-    //internal void AddDictionaryControl(Control source)
-    //{
-    //    _controDictionary.Add(source.ID.ToString(), source);
-    //}
-
-    #endregion
-
+	#endregion
 }

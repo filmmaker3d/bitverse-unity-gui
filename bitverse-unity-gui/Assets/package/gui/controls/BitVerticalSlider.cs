@@ -1,14 +1,22 @@
-using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitVerticalSlider : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "verticalslider"; }
+		get { return GUI.skin.verticalSlider; }
+	}
+
+	private GUIStyle _thumbStyle;
+
+	public GUIStyle ThumbStyle
+	{
+		get { return _thumbStyle; }
+		set { _thumbStyle = value; }
 	}
 
 	#endregion
@@ -17,13 +25,13 @@ public class BitVerticalSlider : BitControl
 	#region Behaviour
 
 	[SerializeField]
-	private ValueType _valueType = ValueType.Float;
-
-	[SerializeField]
 	private float _max = 100;
 
 	[SerializeField]
 	private float _min;
+
+	[SerializeField]
+	private ValueType _valueType = ValueType.Float;
 
 	public ValueType ValueType
 	{
@@ -45,6 +53,7 @@ public class BitVerticalSlider : BitControl
 
 	#endregion
 
+
 	#region Data
 
 	[SerializeField]
@@ -56,10 +65,7 @@ public class BitVerticalSlider : BitControl
 		set
 		{
 			_value = value;
-			if (ValueChanged != null)
-			{
-				ValueChanged(this, new ValueChangedEventArgs(_value));
-			}
+			RaiseValueChangedEvent(value);
 		}
 	}
 
@@ -68,32 +74,11 @@ public class BitVerticalSlider : BitControl
 
 	#region Draw
 
-	public override void DoDraw()
+	protected override void DoDraw()
 	{
-		float val;
-
-		if (ValueType == ValueType.Float)
-		{
-			if (Style != null)
-			{
-				val = GUI.VerticalSlider(Position, Value, Max, Min, Style, Style);
-			}
-			else
-			{
-				val = GUI.VerticalSlider(Position, Value, Max, Min);
-			}
-		}
-		else
-		{
-			if (Style != null)
-			{
-				val = GUI.VerticalSlider(Position, (int) Value, Max, Min, Style, Style);
-			}
-			else
-			{
-				val = GUI.VerticalSlider(Position, (int) Value, Max, Min);
-			}
-		}
+		float val = ValueType == ValueType.Integer
+		            	? GUI.VerticalSlider(Position, (int) Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.verticalSliderThumb)
+		            	: GUI.VerticalSlider(Position, Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.verticalSliderThumb);
 
 		if (val != Value)
 		{
@@ -107,6 +92,15 @@ public class BitVerticalSlider : BitControl
 	#region Events
 
 	public event ValueChangedEventHandler ValueChanged;
+
+	private void RaiseValueChangedEvent(float value)
+	{
+		if (ValueChanged == null)
+		{
+			return;
+		}
+		ValueChanged(this, new ValueChangedEventArgs(value));
+	}
 
 	#endregion
 }

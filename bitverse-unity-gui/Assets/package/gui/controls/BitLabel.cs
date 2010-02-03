@@ -5,47 +5,19 @@ public class BitLabel : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "label"; }
+		get { return GUI.skin.label; }
 	}
 
 	#endregion
 
-
-	#region Data
-	
-    public string Text
-    {
-        get { return Content.text; }
-        set { Content.text = value; }
-    }
-
-    public Texture Image
-    {
-        get { return Content.image; }
-        set { Content.image = value; }
-    }
-
-	#endregion
-
-
 	#region Draw
 
-    public override void DoDraw()
-    {
-        if (Style != null)
-        {
-            GUI.Label(Position, Content, Style);
-        }
-        else
-        {
-            GUI.Label(Position, Content);
-        }
-    }
+	protected override void DoDraw()
+	{
+		GUI.Label(Position, Content, Style ?? DefaultStyle);
+	}
 
 	#endregion
 }
-
-
-

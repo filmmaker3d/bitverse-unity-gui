@@ -1,14 +1,14 @@
-﻿using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitToggle : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "toggle"; }
+		get { return GUI.skin.toggle; }
 	}
 
 	#endregion
@@ -16,63 +16,61 @@ public class BitToggle : BitControl
 
 	#region Data
 
-    [SerializeField]
-    private bool _value;
+	[SerializeField]
+	private bool _value;
 
-    public string Text
-    {
-        get { return Content.text; }
-        set { Content.text = value; }
-    }
+	public string Text
+	{
+		get { return Content.text; }
+		set { Content.text = value; }
+	}
 
-    public Texture Image
-    {
-        get { return Content.image; }
-        set { Content.image = value; }
-    }
+	public Texture Image
+	{
+		get { return Content.image; }
+		set { Content.image = value; }
+	}
 
-    public bool Value
-    {
-        get { return _value; }
-        set
-        {
-            _value = value;
-            if (ValueChanged != null)
-				ValueChanged(this, new ValueChangedEventArgs(_value));
-        }
-    }
-    
+	public bool Value
+	{
+		get { return _value; }
+		set
+		{
+			_value = value;
+			RaiseValueChangedEvent(value);
+		}
+	}
+
 	#endregion
 
 
 	#region Draw
 
-    public override void DoDraw()
-    {
-        bool val;
+	protected override void DoDraw()
+	{
+		bool val = GUI.Toggle(Position, Value, Content, Style ?? DefaultStyle);
 
-        if (Style != null)
-        {
-            val = GUI.Toggle(Position, Value, Content, Style);
-        }
-        else
-        {
-            val = GUI.Toggle(Position, Value, Content);
-        }
+		if (val != Value)
+		{
+			Value = val;
+		}
+	}
 
-        if (val != Value)
-        {
-            Value = val;
-        }
-    }
-    
 	#endregion
 
 
 	#region Events
 
-    public event ValueChangedEventHandler ValueChanged;
+	public event ValueChangedEventHandler ValueChanged;
+
+	private void RaiseValueChangedEvent(bool value)
+	{
+		if (ValueChanged == null)
+		{
+			return;
+		}
+		ValueChanged(this, new ValueChangedEventArgs(value));
+	}
 
 	#endregion
 }
-

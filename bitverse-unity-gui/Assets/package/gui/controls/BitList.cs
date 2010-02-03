@@ -1,74 +1,67 @@
-﻿using UnityEngine;
-using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
-public class BitList : BitControl
+public class BitList : AbstractBitList
 {
+	#region Draw
 
-	#region Appearance
-
-    public override string DefaultStyleName
+	protected override void PopulateAndDraw(BitControl listRenderer, IBitListModel model, IBitListPopulator populator)
 	{
-		get { return "list"; }
+		GUIStyle rendererStyle = ListRenderer.Style ?? ListRenderer.DefaultStyle;
+		GUIStyle scrollStyle = Skin.scrollView;
+
+		float xpos = rendererStyle.margin.left + scrollStyle.padding.left + scrollStyle.contentOffset.x;
+		float ypos = scrollStyle.padding.top + scrollStyle.contentOffset.y;
+		float width = (rendererStyle.fixedWidth <= 0 ? _scrollView.width - rendererStyle.margin.horizontal : rendererStyle.fixedWidth) - scrollStyle.contentOffset.x;
+		float height = rendererStyle.fixedHeight <= 0 ? listRenderer.Size.Height : rendererStyle.fixedHeight;
+
+		for (int i = 0, count = model.Count; i < count; i++)
+		{
+			Rect itemPosition = new Rect(xpos, rendererStyle.margin.top + ypos, width, height);
+			ypos += itemPosition.height + rendererStyle.margin.vertical;
+
+			if (itemPosition.y > _scrollRect.height + _scrollPosition.y)
+			{
+				ypos += (itemPosition.height + rendererStyle.margin.vertical) * (count - i - 1);
+				break;
+			}
+
+			if (itemPosition.yMax < _scrollPosition.y)
+			{
+				continue;
+			}
+
+			object data = model[i];
+			bool selected = CheckSelection(data, itemPosition);
+			populator.Populate(listRenderer, data, i, selected);
+			//listRenderer.Size = new Size(itemPosition.width, itemPosition.height);
+			//listRenderer.Location = new Point(itemPosition.x, itemPosition.y);
+			//listRenderer.Draw();
+			rendererStyle.Draw(itemPosition, listRenderer.Content, itemPosition.Contains(Event.current.mousePosition), true, selected, false);
+		}
+
+		_showScroll = (ypos > _scrollRect.height);
+		_scrollView.height = ypos + scrollStyle.contentOffset.y;
 	}
 
 	#endregion
-	
-    protected BitControl GetRenderer()
-    {
-        for (int i = 0, count = transform.childCount; i < count; i++)
-        {
-            Transform ch = transform.GetChild(i);
-            BitControl c = (BitControl)ch.GetComponent(typeof(BitControl));
-			if (c != null)
-				return c;
-        }
-        return null;
-    }
 
 
-    public override void DoDraw()
-    {
-        object[] arr = new object[] { "orange", "apple", "lemon" };
-        BitControl r = GetRenderer();
+	#region Editor
 
-        if (r == null)
-            return;
+	protected override void DrawInEditMode()
+	{
+		if (ListRenderer == null)
+		{
+			return;
+		}
+		GUIStyle ss = Skin.scrollView;
+		GUIStyle rs = ListRenderer.Style ?? ListRenderer.DefaultStyle;
+		//ListRenderer.Size = new Size(_scrollView.width - rs.margin.horizontal, ListRenderer.Size.Height);
+		//ListRenderer.Location = new Point(rs.margin.left + ss.padding.left, rs.margin.top);
+		rs.Draw(new Rect(rs.margin.left + ss.padding.left, rs.margin.top, _scrollView.width - rs.margin.horizontal, ListRenderer.Size.Height), ListRenderer.Content, false, true, false, false);
+		//ListRenderer.Draw();
+	}
 
-		Rect cp = Position;
-        Rect rp = r.Position;
-        if (Style != null)
-        {
-            GUI.BeginGroup(Position, Content, Style);
-        }
-        else
-        {
-            GUI.BeginGroup(Position, Content);
-            GUI.Box(new Rect(0, 0, cp.width, cp.height), Content);
-        }
-        for (int i = 0, s = arr.Length; i < s; i++)
-        {
-            Rect p = rp;
-            p.y = i * p.height;
-            //p.width = cp.width;
-            r.Position = new Rect(0, 0, p.width, p.height);
-            GUI.BeginGroup(p);
-            r.Content.text = arr[i].ToString();
-            if (GUI.Button(r.Position, "", new GUIStyle()))
-            {
-                Debug.Log("Bla");
-            }
-            r.Draw();
-
-
-            //int x = GUIUtility.GetControlID(i, FocusType.Keyboard, p);
-            //EventType t = Event.current.GetTypeForControl(x);
-            //if (t != EventType.Repaint && t != EventType.Layout && t != EventType.ignore)
-            //    Debug.Log(x + " " + t);
-            GUI.EndGroup();
-        }
-        GUI.EndGroup();
-        r.Position = rp;
-    }
-
+	#endregion
 }

@@ -1,14 +1,22 @@
-﻿using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitHorizontalSlider : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "horizontalslider"; }
+		get { return GUI.skin.horizontalSlider; }
+	}
+
+	private GUIStyle _thumbStyle;
+
+	public GUIStyle ThumbStyle
+	{
+		get { return _thumbStyle; }
+		set { _thumbStyle = value; }
 	}
 
 	#endregion
@@ -16,97 +24,83 @@ public class BitHorizontalSlider : BitControl
 
 	#region Behaviour
 
-    [SerializeField]
-    private ValueType _valueType = ValueType.Float;
-    
-    [SerializeField]
-    private float _max = 100;
-    
-    [SerializeField]
-    private float _min;
+	[SerializeField]
+	private float _max = 100;
 
+	[SerializeField]
+	private float _min;
 
-    public ValueType ValueType
-    {
-        get { return _valueType; }
-        set { _valueType = value; }
-    }
+	[SerializeField]
+	private ValueType _valueType = ValueType.Float;
 
-    public float Max
-    {
-        get { return _max; }
-        set { _max = value; }
-    }
+	public ValueType ValueType
+	{
+		get { return _valueType; }
+		set { _valueType = value; }
+	}
 
-    public float Min
-    {
-        get { return _min; }
-        set { _min = value; }
-    }
+	public float Max
+	{
+		get { return _max; }
+		set { _max = value; }
+	}
+
+	public float Min
+	{
+		get { return _min; }
+		set { _min = value; }
+	}
+
 	#endregion
-	
+
+
 	#region Data
 
-    [SerializeField]
-    private float _value;
-    
+	[SerializeField]
+	private float _value;
+
 	public float Value
-    {
-        get { return _value; }
-        set
-        {
-            _value = value;
-            if (ValueChanged != null)
-            {
-                ValueChanged(this, new ValueChangedEventArgs(_value));
-            }
-        }
-    }
-	
+	{
+		get { return _value; }
+		set
+		{
+			_value = value;
+			RaiseValueChangedEvent(value);
+		}
+	}
+
 	#endregion
 
 
 	#region Draw
 
-    public override void DoDraw()
-    {
-        float val;
+	protected override void DoDraw()
+	{
+		float val = ValueType == ValueType.Integer
+						? GUI.HorizontalSlider(Position, (int)Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.horizontalSliderThumb)
+						: GUI.HorizontalSlider(Position, Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.horizontalSliderThumb);
 
-        if (ValueType == ValueType.Float)
-        {
-            if (Style != null)
-            {
-                val = GUI.HorizontalSlider(Position, Value, Min, Max, Style, Style);
-            }
-            else
-            {
-                val = GUI.HorizontalSlider(Position, Value, Min, Max);
-            }
-        }
-        else
-        {
-            if (Style != null)
-            {
-                val = GUI.HorizontalSlider(Position, (int)Value, Min, Max, Style, Style);
-            }
-            else
-            {
-                val = GUI.HorizontalSlider(Position, (int)Value, Min, Max);
-            }
-        }
+		if (val != Value)
+		{
+			Value = val;
+		}
+	}
 
-        if (val != Value)
-        {
-            Value = val;
-        }
-    }
-
-	#endregion]
+	#endregion
 
 
 	#region Events
 
 	public event ValueChangedEventHandler ValueChanged;
+
+	private void RaiseValueChangedEvent(float value)
+	{
+		if (ValueChanged == null)
+		{
+			return;
+		}
+		ValueChanged(this, new ValueChangedEventArgs(value));
+	}
 
 	#endregion
 }

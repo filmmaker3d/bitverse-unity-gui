@@ -1,93 +1,74 @@
-﻿using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitPasswordField : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "textfield"; }
+		get { return GUI.skin.textField; }
 	}
 
 	#endregion
 
+
 	#region Behaviour
 
-    [SerializeField]
-    private int _maxLenght = -1;
-    
-    public int MaxLenght
-    {
-        get { return _maxLenght; }
-        set { _maxLenght = value; }
-    }
+	[SerializeField]
+	private int _maxLenght = -1;
+
+	public int MaxLenght
+	{
+		get { return _maxLenght; }
+		set { _maxLenght = value; }
+	}
 
 	#endregion
 
 
 	#region Data
 
-    [SerializeField]
-    private char _maskChar = '*';
+	// TODO expose this
+	[SerializeField]
+	private char _maskChar = '*';
 
-    public string Text
-    {
-        get { return Content.text; }
-        set
-        {
-            Content.text = value;
-			if (TextChanged != null)
-				TextChanged(this, new ValueChangedEventArgs(Text));
-        }
-    }
+	public string Text
+	{
+		get { return Content.text; }
+		set
+		{
+			Content.text = value;
+			RaiseValueChangedEvent(value);
+		}
+	}
 
 
-
-    public char MaskChar
-    {
-        get { return _maskChar; }
-        set { _maskChar = value; }
-    }
+	public char MaskChar
+	{
+		get { return _maskChar; }
+		set { _maskChar = value; }
+	}
 
 	#endregion
 
 
 	#region Draw
 
-    public override void DoDraw()
-    {
-        string t;
+	protected override void DoDraw()
+	{
+		string t;
 
-        if (Style != null)
-        {
-            if (MaxLenght == -1)
-            {
-                t = GUI.PasswordField(Position, Text, MaskChar, Style);
-            }
-            else
-            {
-                t = GUI.PasswordField(Position, Text, MaskChar, MaxLenght, Style);
-            }
-        }
-        else
-        {
-            if (MaxLenght == -1)
-            {
-                t = GUI.PasswordField(Position, Text, MaskChar);
-            }
-            else
-            {
-                t = GUI.PasswordField(Position, Text, MaskChar, MaxLenght);
-            }
-        }
+		t = MaxLenght < 0
+		    	? GUI.PasswordField(Position, Text, MaskChar, Style ?? DefaultStyle)
+		    	: GUI.PasswordField(Position, Text, MaskChar, MaxLenght, Style ?? DefaultStyle);
 
-        if (Text != t)
-        {
-            Text = t;
-        }
-    }
+		if (Text != t)
+		{
+			Text = t;
+		}
+	}
 
 	#endregion
 
@@ -95,6 +76,15 @@ public class BitPasswordField : BitControl
 	#region Events
 
 	public event ValueChangedEventHandler TextChanged;
+
+	private void RaiseValueChangedEvent(string text)
+	{
+		if (TextChanged == null)
+		{
+			return;
+		}
+		TextChanged(this, new ValueChangedEventArgs(text));
+	}
 
 	#endregion
 }

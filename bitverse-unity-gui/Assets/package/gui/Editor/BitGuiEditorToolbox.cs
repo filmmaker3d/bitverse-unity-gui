@@ -1,38 +1,38 @@
 using System;
 using System.Collections.Generic;
-using Bitverse.Unity.Gui;
 using UnityEditor;
 using UnityEngine;
 using System.Text.RegularExpressions;
 
-public class BitGuiEditorToolbox : EditorWindow
+
+internal class BitGuiEditorToolbox : EditorWindow
 {
-	[MenuItem("Window/Bitverse GUI Toolbar")]
+	[MenuItem("Window/BitGUI Toolbox")]
 	public static void MenuOption()
 	{
 		EditorWindow window = GetWindow(typeof(BitGuiEditorToolbox));
 		window.autoRepaintOnSceneChange = true;
-		window.title = "BitGUI Toolbar";
+		window.title = "BitGUI Toolbox";
 		window.Show();
 	}
 
 
 	private Vector2 _scrollPos;
 	private bool _componentsFoldout = true;
-	private bool _optionsFoldout = true;
+	//private bool _optionsFoldout = true;
 	private bool _commonFoldout = true;
 	private bool _containersFoldout = true;
 	private bool _scrollFoldout;
 	private bool _advancedFoldout;
 
-	private void BeginGroup()
+	private static void BeginGroup()
 	{
 		GUILayout.BeginHorizontal();
 		GUILayout.Box("", GUIStyle.none, GUILayout.Width(20f));
 		GUILayout.BeginVertical();
 	}
 
-	private void EndGroup()
+	private static void EndGroup()
 	{
 		GUILayout.EndVertical();
 		GUILayout.EndHorizontal();
@@ -42,102 +42,113 @@ public class BitGuiEditorToolbox : EditorWindow
 	{
 		_scrollPos = GUILayout.BeginScrollView(_scrollPos);
 		DrawControls();
-		DrawOptions();
+		//DrawOptions();
 		GUILayout.EndScrollView();
 	}
 
-	public void DrawControls()
+	private void DrawControls()
 	{
 		_componentsFoldout = EditorGUILayout.Foldout(_componentsFoldout, "Controls");
-		if (_componentsFoldout)
+		if (!_componentsFoldout)
+		{
+			return;
+		}
+		BeginGroup();
+		_commonFoldout = EditorGUILayout.Foldout(_commonFoldout, "Common Controls");
+		if (_commonFoldout)
 		{
 			BeginGroup();
-			_commonFoldout = EditorGUILayout.Foldout(_commonFoldout, "Common Controls");
-			if (_commonFoldout)
-			{
-				BeginGroup();
 
-				AddComponent(typeof(BitLabel), true);
-				AddComponent(typeof(BitButton), true);
-				AddComponent(typeof(BitRepeatButton), true);
-				AddComponent(typeof(BitToggle), true);
-				AddComponent(typeof(BitTextField), false);
-				AddComponent(typeof(BitTextArea), false);
-				AddComponent(typeof(BitPasswordField), false);
-				AddComponent(typeof(BitHorizontalSlider), false);
-				AddComponent(typeof(BitVerticalSlider), false);
-				AddComponent(typeof(BitList), true);
-				AddComponent(typeof(BitBox), false);
-				//AddComponent(typeof(BitMenu));
-				//AddComponent(typeof(BitMenuItem));
+			AddComponent(typeof(BitLabel), true);
+			AddComponent(typeof(BitButton), true);
+			AddComponent(typeof(BitRepeatButton), true);
+			AddComponent(typeof(BitToggle), true);
+			AddComponent(typeof(BitTextField), false);
+			AddComponent(typeof(BitTextArea), false);
+			AddComponent(typeof(BitPasswordField), false);
+			AddComponent(typeof(BitHorizontalSlider), false);
+			AddComponent(typeof(BitVerticalSlider), false);
+			AddComponent(typeof(BitBox), false);
+			AddComponent(typeof(BitList), false);
+			AddComponent(typeof(BitGridList), false);
+			AddComponent(typeof(BitDropDown), false);
+			AddSpecialComponent(typeof(BitPopup), false);
+			//AddComponent(typeof(BitMenu), false);
+			//AddComponent(typeof(BitMenuItem));
 
-				EndGroup();
-			}
-
-			_containersFoldout = EditorGUILayout.Foldout(_containersFoldout, "Containers");
-			if (_containersFoldout)
-			{
-				BeginGroup();
-				AddSpecialComponent(typeof(BitWindow), true);
-				AddSpecialComponent(typeof(BitForm), false);
-				AddComponent(typeof(BitGroup), false);
-				EndGroup();
-			}
-
-			_scrollFoldout = EditorGUILayout.Foldout(_scrollFoldout, "Scroll");
-			if (_scrollFoldout)
-			{
-				BeginGroup();
-				AddComponent(typeof(BitScrollView), false);
-				AddComponent(typeof(BitVerticalScrollbar), false);
-				AddComponent(typeof(BitHorizontalScrollbar), false);
-				EndGroup();
-			}
-
-			_advancedFoldout = EditorGUILayout.Foldout(_advancedFoldout, "Advanced");
-			if (_advancedFoldout)
-			{
-				BeginGroup();
-				AddComponent(typeof(BitDrawTexture), false);
-				EndGroup();
-			}
 			EndGroup();
 		}
-	}
-	
-	private void DrawOptions()
-	{
-		_optionsFoldout = EditorGUILayout.Foldout(_optionsFoldout, "Options");
-		if (_optionsFoldout)
+
+		_containersFoldout = EditorGUILayout.Foldout(_containersFoldout, "Containers");
+		if (_containersFoldout)
 		{
 			BeginGroup();
-			BitControlEditor.SnapToGrid = EditorGUILayout.BeginToggleGroup("Snap to grid", BitControlEditor.SnapToGrid);
-			if (BitControlEditor.SnapToGrid)
-			{
-				BitControlEditor.Grid = EditorGUILayout.Vector2Field("Grid", BitControlEditor.Grid);
-			}
-
-			BitControlEditor.DrawPadding = GUILayout.Toggle(BitControlEditor.DrawPadding, "Draw Padding Rect");
-			BitControlEditor.DrawMargin = GUILayout.Toggle(BitControlEditor.DrawMargin, "Draw Margin Rect");
+			AddSpecialComponent(typeof(BitWindow), true);
+			AddSpecialComponent(typeof(BitForm), false);
+			AddComponent(typeof(BitGroup), false);
 			EndGroup();
 		}
+
+		_scrollFoldout = EditorGUILayout.Foldout(_scrollFoldout, "Scroll");
+		if (_scrollFoldout)
+		{
+			BeginGroup();
+			AddComponent(typeof(BitScrollView), false);
+			AddComponent(typeof(BitVerticalScrollbar), false);
+			AddComponent(typeof(BitHorizontalScrollbar), false);
+			EndGroup();
+		}
+
+		_advancedFoldout = EditorGUILayout.Foldout(_advancedFoldout, "Advanced");
+		if (_advancedFoldout)
+		{
+			BeginGroup();
+			AddComponent(typeof(BitDrawTexture), false);
+			EndGroup();
+		}
+		EndGroup();
 	}
-	
+
+	//private void DrawOptions()
+	//{
+	//    _optionsFoldout = EditorGUILayout.Foldout(_optionsFoldout, "Options");
+	//    if (_optionsFoldout)
+	//    {
+	//        BeginGroup();
+	//        BitControlEditor.SnapToGrid = EditorGUILayout.BeginToggleGroup("Snap to grid", BitControlEditor.SnapToGrid);
+	//        if (BitControlEditor.SnapToGrid)
+	//        {
+	//            BitControlEditor.Grid = EditorGUILayout.Vector2Field("Grid", BitControlEditor.Grid);
+	//        }
+
+	//        BitControlEditor.DrawPadding = GUILayout.Toggle(BitControlEditor.DrawPadding, "Draw Padding Rect");
+	//        BitControlEditor.DrawMargin = GUILayout.Toggle(BitControlEditor.DrawMargin, "Draw Margin Rect");
+	//        EndGroup();
+	//    }
+	//}
+
 	public static Type ControlTypeToCreate;
-	private static bool _generateDefaultContent;
-	
+	private static bool GenerateDefaultContent;
+
 	private static void AddComponent(Type controlType, bool generateDefaultContent)
 	{
 		GUILayout.BeginHorizontal();
-
-		if (GUILayout.Toggle(ControlTypeToCreate == controlType, DefaultName(controlType)))
-		{
-			ControlTypeToCreate = controlType;
-			_generateDefaultContent = generateDefaultContent;
-		}
-
+		bool toggle = GUILayout.Toggle(ControlTypeToCreate == controlType, DefaultName(controlType));
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
+
+		if (!GUI.changed)
+			return;
+		if (toggle)
+		{
+			ControlTypeToCreate = controlType;
+			GenerateDefaultContent = generateDefaultContent;
+		}
+		else
+		{
+			ControlTypeToCreate = null;
+		}
+		GUI.changed = false;
 	}
 
 	private static void AddSpecialComponent(Type controlType, bool generateDefaultContent)
@@ -151,69 +162,66 @@ public class BitGuiEditorToolbox : EditorWindow
 				string name = GenerateSecureName(controlType);
 				BitContainer parent = (BitContainer)Selection.activeTransform.GetComponent(typeof(BitContainer));
 
+				BitControl control = null;
 				if (parent != null)
 				{
-					BitControl c = parent.AddControl(controlType, name);
+					control = parent.AddControl(controlType, name);
 					if (generateDefaultContent)
 					{
-						c.Content.text = name;
+						control.Content.text = name;
 					}
-                    Vector2 sz = GUI.skin.GetStyle(c.DefaultStyleName).CalcSize(c.Content);
-                    c.Size = new Size(Math.Max(80, sz.x), Math.Max(20, sz.y));
-                    Selection.activeTransform = c.transform;
+					Selection.activeTransform = control.transform;
 				}
 				else
 				{
 					GameObject go = new GameObject();
-					Component control = go.AddComponent(controlType);
+					Component c = go.AddComponent(controlType);
 					go.transform.parent = Selection.activeTransform;
 					go.name = name;
-					if (control is BitControl)
+					if (c is BitControl)
 					{
-						BitControl c = ((BitControl)control);
-						//c.InitialSetup();
-
-                        if (generateDefaultContent)
+						control = ((BitControl)c);
+						if (generateDefaultContent)
 						{
-							c.Content.text = name;
+							control.Content.text = name;
 						}
-                        Vector2 sz = GUI.skin.GetStyle(c.DefaultStyleName).CalcSize(c.Content);
-                        c.Size = new Size(Math.Max(80, sz.x), Math.Max(20, sz.y));
-                    }
-                    Selection.activeGameObject = go;
-                }
-                AddControlCount(controlType);
+					}
+					Selection.activeGameObject = go;
+				}
+				AddControlCount(controlType);
+				BitControlEditor.AddControl(control);
 			}
 			else
 			{
-				EditorUtility.DisplayDialog("Error", "You must select a parent on Hierarchy panel to add this Control.", "OK");
+				EditorApplication.Beep();
+				EditorUtility.DisplayDialog("Error", "You must select a parent on Hierarchy panel to add this Control.",
+											"OK");
 			}
 		}
 		GUILayout.FlexibleSpace();
 		GUILayout.EndHorizontal();
 	}
 
-	public static void CreateComponent(BitContainer parent, Point mousePosition)
+	public static BitControl CreateComponent(BitContainer parent, Vector2 mousePosition)
 	{
-		if (ControlTypeToCreate != null)
+		if (ControlTypeToCreate == null || parent == null)
 		{
-			string name = GenerateSecureName(ControlTypeToCreate);
-			if (parent != null)
-			{
-				BitControl c = parent.AddControl(ControlTypeToCreate, name);
-				Rect ap = c.AbsolutePosition;
-				c.AbsolutePosition = new Rect(mousePosition.X, mousePosition.Y, ap.width, ap.height);
-				if (_generateDefaultContent)
-				{
-					c.Content.text = name;
-				}
-                Vector2 sz = GUI.skin.GetStyle(c.DefaultStyleName).CalcSize(c.Content);
-                c.Size = new Size(Math.Max(80, sz.x), Math.Max(20, sz.y));
-                c.Size = new Size(sz.x, sz.y); 
-                Selection.activeTransform = c.transform;
-			}
-			AddControlCount(ControlTypeToCreate);
+			return null;
 		}
+
+		string name = GenerateSecureName(ControlTypeToCreate);
+		BitControl c = parent.AddControl(ControlTypeToCreate, name);
+		Rect ap = c.AbsolutePosition;
+		c.AbsolutePosition = new Rect(mousePosition.x, mousePosition.y, ap.width, ap.height);
+		if (GenerateDefaultContent)
+		{
+			c.Content.text = name;
+		}
+		Selection.activeTransform = c.transform;
+
+		AddControlCount(ControlTypeToCreate);
+
+		return c;
 	}
 
 	private static readonly Dictionary<Type, int> ControlsCount = new Dictionary<Type, int>();

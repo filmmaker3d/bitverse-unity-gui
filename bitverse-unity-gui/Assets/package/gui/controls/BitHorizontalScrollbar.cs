@@ -1,113 +1,92 @@
-﻿using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitHorizontalScrollbar : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "horizontalscrollbar"; }
+		get { return GUI.skin.horizontalScrollbar; }
 	}
 
 	#endregion
 
 
 	#region Behaviour
-	
-    [SerializeField]
-    private float _visibleSize;
-    
-    [SerializeField]
-    private ValueType _valueType = ValueType.Float;
 
-    public float VisibleSize
-    {
-        get { return _visibleSize; }
-        set { _visibleSize = value; }
-    }
+	[SerializeField]
+	private ValueType _valueType = ValueType.Float;
 
-    public ValueType ValueType
-    {
-        get { return _valueType; }
-        set { _valueType = value; }
-    }
+	[SerializeField]
+	private float _visibleSize;
+
+	public float VisibleSize
+	{
+		get { return _visibleSize; }
+		set { _visibleSize = value; }
+	}
+
+	public ValueType ValueType
+	{
+		get { return _valueType; }
+		set { _valueType = value; }
+	}
 
 	#endregion
 
 
 	#region Data
 
-    [SerializeField]
-    private float _value;
-    
-    [SerializeField]
-    private float _right = 100;
-    
-    [SerializeField]
-    private float _left;
+	[SerializeField]
+	private float _left;
 
-    public float Value
-    {
-        get { return _value; }
-        set
-        {
-            _value = value;
-			if (ValueChanged != null)
-				ValueChanged(this, new ValueChangedEventArgs(_value));
-        }
-    }
+	[SerializeField]
+	private float _right = 100;
+
+	[SerializeField]
+	private float _value;
 
 
-    public float RightValue
-    {
-        get { return _right; }
-        set { _right = value; }
-    }
+	public float Value
+	{
+		get { return _value; }
+		set
+		{
+			_value = value;
+			RaiseValueChangedEvent(value);
+		}
+	}
 
-    public float LeftValue
-    {
-        get { return _left; }
-        set { _left = value; }
-    }
+	public float RightValue
+	{
+		get { return _right; }
+		set { _right = value; }
+	}
+
+	public float LeftValue
+	{
+		get { return _left; }
+		set { _left = value; }
+	}
 
 	#endregion
 
 
 	#region Draw
 
-    public override void DoDraw()
-    {
-        float val;
-        if (ValueType == ValueType.Float)
-        {
-            if (Style != null)
-            {
-				val = GUI.HorizontalScrollbar(Position, Value, VisibleSize, LeftValue, RightValue, Style);
-            }
-            else
-            {
-				val = GUI.HorizontalScrollbar(Position, Value, VisibleSize, LeftValue, RightValue);
-            }
-        }
-        else
-        {
-            if (Style != null)
-            {
-				val = GUI.HorizontalScrollbar(Position, (int) Value, VisibleSize, LeftValue, RightValue, Style);
-            }
-            else
-            {
-				val = GUI.HorizontalScrollbar(Position, (int) Value, VisibleSize, LeftValue, RightValue);
-            }
-        }
+	protected override void DoDraw()
+	{
+		float val = ValueType == ValueType.Float
+						? GUI.HorizontalScrollbar(Position, Value, VisibleSize, LeftValue, RightValue, Style ?? DefaultStyle)
+						: GUI.HorizontalScrollbar(Position, (int)Value, VisibleSize, LeftValue, RightValue, Style ?? DefaultStyle);
 
-        if (val != Value)
-        {
-            Value = val;
-        }
-    }
+		if (val != Value)
+		{
+			Value = val;
+		}
+	}
 
 	#endregion
 
@@ -115,6 +94,14 @@ public class BitHorizontalScrollbar : BitControl
 	#region Events
 
 	public event ValueChangedEventHandler ValueChanged;
+
+	private void RaiseValueChangedEvent(float value)
+	{
+		if (ValueChanged != null)
+		{
+			ValueChanged(this, new ValueChangedEventArgs(value));
+		}
+	}
 
 	#endregion
 }

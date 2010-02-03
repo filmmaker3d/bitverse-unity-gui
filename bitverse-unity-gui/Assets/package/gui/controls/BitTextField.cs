@@ -1,14 +1,14 @@
-using UnityEngine;
 using Bitverse.Unity.Gui;
+using UnityEngine;
 
 
 public class BitTextField : BitControl
 {
 	#region Appearance
 
-    public override string DefaultStyleName
+	public override GUIStyle DefaultStyle
 	{
-		get { return "textfield"; }
+		get { return GUI.skin.textField; }
 	}
 
 	#endregion
@@ -16,8 +16,8 @@ public class BitTextField : BitControl
 
 	#region Behaviour
 
-    [SerializeField]
-    private int _maxLenght = -1;
+	[SerializeField]
+	private int _maxLenght = -1;
 
 	public int MaxLenght
 	{
@@ -30,53 +30,31 @@ public class BitTextField : BitControl
 
 	#region Data
 
-    public string Text
-    {
-        get { return Content.text; }
-        set
-        {
-            Content.text = value;
-			if (TextChanged != null)
-				TextChanged(this, new ValueChangedEventArgs(Content.text));
-        }
-    }
+	public string Text
+	{
+		get { return Content.text; }
+		set
+		{
+			Content.text = value;
+			RaiseValueChangedEvent(value);
+		}
+	}
 
 	#endregion
 
 
 	#region Draw
 
-    public override void DoDraw()
-    {
-        string t;
+	protected override void DoDraw()
+	{
+		string t = MaxLenght < 0
+		           	? GUI.TextField(Position, Text, Style ?? DefaultStyle)
+		           	: GUI.TextField(Position, Text, MaxLenght, Style ?? DefaultStyle);
 
-        if (Style != null)
-        {
-            if (MaxLenght == -1)
-            {
-                t = GUI.TextField(Position, Text, Style);
-            }
-            else
-            {
-                t = GUI.TextField(Position, Text, MaxLenght, Style);
-            }
-        }
-        else
-        {
-            if (MaxLenght == -1)
-            {
-                t = GUI.TextField(Position, Text);
-            }
-            else
-            {
-                t = GUI.TextField(Position, Text, MaxLenght);
-            }
-        }
-
-        if (Text != t)
-        {
-            Text = t;
-        }
+		if (Text != t)
+		{
+			Text = t;
+		}
 	}
 
 	#endregion
@@ -85,6 +63,15 @@ public class BitTextField : BitControl
 	#region Events
 
 	public event ValueChangedEventHandler TextChanged;
+
+	private void RaiseValueChangedEvent(string text)
+	{
+		if (TextChanged == null)
+		{
+			return;
+		}
+		TextChanged(this, new ValueChangedEventArgs(text));
+	}
 
 	#endregion
 }
