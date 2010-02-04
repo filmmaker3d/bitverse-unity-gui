@@ -75,9 +75,9 @@ public abstract class BitControl : MonoBehaviour
 			if (!string.IsNullOrEmpty(_styleName))
 			{
 				GUISkin s = Skin;
-				if (s != null && s.styles != null)
+				if (s != null)
 				{
-					return s.styles[_styleName] as GUIStyle;
+					return s.FindStyle(_styleName);
 				}
 			}
 			return null;
@@ -1016,7 +1016,7 @@ public abstract class BitControl : MonoBehaviour
 
 	public virtual void Awake()
 	{
-		//Debug.Log("awakening " + name);
+		//Debug.Log("&&& awakening " + name);
 		if (Anchor == -1)
 		{
 			Anchor = AnchorStyles.Top | AnchorStyles.Left;

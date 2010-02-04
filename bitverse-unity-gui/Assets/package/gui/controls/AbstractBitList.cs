@@ -106,8 +106,6 @@ public abstract class AbstractBitList : BitContainer, ISelectableControl<object>
 
 	#region Draw
 
-	private bool _firstDraw = true;
-
 	private float _scrollHorizontalPadding;
 
 	private void BeforeDraw(GUIStyle listStyle, bool showScroll)
@@ -177,11 +175,6 @@ public abstract class AbstractBitList : BitContainer, ISelectableControl<object>
 			return;
 		}
 
-		if (!GUI.changed && !_firstDraw)
-		{
-			_firstDraw = false;
-			return;
-		}
 		BitControl listRenderer = ListRenderer;
 
 		if (listRenderer == null)

@@ -11,7 +11,8 @@ public class BitDropDown : BitControl
 		get
 		{
 			GUISkin s = Skin;
-			return s != null && s.styles != null ? (GUIStyle)s.styles["dropdown"] : base.DefaultStyle;
+			GUIStyle result = s != null ? s.FindStyle("dropdown") : base.DefaultStyle;
+			return result ?? base.DefaultStyle;
 		}
 	}
 

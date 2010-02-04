@@ -1,97 +1,97 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Irrelevant</RootNamespace>
-    <AssemblyName>Irrelvant</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+	<ProductVersion>9.0.21022</ProductVersion>
+	<SchemaVersion>2.0</SchemaVersion>
+	<ProjectGuid>{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}</ProjectGuid>
+	<OutputType>Library</OutputType>
+	<AppDesignerFolder>Properties</AppDesignerFolder>
+	<RootNamespace>Irrelevant</RootNamespace>
+	<AssemblyName>Irrelvant</AssemblyName>
+	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+	<FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>Temp\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+	<DebugSymbols>true</DebugSymbols>
+	<DebugType>full</DebugType>
+	<Optimize>false</Optimize>
+	<OutputPath>Temp\bin\Debug\</OutputPath>
+	<DefineConstants>DEBUG;TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>Temp\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+	<DebugType>pdbonly</DebugType>
+	<Optimize>true</Optimize>
+	<OutputPath>Temp\bin\Release\</OutputPath>
+	<DefineConstants>TRACE</DefineConstants>
+	<ErrorReport>prompt</ErrorReport>
+	<WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
+	<Reference Include="System" />
     <Reference Include="System.XML" />
-    <Reference Include="System.Core" />
-    <Reference Include="UnityEngine">
-      <HintPath>C:/Program Files/Unity/Editor/Data/lib/UnityEngine-Debug.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor">
-      <HintPath>C:/Program Files/Unity/Editor/Data/lib/UnityEditor.dll</HintPath>
-    </Reference>
+	<Reference Include="System.Core" />
+	<Reference Include="UnityEngine">
+	  <HintPath>C:/Program Files/Unity/Editor/Data/lib/UnityEngine-Debug.dll</HintPath>
+	</Reference>
+	<Reference Include="UnityEditor">
+	  <HintPath>C:/Program Files/Unity/Editor/Data/lib/UnityEditor.dll</HintPath>
+	</Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\package\gui\Editor\BitControlEditor_old.txt" />
-    <Compile Include="Assets\package\gui\controls\AbstractBitList.cs" />
-    <Compile Include="Assets\package\gui\controls\BitBox.cs" />
-    <Compile Include="Assets\package\gui\controls\BitButton.cs" />
-    <Compile Include="Assets\package\gui\controls\BitContainer.cs" />
-    <Compile Include="Assets\package\gui\controls\BitControl.cs" />
-    <Compile Include="Assets\package\gui\controls\BitDrawTexture.cs" />
-    <Compile Include="Assets\package\gui\controls\BitDropDown.cs" />
-    <Compile Include="Assets\package\gui\controls\BitForm.cs" />
-    <Compile Include="Assets\package\gui\controls\BitGridList.cs" />
-    <Compile Include="Assets\package\gui\controls\BitGroup.cs" />
-    <Compile Include="Assets\package\gui\controls\BitHorizontalScrollbar.cs" />
-    <Compile Include="Assets\package\gui\controls\BitHorizontalSlider.cs" />
-    <Compile Include="Assets\package\gui\controls\BitLabel.cs" />
-    <Compile Include="Assets\package\gui\controls\BitList.cs" />
-    <Compile Include="Assets\package\gui\controls\BitMenu.cs" />
-    <Compile Include="Assets\package\gui\controls\BitPasswordField.cs" />
-    <Compile Include="Assets\package\gui\controls\BitPopup.cs" />
-    <Compile Include="Assets\package\gui\controls\BitRepeatButton.cs" />
-    <Compile Include="Assets\package\gui\controls\BitScrollView.cs" />
-    <Compile Include="Assets\package\gui\controls\BitTextArea.cs" />
-    <Compile Include="Assets\package\gui\controls\BitTextField.cs" />
-    <Compile Include="Assets\package\gui\controls\BitToggle.cs" />
-    <Compile Include="Assets\package\gui\controls\BitVerticalScrollbar.cs" />
-    <Compile Include="Assets\package\gui\controls\BitVerticalSlider.cs" />
-    <Compile Include="Assets\package\gui\controls\BitWindow.cs" />
-    <Compile Include="Assets\package\gui\core\BitFormsManager.cs" />
-    <Compile Include="Assets\package\gui\core\Delegates.cs" />
-    <Compile Include="Assets\package\gui\core\GUIDebug.cs" />
-    <Compile Include="Assets\package\gui\core\Types.cs" />
-    <Compile Include="Assets\package\gui\Editor\AbstractHandler.cs" />
-    <Compile Include="Assets\package\gui\Editor\BitControlEditor.cs" />
-    <Compile Include="Assets\package\gui\Editor\BitControlInspectorEditor.cs" />
-    <Compile Include="Assets\package\gui\Editor\BitGuiEditorToolbox.cs" />
-    <Compile Include="Assets\package\gui\Editor\GuiEditorUtils.cs" />
-    <Compile Include="Assets\package\gui\Editor\ModeHandler.cs" />
-    <Compile Include="Assets\package\gui\Editor\MoveHandler.cs" />
-    <Compile Include="Assets\package\gui\Editor\ResizeHandler.cs" />
-    <Compile Include="Assets\package\gui\Editor\SelectHandler.cs" />
-    <Compile Include="Assets\package\gui\Editor\Shortcut.cs" />
-    <Compile Include="Assets\package\gui\Editor\VirtualMenu.cs" />
-    <Compile Include="Assets\package\gui\intf\ISelectableControl.cs" />
-    <Compile Include="Assets\package\gui\models\DefaultBitListModel.cs" />
-    <Compile Include="Assets\package\gui\models\DefaultBitListPopulator.cs" />
-    <Compile Include="Assets\package\gui\models\IBitListModel.cs" />
-    <Compile Include="Assets\package\gui\models\IBitListPopulator.cs" />
-    <Compile Include="Assets\test\TestMain.cs" />
-    <Compile Include="Assets\test\ListAndGridTest.cs" />
-    <Compile Include="Assets\test\PopupTest.cs" />
-    <Compile Include="Assets\test\SkinTest.cs" />
+     <None Include="Assets\package\gui\Editor\BitControlEditor_old.txt" />
+     <Compile Include="Assets\package\gui\controls\AbstractBitList.cs" />
+     <Compile Include="Assets\package\gui\controls\BitBox.cs" />
+     <Compile Include="Assets\package\gui\controls\BitButton.cs" />
+     <Compile Include="Assets\package\gui\controls\BitContainer.cs" />
+     <Compile Include="Assets\package\gui\controls\BitControl.cs" />
+     <Compile Include="Assets\package\gui\controls\BitDrawTexture.cs" />
+     <Compile Include="Assets\package\gui\controls\BitDropDown.cs" />
+     <Compile Include="Assets\package\gui\controls\BitForm.cs" />
+     <Compile Include="Assets\package\gui\controls\BitGridList.cs" />
+     <Compile Include="Assets\package\gui\controls\BitGroup.cs" />
+     <Compile Include="Assets\package\gui\controls\BitHorizontalScrollbar.cs" />
+     <Compile Include="Assets\package\gui\controls\BitHorizontalSlider.cs" />
+     <Compile Include="Assets\package\gui\controls\BitLabel.cs" />
+     <Compile Include="Assets\package\gui\controls\BitList.cs" />
+     <Compile Include="Assets\package\gui\controls\BitMenu.cs" />
+     <Compile Include="Assets\package\gui\controls\BitPasswordField.cs" />
+     <Compile Include="Assets\package\gui\controls\BitPopup.cs" />
+     <Compile Include="Assets\package\gui\controls\BitRepeatButton.cs" />
+     <Compile Include="Assets\package\gui\controls\BitScrollView.cs" />
+     <Compile Include="Assets\package\gui\controls\BitTextArea.cs" />
+     <Compile Include="Assets\package\gui\controls\BitTextField.cs" />
+     <Compile Include="Assets\package\gui\controls\BitToggle.cs" />
+     <Compile Include="Assets\package\gui\controls\BitVerticalScrollbar.cs" />
+     <Compile Include="Assets\package\gui\controls\BitVerticalSlider.cs" />
+     <Compile Include="Assets\package\gui\controls\BitWindow.cs" />
+     <Compile Include="Assets\package\gui\core\BitFormsManager.cs" />
+     <Compile Include="Assets\package\gui\core\Delegates.cs" />
+     <Compile Include="Assets\package\gui\core\GUIDebug.cs" />
+     <Compile Include="Assets\package\gui\core\Types.cs" />
+     <Compile Include="Assets\package\gui\Editor\AbstractHandler.cs" />
+     <Compile Include="Assets\package\gui\Editor\BitControlEditor.cs" />
+     <Compile Include="Assets\package\gui\Editor\BitControlInspectorEditor.cs" />
+     <Compile Include="Assets\package\gui\Editor\BitGuiEditorToolbox.cs" />
+     <Compile Include="Assets\package\gui\Editor\GuiEditorUtils.cs" />
+     <Compile Include="Assets\package\gui\Editor\ModeHandler.cs" />
+     <Compile Include="Assets\package\gui\Editor\MoveHandler.cs" />
+     <Compile Include="Assets\package\gui\Editor\ResizeHandler.cs" />
+     <Compile Include="Assets\package\gui\Editor\SelectHandler.cs" />
+     <Compile Include="Assets\package\gui\Editor\Shortcut.cs" />
+     <Compile Include="Assets\package\gui\Editor\VirtualMenu.cs" />
+     <Compile Include="Assets\package\gui\intf\ISelectableControl.cs" />
+     <Compile Include="Assets\package\gui\models\DefaultBitListModel.cs" />
+     <Compile Include="Assets\package\gui\models\DefaultBitListPopulator.cs" />
+     <Compile Include="Assets\package\gui\models\IBitListModel.cs" />
+     <Compile Include="Assets\package\gui\models\IBitListPopulator.cs" />
+     <Compile Include="Assets\test\ListAndGridTest.cs" />
+     <Compile Include="Assets\test\PopupTest.cs" />
+     <Compile Include="Assets\test\SkinTest.cs" />
+     <Compile Include="Assets\test\TestMain.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -102,3 +102,4 @@
   </Target>
   -->
 </Project>
+	
