@@ -88,7 +88,9 @@ public class BitForm : MonoBehaviour
 	{
 	}
 
+
 	public delegate void BeforeOnGUIEventHandler();
+
 
 	public static event BeforeOnGUIEventHandler BeforeOnGUI;
 
@@ -147,6 +149,7 @@ public class BitForm : MonoBehaviour
 
 	#endregion
 
+
 	#region Hierarchy
 
 	public T FindControl<T>(string controlName) where T : BitControl
@@ -157,12 +160,12 @@ public class BitForm : MonoBehaviour
 		}
 		for (int i = 0, count = transform.childCount; i < count; i++)
 		{
-			var c = transform.GetChild(i).GetComponent<T>();
+			BitControl c = transform.GetChild(i).GetComponent<T>();
 			if (c == null || !controlName.Equals(c.name))
 			{
 				continue;
 			}
-			return c;
+			return (T) c;
 		}
 		return null;
 	}
@@ -243,7 +246,7 @@ public class BitForm : MonoBehaviour
 			for (int i = 0, count = transform.childCount; i < count; i++)
 			{
 				Transform ch = transform.GetChild(i);
-				var c = (BitControl)ch.GetComponent(typeof(BitControl));
+				BitControl c = (BitControl) ch.GetComponent(typeof (BitControl));
 				c.Draw();
 			}
 

@@ -29,7 +29,7 @@ public class BitMenu : BitContainer
 		for (int i = 0, count = transform.childCount; i < count; i++)
 		{
 			Transform ch = transform.GetChild(i);
-			var c = (BitControl)ch.GetComponent(typeof(BitControl));
+			BitControl c = (BitControl) ch.GetComponent(typeof (BitControl));
 			if (c == null)
 			{
 				continue;
@@ -81,7 +81,7 @@ public class BitMenu : BitContainer
 		for (int i = 0, count = transform.childCount; i < count; i++)
 		{
 			Transform ch = transform.GetChild(i);
-			var c = (BitControl)ch.GetComponent(typeof(BitControl));
+			BitControl c = (BitControl) ch.GetComponent(typeof (BitControl));
 			if (c != null)
 			{
 				c.Location = new Point(0, i * DefaultMenuItemHeight);

@@ -1,5 +1,4 @@
 using System;
-using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
@@ -12,7 +11,7 @@ public abstract class BitContainer : BitControl
 		for (int i = 0, count = transform.childCount; i < count; i++)
 		{
 			Transform ch = transform.GetChild(i);
-			var c = (BitControl)ch.GetComponent(typeof(BitControl));
+			BitControl c = (BitControl) ch.GetComponent(typeof (BitControl));
 			if (c != null)
 			{
 				// TODO Find a better way to do this
@@ -123,12 +122,12 @@ public abstract class BitContainer : BitControl
 	{
 		for (int i = 0, count = transform.childCount; i < count; i++)
 		{
-			var c = transform.GetChild(i).GetComponent<T>();
+			Component c = transform.GetChild(i).GetComponent<T>();
 			if (c == null)
 			{
 				continue;
 			}
-			return c;
+			return (T) c;
 		}
 		return null;
 	}
@@ -188,7 +187,7 @@ public abstract class BitContainer : BitControl
 		for (int i = 0, count = transform.childCount; i < count; i++)
 		{
 			Transform ch = transform.GetChild(i);
-			var c = (BitControl)ch.GetComponent(typeof(BitControl));
+			BitControl c = (BitControl) ch.GetComponent(typeof (BitControl));
 			if (c != null)
 			{
 				c.PerformLayoutItself();

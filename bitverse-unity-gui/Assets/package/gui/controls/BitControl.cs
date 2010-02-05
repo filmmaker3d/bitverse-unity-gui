@@ -121,6 +121,7 @@ public abstract class BitControl : MonoBehaviour
 	// Parent disabled
 	private bool _dirty;
 
+	[HideInInspector]
 	[SerializeField]
 	private bool _disabled;
 
@@ -552,8 +553,8 @@ public abstract class BitControl : MonoBehaviour
 			return null;
 		}
 
-		var go = new GameObject();
-		var control = (BitControl)go.AddComponent(controlType);
+		GameObject go = new GameObject();
+		BitControl control = (BitControl)go.AddComponent(controlType);
 		go.transform.parent = transform;
 		go.name = controlName;
 		control.Awake();
@@ -588,12 +589,12 @@ public abstract class BitControl : MonoBehaviour
 		}
 		for (int i = 0, count = transform.childCount; i < count; i++)
 		{
-			var c = transform.GetChild(i).GetComponent<T>();
+			Component c = transform.GetChild(i).GetComponent<T>();
 			if (c == null || !controlName.Equals(c.name))
 			{
 				continue;
 			}
-			return c;
+			return (T)c;
 		}
 		return null;
 	}

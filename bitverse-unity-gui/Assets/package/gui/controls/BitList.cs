@@ -59,7 +59,8 @@ public class BitList : AbstractBitList
 		GUIStyle rs = ListRenderer.Style ?? ListRenderer.DefaultStyle;
 		//ListRenderer.Size = new Size(_scrollView.width - rs.margin.horizontal, ListRenderer.Size.Height);
 		//ListRenderer.Location = new Point(rs.margin.left + ss.padding.left, rs.margin.top);
-		rs.Draw(new Rect(rs.margin.left + ss.padding.left, rs.margin.top, _scrollView.width - rs.margin.horizontal, ListRenderer.Size.Height), ListRenderer.Content, false, true, false, false);
+		rs.Draw(new Rect(rs.margin.left + ss.padding.left, rs.margin.top, _scrollView.width - rs.margin.horizontal, ListRenderer.Size.Height), ListRenderer.Content, false, true, false,
+		        false);
 		//ListRenderer.Draw();
 	}
 
