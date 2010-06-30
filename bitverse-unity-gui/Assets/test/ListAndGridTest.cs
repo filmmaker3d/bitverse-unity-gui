@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ListAndGridTest : MonoBehaviour
 {
-	private class MyPopulator : IBitListPopulator
+	private class MyPopulator : IPopulator
 	{
 		public void Populate(BitControl listRenderer, object data, int index, bool selected)
 		{
@@ -18,6 +18,7 @@ public class ListAndGridTest : MonoBehaviour
 
 	private void Start()
 	{
+        /*
 		BitForm form = gameObject.GetComponent<BitForm>();
 		if (form == null)
 		{
@@ -59,5 +60,6 @@ public class ListAndGridTest : MonoBehaviour
 			c.Model = model;
 			c.Populator = new MyPopulator();
 		}
+        */
 	}
 }

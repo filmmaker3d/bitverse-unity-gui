@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TestMain : MonoBehaviour
 {
-	private BitForm _form;
+    private BitEditorStage _form;
 	private BitWindow _window;
 	private BitButton _simpleButton;
 	private BitRepeatButton _repeatButton;
@@ -18,7 +18,7 @@ public class TestMain : MonoBehaviour
 	private BitLabel _vsLabel;
 	private BitVerticalSlider _verticalSlider;
 	private BitGroup _textureGroup;
-	private BitDrawTexture _texture;
+	//private BitDrawTexture _texture;
 	private BitPopup _dropDownOptions;
 	private BitGridList _gridList;
 	private BitList _list;
@@ -26,18 +26,18 @@ public class TestMain : MonoBehaviour
 
 	private void Start()
 	{
-		_form = gameObject.GetComponent<BitForm>();
+		_form = gameObject.GetComponent<BitEditorStage>();
 		if (_form == null)
 		{
-			Debug.Log("Form not found");
+			Debug.LogError("Form not found");
 			return;
 		}
 
 
-		_window = _form.FindControl<BitWindow>("MainWindow");
+		_window = _form.FindControl<BitWindow>("main_window");
 		if (_window == null)
 		{
-			Debug.LogError("'MainWindow' not found");
+			Debug.LogError("'main_window' not found");
 			return;
 		}
 
@@ -49,7 +49,7 @@ public class TestMain : MonoBehaviour
 		}
 		else
 		{
-			_simpleButton.MouseClick += SimpleButton_MouseClick;
+            _simpleButton.MouseClick += SimpleButton_MouseClick;
 		}
 
 		_repeatButton = _window.FindControl<BitRepeatButton>("RepeatButton");
@@ -59,7 +59,7 @@ public class TestMain : MonoBehaviour
 		}
 		else
 		{
-			_repeatButton.MouseClick += RepeatButton_MouseClick;
+			_repeatButton.MouseHold += RepeatButtonMouseHold;
 		}
 
 		_textGroup = _window.FindControl<BitGroup>("TextGroup");
@@ -122,11 +122,11 @@ public class TestMain : MonoBehaviour
 		}
 		else
 		{
-			_texture = _textureGroup.FindControl<BitDrawTexture>("Texture");
-			if (_texture == null)
-			{
-				Debug.LogWarning("'Texture' not found!");
-			}
+//			_texture = _textureGroup.FindControl<BitDrawTexture>("Texture");
+//			if (_texture == null)
+//			{
+//				Debug.LogWarning("'Texture' not found!");
+//			}
 		}
 
 		_hsLabel = _window.FindControl<BitLabel>("HorizontalSlider Label");
@@ -209,7 +209,7 @@ public class TestMain : MonoBehaviour
 		PopulateContextMenu();
 	}
 
-	private void PopulateContextMenu()
+    private void PopulateContextMenu()
 	{
 		_labelContextMenu = _form.FindControl<BitPopup>("Label Context Menu");
 		if (_labelContextMenu == null)
@@ -261,7 +261,6 @@ public class TestMain : MonoBehaviour
 
 			DefaultBitListModel model = new DefaultBitListModel();
 
-
 			CreateListModels();
 			model.Add(new NameModel("Amphibians", _amphibiansListModel));
 			model.Add(new NameModel("Birds", _birdsListModel));
@@ -273,21 +272,30 @@ public class TestMain : MonoBehaviour
 			model.Add(new NameModel("Repitiles", _repitilesListModel));
 
 			options.Model = model;
-			options.Populator = new DefaultBitListPopulator();
+            options.Populator = new PopupPopulator();
 
 			_dropDownOptions.SelectionChanged += DropDownOptions_SelectionChanged;
 		}
 	}
 
+    private class PopupPopulator : IPopulator
+    {
+        public void Populate(BitControl renderer, object data, int index, bool selected)
+        {
+            string name = ((NameModel)data).Name;
+            Debug.Log(name);
+            renderer.Text = name;
+        }
+    }
 
 	#region Events
 
-	private void SimpleButton_MouseClick(object sender, MouseClickEventArgs e)
+	private void SimpleButton_MouseClick(object sender, MouseEventArgs e)
 	{
 		Debug.Log("Simple button clicked");
 	}
 
-	private void RepeatButton_MouseClick(object sender, MouseClickEventArgs e)
+	private void RepeatButtonMouseHold(object sender, MouseEventArgs e)
 	{
 		Debug.Log("Holding 'RepeatButton'");
 	}
@@ -320,10 +328,10 @@ public class TestMain : MonoBehaviour
 			Debug.Log("Value changed for 'HorizontalSlider': " + e.Value);
 		}
 
-		if (_texture != null)
-		{
-			_texture.Location = new Point((float)e.Value, _texture.Position.y);
-		}
+//		if (_texture != null)
+//		{
+//			_texture.Location = new Point((float)e.Value, _texture.Position.y);
+//		}
 	}
 
 	private void VerticalSlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -337,10 +345,10 @@ public class TestMain : MonoBehaviour
 			Debug.Log("Value changed for 'VerticalSlider': " + e.Value);
 		}
 
-		if (_texture != null)
-		{
-			_texture.Location = new Point(_texture.Position.x, (float)e.Value);
-		}
+//		if (_texture != null)
+//		{
+//			_texture.Location = new Point(_texture.Position.x, (float)e.Value);
+//		}
 	}
 
 	private void DropDownOptions_SelectionChanged(object sender, SelectionChangedEventArgs<object> e)
@@ -413,7 +421,7 @@ public class TestMain : MonoBehaviour
 	}
 
 
-	public class MyListPopulator : IBitListPopulator
+	public class MyListPopulator : IPopulator
 	{
 		public void Populate(BitControl listRenderer, object data, int index, bool selected)
 		{

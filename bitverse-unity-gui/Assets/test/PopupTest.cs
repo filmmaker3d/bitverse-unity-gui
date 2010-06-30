@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PopupTest : MonoBehaviour
 {
-	private class MyPopulator : IBitListPopulator
+	private class MyPopulator : IPopulator
 	{
 		public void Populate(BitControl listRenderer, object data, int index, bool selected)
 		{
@@ -21,6 +21,7 @@ public class PopupTest : MonoBehaviour
 
 	private void Start()
 	{
+        /*
 		BitForm form = gameObject.GetComponent<BitForm>();
 		if (form == null)
 		{
@@ -72,6 +73,7 @@ public class PopupTest : MonoBehaviour
 
 		o.Model = model;
 		o.Populator = new MyPopulator();
+        */
 	}
 
 	void PopupSelectionChanged(object sender, Bitverse.Unity.Gui.SelectionChangedEventArgs<object> e)

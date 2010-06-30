@@ -1,0 +1,119 @@
+using Bitverse.Unity.Gui;
+using UnityEngine;
+
+[RequireComponent(typeof(Camera))]
+public class BitModelViewer : BitBox
+{
+    [SerializeField]
+    private GameObject _target;
+
+    public GameObject target
+    {
+        get { return _target; }
+        set { _target = value; setTarget(_target); }
+    }
+
+    private RenderTexture _renderTarget;
+    private float _width, _height;
+    private float _targetSize;
+    private Vector3 _targetCenter;
+
+    private void setRTandCamera()
+    {
+        _width = Position.width;
+        _height = Position.height;
+        _renderTarget = new RenderTexture((int) _width, (int) _height, 24);
+        camera.targetTexture = _renderTarget;
+        camera.clearFlags = CameraClearFlags.SolidColor;
+        camera.cullingMask = 1 << LayerMask.NameToLayer("ModelViewer");
+        camera.aspect = _width / _height;
+        Content = new GUIContent(camera.targetTexture);
+        //TODO: replace this with a shader that create a discrete alpha mask with the z buffer channel
+        /*if (GetComponent<BlendColor>() == null)
+        {
+            BlendColor bc = gameObject.AddComponent<BlendColor>();
+            bc.blendColor = new Color(0,0,0,1);
+        }*/
+    }
+
+    private void setTarget(GameObject theTarget)
+    {
+        if (theTarget == null)
+            return;
+        Renderer[] renderers;
+        renderers = theTarget.GetComponentsInChildren<Renderer>(true);
+        
+        //Debug.Log("Number of renderers: " + renderers.Length);
+
+        _targetSize = 0;
+        _targetCenter = new Vector3();
+        Vector3 objectPosition = theTarget.transform.root.position;
+        Bounds newBounds = new Bounds();
+
+        foreach (Renderer meshRenderer in renderers)
+        {
+            newBounds.Encapsulate(meshRenderer.bounds);
+        }
+
+        _targetCenter = newBounds.center;
+        _targetSize = newBounds.extents.magnitude;
+
+        gameObject.camera.farClipPlane = Mathf.Max(0.5f, _targetSize * 3.0f);
+        gameObject.camera.transform.position = theTarget.transform.position + _targetCenter + (camera.transform.forward * -_targetSize) * 1.5f;
+
+        Transform[] childs = theTarget.GetComponentsInChildren<Transform>(true);
+
+        int monitorlayer = LayerMask.NameToLayer("ModelViewer");
+        if(monitorlayer != 0)
+            theTarget.layer = monitorlayer;
+
+        foreach (Transform child in childs)
+        {
+            child.gameObject.layer = monitorlayer;
+        }
+
+    }
+
+    public override void Start()
+    {
+        setRTandCamera();
+
+        if (target != null)
+        {
+            setTarget(target);
+        }
+
+        //ATTN: this should be set from the outside and not here, its only a test
+        CameraHandler += onPositionCamera;
+    }
+
+    public event PositionCameraHandler CameraHandler;
+
+    public void Update()
+    {
+        if (target == null || !TopWindow.Visible)
+        {
+            if (camera && camera.enabled)
+                camera.enabled = false;
+            return;
+        }
+        if (camera && !camera.enabled)
+            camera.enabled = true;
+        if (_width != Position.width || _height != Position.height)
+            setRTandCamera();
+
+        if (CameraHandler != null)
+            CameraHandler(this, gameObject.camera);
+    }
+
+    //ATTN: This function is only for testing purposes. This should be replaced by an outside callback
+    public void onPositionCamera(object sender, Camera theCamera)
+    {
+        float orbitalDist = _targetSize * 2.0f;
+        float angle = Time.time * 45.0f;
+        Vector3 orbitalPosition = new Vector3(-Mathf.Sin(angle * Mathf.Deg2Rad) * orbitalDist, 0.0f, -Mathf.Cos(angle * Mathf.Deg2Rad) * orbitalDist);
+
+        theCamera.transform.localPosition = target.transform.position + _targetCenter + (orbitalPosition.x * target.transform.right) + (orbitalPosition.z * target.transform.forward);
+        theCamera.transform.LookAt(target.transform.position, target.transform.up);
+    }
+}
