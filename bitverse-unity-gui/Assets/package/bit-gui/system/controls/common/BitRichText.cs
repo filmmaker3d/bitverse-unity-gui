@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Reflection;
 using System.Text;
 using System.Drawing.Html;
 using bitgui;
@@ -83,6 +85,8 @@ public class BitRichText : BitControl
         }
     }
 
+    public string StyleSheet="body { font: normal 10pt Basic ; color:white } ";
+
     private int width;
     private int height;
 
@@ -91,9 +95,14 @@ public class BitRichText : BitControl
         Texture2D texture = null;
         try
         {
+            string htmlText = "<html><head><title></title><style>" + StyleSheet + " </style></head><body>";
+            htmlText += Content.text;
+            htmlText += "</body></html>";
+
             Bitmap bmp = new Bitmap(10, 10);
             Graphics g = Graphics.FromImage(bmp);
-            InitialContainer container = new InitialContainer(Content.text);
+            InitialContainer container = new InitialContainer(htmlText);
+            container.AvoidTextAntialias = true;
             Region prevClip = g.Clip;
             RectangleF area;
             if (noClipAndVerticalResize)
@@ -124,7 +133,7 @@ public class BitRichText : BitControl
 
             Bitmap bitmap = new Bitmap(width, height);
             Graphics graphics = Graphics.FromImage(bitmap);
-
+            graphics.SmoothingMode = SmoothingMode.None;
             container.Paint(graphics);
 
             if (noClipAndVerticalResize) graphics.SetClip(prevClip, System.Drawing.Drawing2D.CombineMode.Replace);
