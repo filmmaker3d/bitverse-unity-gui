@@ -42,12 +42,13 @@ public class BitRichText : BitControl
                 }
                 else if (!lastSize.Equals(Size))
                 {
-                    if (Time.time < (lastResizeUpdate + 0.1f))
-                        return;
-                    textureChanged = true;
-                    lastSize = Size;
-                    texture = UpdateImage();
-                    lastResizeUpdate = Time.time;
+                    if (Time.time > (lastResizeUpdate + 0.2f))
+                    {
+                        textureChanged = true;
+                        lastSize = Size;
+                        texture = UpdateImage();
+                        lastResizeUpdate = Time.time;
+                    }
                 }
                 else if (lastText != Content.text)
                 {
@@ -57,12 +58,13 @@ public class BitRichText : BitControl
                 }
                 else if ((noClipAndVerticalResize) && (!lastParentSize.Equals(Parent.Size)))
                 {
-                    if (Time.time < (lastResizeUpdate + 0.1f))
-                        return;
-                    textureChanged = true;
-                    lastParentSize = Parent.Size;
-                    texture = UpdateImage();
-                    lastResizeUpdate = Time.time;
+                    if (Time.time > (lastResizeUpdate + 0.2f))
+                    {
+                        textureChanged = true;
+                        lastParentSize = Parent.Size;
+                        texture = UpdateImage();
+                        lastResizeUpdate = Time.time;
+                    }
                 }
                 if (texture != null)
                 {
