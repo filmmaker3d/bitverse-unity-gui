@@ -3,9 +3,16 @@ using System.Collections.Generic;
 using Bitverse.Unity.Gui;
 using UnityEngine;
 
+[RequireComponent(typeof(ContentBasedTextureCache))]
+
 [ExecuteInEditMode]
 public class BitStage : BitContainer
 {
+    public ContentBasedTextureCache TextureCache
+    {
+        get { return GetComponent<ContentBasedTextureCache>(); }
+    }
+
     public delegate void BeforeOnGUIEventHandler();
 
 
@@ -251,7 +258,7 @@ public class BitStage : BitContainer
         {
             Debug.LogError(ex);
         }
-
+        TextureCache.Cleanup();
     }
 
     private bool DisablableByModal(FormModes mode)
