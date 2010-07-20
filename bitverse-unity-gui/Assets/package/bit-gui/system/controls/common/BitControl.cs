@@ -2405,22 +2405,33 @@ public abstract partial class BitControl : MonoBehaviour
         return ret;
     }
 
+
+    public bool noClipAndVerticalResize = false;
+
     //TODO Optimize the atuto size calling (it must be called only when the content changes
     protected virtual void DoAutoSize()
     {
         GUIStyle style = Style ?? DefaultStyle;
 
         float width, height;
-        if (!style.wordWrap)
+        if (noClipAndVerticalResize)
         {
-            Vector2 size = style.CalcSize(Content);
-            width = size.x;
-            height = size.y;
+            width = Parent.Position.width;
+            height = style.CalcHeight(Content, Position.width);
         }
         else
         {
-            width = _position.width;
-            height = style.CalcHeight(Content, Position.width);
+            if (!style.wordWrap)
+            {
+                Vector2 size = style.CalcSize(Content);
+                width = size.x;
+                height = size.y;
+            }
+            else
+            {
+                width = _position.width;
+                height = style.CalcHeight(Content, Position.width);
+            }
         }
 
         if (_position.height == height && _position.width == width)

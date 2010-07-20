@@ -17,8 +17,6 @@ public class BitRichText : BitControl
     //otimizações...
     //usar POT para otimizar espaço em memória.
 
-    public bool noClipAndVerticalResize = false;
-
     private string lastText = "";
     private Bitverse.Unity.Gui.Size lastSize;
     private Bitverse.Unity.Gui.Size lastParentSize;
