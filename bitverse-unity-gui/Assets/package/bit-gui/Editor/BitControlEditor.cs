@@ -243,6 +243,14 @@ public class BitPictureEditor : BitControlEditor
     }
 }
 
+[CustomEditor(typeof(BitWebImage))]
+public class BitWebImageEditor : BitControlEditor
+{
+    protected override void OnAddControl(BitControl control)
+    {
+        control.Size = new Size(100, 100);
+    }
+}
 
 [CustomEditor(typeof(BitSprite))]
 public class BitSpriteEditor : BitControlEditor
