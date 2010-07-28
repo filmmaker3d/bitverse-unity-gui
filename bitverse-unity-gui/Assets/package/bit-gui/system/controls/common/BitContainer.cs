@@ -33,7 +33,7 @@ public abstract class BitContainer : BitControl
 			return;
 
         int count = InternalControlCount;
-        if (Event.current.type == EventType.Repaint)
+        //if (Event.current.type == EventType.Repaint)
         {
 		    for (int i = 0; i < count; i++)
 		    {
@@ -44,17 +44,17 @@ public abstract class BitContainer : BitControl
 			    }
 		    }
         }
-        else
-        {
-            for (int i = count-1; i >= 0; i--)
-            {
-                BitControl c = InternalGetControlWithoutIndexCheck(i);
-                if (c != null)
-                {
-                    c.Draw();
-                }
-            }
-        }
+        //else
+        //{
+        //    for (int i = count-1; i >= 0; i--)
+        //    {
+        //        BitControl c = InternalGetControlWithoutIndexCheck(i);
+        //        if (c != null)
+        //        {
+        //            c.Draw();
+        //        }
+        //    }
+        //}
 	}
 
 	#endregion

@@ -17,9 +17,9 @@ public partial class BitControlEditor : Editor
 
     internal bool IsMouseUp;
     internal bool IsMouseDown;
-    internal bool IsDrag;
+    //internal bool IsDrag;
 
-    private bool _testDrag;
+    //private bool _testDrag;
     internal Object[] ComponentList;
 
     internal static ExecuteNextFrame ExecuteNextFrame;
@@ -61,13 +61,113 @@ public partial class BitControlEditor : Editor
 
     public void OnSceneGUI()
     {
+        //Handles.BeginGUI();
         UpdateComponentList();
         UpdateMouseState();
         ExecuteDelayedOperations();
         ExecuteHandler();
+        
+        // Move and resize body
+        var selectionObjects = Selection.objects;
+        if (selectionObjects!=null)
+            foreach(Object o in selectionObjects)
+            {
+                var g = o as GameObject;
+                if(g==null) continue;
+                //Debug.Log(g);
+                var control = g.GetComponent<BitControl>();
+                var abs = control.AbsolutePosition;
+                capColor = Color.cyan;
+                Vector3 pos,npos;
+                capSize = HandleUtility.GetHandleSize(new Vector3(abs.x,0,abs.y)) / 15f;
+
+                
+                // Resize from bottom-right
+                pos = new Vector3(abs.xMax, 0, abs.yMax);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos != pos)
+                {
+                    abs.xMax = npos.x;
+                    abs.yMax = npos.z;
+                    control.AbsolutePosition = abs;
+                    break;
+                }
+
+                // Resize from right
+                pos = new Vector3(abs.xMax, 0, abs.yMin + abs.height/2);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos.x != pos.x)
+                {
+                    abs.xMax = npos.x;
+                    control.AbsolutePosition = abs;
+                    break;
+                }
+
+
+                // Resize from bottom
+                pos = new Vector3(abs.xMin + abs.width / 2, 0, abs.yMax);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos.z != pos.z)
+                {
+                    abs.yMax = npos.z;
+                    control.AbsolutePosition = abs;
+                    break;
+                }
+
+
+                // Move from top-left
+                capColor = Color.blue;
+                pos = new Vector3(abs.xMin, 0, abs.yMin);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos != pos)
+                {
+                    abs.x = npos.x;
+                    abs.y = npos.z;
+                    control.AbsolutePosition = abs;
+                    break;
+                }
+                // Move
+                pos = new Vector3(abs.xMin + abs.width / 2, 0, abs.yMin + abs.height / 2);
+                capSize = Math.Max(1,Math.Min(abs.width / 2 - 8, abs.height / 2 - 8));
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, capSize, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos != pos)
+                {
+                    abs.x = npos.x - abs.width / 2;
+                    abs.y = npos.z - abs.height / 2;
+                    control.AbsolutePosition = abs;
+                    break;
+                }
+            }
+            
+
         ProcessShortcuts();
         SetCurrentTarget();
+        //Handles.EndGUI();
     }
+
+
+    private static Color capColor;
+    private static float capSize;
+    private static Vector3[] points = new Vector3[5];
+
+    public static void DrawCornerCap(int controlID, Vector3 position, Quaternion rotation, float size)
+    {
+        if (Event.current.type == EventType.Repaint)
+        {
+            var vector = new Vector3(capSize, 0, 0);
+            var vector2 = new Vector3(0, 0, capSize);
+            points[0] = position + vector + vector2;
+            points[1] = position + vector - vector2;
+            points[2] = position - vector - vector2;
+            points[3] = position - vector + vector2;
+            points[4] = position + vector + vector2;
+
+            Color color = Handles.color;
+            Handles.color = capColor;
+            Handles.DrawPolyLine(points);
+            Handles.color = color;
+        }
+    } 
 
     private void SetCurrentTarget()
     {
@@ -141,17 +241,29 @@ public partial class BitControlEditor : Editor
         {
             return;
         }
+
+
+        
         IsMouseDown = Event.current.type == EventType.MouseDown;
         IsMouseUp = Event.current.type == EventType.MouseUp;
-        IsDrag = Event.current.type == EventType.MouseDrag;
-        if ((!_testDrag) && (IsDrag))
-        {
-            _startDragPosition = GuiEditorUtils.MousePosition;
-            _testDrag = true;
-        }
-        if (IsMouseUp)
-            _testDrag = false;
+        //IsDrag = Event.current.type == EventType.MouseDrag;
+        //if ((!_testDrag) && (IsDrag))
+        //{
+        //    Debug.Log("Start drag");
+        //    _startDragPosition = GuiEditorUtils.MousePosition;
+        //    _testDrag = true;
+        //}
+        //if (IsMouseUp)
+        //{
+        //    if (_testDrag)
+        //    {
+        //        _testDrag = false;
+        //    }
+        //}
     }
+
+
+    
 
     private static bool _addingControl;
     private static BitControl _controlAdded;

@@ -2652,12 +2652,12 @@ public abstract partial class BitControl : MonoBehaviour
     protected static void GUIDoTextField(Rect position, int id, GUIContent content, bool multiline, int maxLength, GUIStyle style)
     {
         // ignoring id
-        if (Event.current.type == EventType.repaint)
+        //if (Event.current.type == EventType.repaint)
         {
             if (multiline)
-                GUI.TextArea(position, content.text, maxLength, style);
+                content.text = GUI.TextArea(position, content.text, maxLength, style);
             else
-                GUI.TextField(position, content.text, maxLength, style);
+                content.text = GUI.TextField(position, content.text, maxLength, style);
         }
     }
     #endregion

@@ -68,7 +68,7 @@ public abstract class AbstractBitTextField : BitControl
 
     protected override void DoDraw()
     {
-        TempContent.text = Text;
+        string currentText = TempContent.text = Text;
 
         // hAcK
         // Windows are processed from front to back window for mouse events and from back to front window for repaint events
@@ -76,13 +76,18 @@ public abstract class AbstractBitTextField : BitControl
         if (TopWindow.IsFocused)
         {
             // It will only use DoTextField if we are editing the its text (To improve click area by texture background)
-            if (ControlID == GUIUtility.keyboardControl)
+           // if (ControlID == GUIUtility.keyboardControl)
             {
+                //Debug.Log("xxx");
                 GUIDoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, Style ?? DefaultStyle);
-                Text = AcceptOnlyNumbers ? Regex.Match(TempContent.text, @"\d+").Value : TempContent.text;
+                if (currentText!=TempContent.text)
+                    Text = AcceptOnlyNumbers ? Regex.Match(TempContent.text, @"\d+").Value : TempContent.text;
             }
-            else if (Event.current.type == EventType.repaint)
-                (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+        //     else if (Event.current.type == EventType.repaint)
+        //    {
+        //        //Debug.Log("here");
+        //        (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+        //    }
         }
         else if (Event.current.type == EventType.repaint)
         {

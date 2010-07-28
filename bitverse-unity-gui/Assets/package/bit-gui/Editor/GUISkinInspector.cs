@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
-[CustomEditor (typeof (GUISkin))]
+//[CustomEditor (typeof (GUISkin))]
 public class GUISkinInspector : Editor
 {
     private static GUIStyle copiedStyle;
@@ -215,8 +215,13 @@ public class GUISkinInspector : Editor
 
             bool enterChildren = true;
 
-            while (iterator.NextVisible(enterChildren) && !iterator.propertyPath.Contains("customStyles.Array.data[" + (selectedStyle + 1) + "]") && iterator.propertyPath != "m_Settings")
-                enterChildren = EditorGUILayout.PropertyField(iterator);
+            if (iterator != null)
+            {
+                while (iterator.NextVisible(enterChildren) &&
+                       !iterator.propertyPath.Contains("customStyles.Array.data[" + (selectedStyle + 1) + "]") &&
+                       iterator.propertyPath != "m_Settings")
+                    enterChildren = EditorGUILayout.PropertyField(iterator);
+            }
 
             serializedGuiStyle.ApplyModifiedProperties();
 
@@ -224,7 +229,6 @@ public class GUISkinInspector : Editor
                 Skin.customStyles[selectedStyle].name = "Empty";
 
             Skin.customStyles[selectedStyle].name = CheckRepeatedNames(Skin.customStyles[selectedStyle]);
-
             EditorUtility.SetDirty(Skin);
 
             RefreshLists();

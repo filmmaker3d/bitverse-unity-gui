@@ -135,22 +135,22 @@ internal static class GuiEditorUtils
 
 	public static void DrawSelected(Rect rect, Color color)
 	{
-		DrawRect(rect, color);
-        DrawRect(new Rect(rect.x-Sel1-1,rect.y-Sel1-1,6,6),color);
-        DrawRect(new Rect(rect.xMax - Sel1 + 1, rect.y - Sel1 - 1, 6, 6), color);
-        DrawRect(new Rect(rect.x - Sel1 - 1, rect.yMax - Sel1 + 1, 6, 6), color);
-        DrawRect(new Rect(rect.xMax - Sel1 + 1, rect.yMax - Sel1 + 1, 6, 6), color);
-        //DrawSelectionRect(rect.x - 0.5f, rect.y - 0.5f, color);
-        //DrawSelectionRect(rect.xMax - 0.5f, rect.y - 0.5f, color);
-        //DrawSelectionRect(rect.x - 0.5f, rect.yMax - 0.5f, color);
-        //DrawSelectionRect(rect.xMax - 0.5f, rect.yMax - 0.5f, color);
+		//DrawRect(rect, color);
+        //DrawRect(new Rect(rect.x-Sel1-1,rect.y-Sel1-1,6,6),color);
+        //DrawRect(new Rect(rect.xMax - Sel1 + 1, rect.y - Sel1 - 1, 6, 6), color);
+        //DrawRect(new Rect(rect.x - Sel1 - 1, rect.yMax - Sel1 + 1, 6, 6), color);
+        //DrawRect(new Rect(rect.xMax - Sel1 + 1, rect.yMax - Sel1 + 1, 6, 6), color);
+        ////DrawSelectionRect(rect.x - 0.5f, rect.y - 0.5f, color);
+        ////DrawSelectionRect(rect.xMax - 0.5f, rect.y - 0.5f, color);
+        ////DrawSelectionRect(rect.x - 0.5f, rect.yMax - 0.5f, color);
+        ////DrawSelectionRect(rect.xMax - 0.5f, rect.yMax - 0.5f, color);
 
-		float xmed = (rect.x + rect.xMax) / 2;
-		float ymed = (rect.y + rect.yMax) / 2;
-        DrawRect(new Rect(xmed, rect.y - Sel1 - 1, 6, 6), color);
-        DrawRect(new Rect(xmed, rect.yMax - Sel1 + 1, 6, 6), color);
-        DrawRect(new Rect(rect.x - Sel1 - 1, ymed, 6, 6), color);
-        DrawRect(new Rect(rect.xMax - Sel1 + 1, ymed, 6, 6), color);
+        //float xmed = (rect.x + rect.xMax) / 2;
+        //float ymed = (rect.y + rect.yMax) / 2;
+        //DrawRect(new Rect(xmed, rect.y - Sel1 - 1, 6, 6), color);
+        //DrawRect(new Rect(xmed, rect.yMax - Sel1 + 1, 6, 6), color);
+        //DrawRect(new Rect(rect.x - Sel1 - 1, ymed, 6, 6), color);
+        //DrawRect(new Rect(rect.xMax - Sel1 + 1, ymed, 6, 6), color);
        // DrawSelectionRect(rect.x - 0.5f, ymed - 0.5f, color);
        // DrawSelectionRect(rect.xMax - 0.5f, ymed - 0.5f, color);
        // DrawSelectionRect(xmed - 0.5f, rect.y - 0.5f, color);
