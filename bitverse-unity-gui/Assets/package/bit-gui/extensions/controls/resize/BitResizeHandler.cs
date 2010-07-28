@@ -79,7 +79,8 @@ public class BitResizeHandler : BitControl
 
     protected override void DoDraw()
     {
-		(Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, Focus);
+        if (Event.current.type == EventType.repaint)
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, Focus);
 	}
 
 	#endregion

@@ -361,7 +361,7 @@ public abstract partial class BitControl : MonoBehaviour
     /// </summary>
     public BitControl Parent
     {
-        get { try { return _parent ?? (transform.parent != null ? transform.parent.GetComponent<BitControl>() : null); } catch (Exception e) { Debug.Log("no transform for: " + this.GetType().Name); return null; } }
+        get { try { return _parent ?? (transform.parent != null ? transform.parent.GetComponent<BitControl>() : null); } catch (Exception e) { Debug.Log("no transform for: " + this.GetType().Name + e); return null; } }
         set
         {
             _parent = value;
@@ -2637,4 +2637,29 @@ public abstract partial class BitControl : MonoBehaviour
     }
 
     #endregion
+
+    #region "API Change Workaround"
+    protected static void GUIClipPush(Rect position)
+    {
+        GUI.BeginGroup(position, GUIContent.none, GUIStyle.none);
+    }
+
+    protected static void GUIClipPop()
+    {
+        GUI.EndGroup();
+    }
+
+    protected static void GUIDoTextField(Rect position, int id, GUIContent content, bool multiline, int maxLength, GUIStyle style)
+    {
+        // ignoring id
+        if (Event.current.type == EventType.repaint)
+        {
+            if (multiline)
+                GUI.TextArea(position, content.text, maxLength, style);
+            else
+                GUI.TextField(position, content.text, maxLength, style);
+        }
+    }
+    #endregion
+
 }

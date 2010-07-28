@@ -5,3 +5,6 @@ TrueTypeFontImporter:
   size: 12
   case: -1
   antiAlias: 0
+  includeFontData: 1
+  use2xBehaviour: 1
+  style: 0

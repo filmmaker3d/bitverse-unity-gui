@@ -225,7 +225,7 @@ public class BitStage : BitContainer
                     Array.Reverse(_windows);
                 }
 
-                WindowReg firstWindowReg = null;
+                //WindowReg firstWindowReg = null;
                 foreach (WindowReg reg in _windows)
                 {
                     try
@@ -258,7 +258,8 @@ public class BitStage : BitContainer
         {
             Debug.LogError(ex);
         }
-        TextureCache.Cleanup();
+		if(TextureCache!=null)
+			TextureCache.Cleanup();
     }
 
     private bool DisablableByModal(FormModes mode)
@@ -409,7 +410,10 @@ public class BitStage : BitContainer
         reg.Visible = window.Visible;
 
         // to speedup comparison
-        reg.FormModeSortIndex = WindowReg.FormMode2SortIndex[window.FormMode];
+        if(!WindowReg.FormMode2SortIndex.TryGetValue(window.FormMode, out reg.FormModeSortIndex))
+        {
+            reg.FormModeSortIndex = 6;
+        }
     }
 
     public void BringWindowToFront(BitWindow window)
@@ -481,10 +485,10 @@ public class BitStage : BitContainer
 
     private void UpdateCursor()
     {
-        if (currentCursorState == null)
-        {
-            return;
-        }
+        //if (currentCursorState == null)
+        //{
+        //    return;
+        //}
         if (_lastCursorState != currentCursorState)
         {
             Screen.showCursor = false;
@@ -521,7 +525,7 @@ public class BitStage : BitContainer
             }
             _lastCursorState = currentCursorState;
         }
-        if (_currentCursorArray != null)
+        if (_currentCursorArray != null && cursorIndex > 0 && cursorIndex<_currentCursorArray.Length)
         {
             Vector3 pos = Input.mousePosition;
             Texture2D tex = _currentCursorArray[cursorIndex];

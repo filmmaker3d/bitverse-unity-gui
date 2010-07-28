@@ -47,7 +47,7 @@ public class BitModelViewer : BitBox
 
         _targetSize = 0;
         _targetCenter = new Vector3();
-        Vector3 objectPosition = theTarget.transform.root.position;
+        //Vector3 objectPosition = theTarget.transform.root.position;
         Bounds newBounds = new Bounds();
 
         foreach (Renderer meshRenderer in renderers)

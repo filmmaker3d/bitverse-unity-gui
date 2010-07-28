@@ -42,8 +42,8 @@ public class BitPasswordField : AbstractBitTextField
         {
             // It will only use DoTextField if we are editing the its text (To improve click area by texture background)
             if (ControlID == GUIUtility.keyboardControl)
-                GUI.DoTextField(Position, ControlID, TempContent, false, MaxLenght, Style ?? DefaultStyle);
-            else
+                GUIDoTextField(Position, ControlID, TempContent, false, MaxLenght, Style ?? DefaultStyle);
+            else if (Event.current.type == EventType.repaint)
                 (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
 
             string text = !GUI.changed ? Text : TempContent.text;
@@ -51,7 +51,7 @@ public class BitPasswordField : AbstractBitTextField
 
             Text = text;
         }
-        else
+        else if (Event.current.type == EventType.repaint)
         {
             (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
         }

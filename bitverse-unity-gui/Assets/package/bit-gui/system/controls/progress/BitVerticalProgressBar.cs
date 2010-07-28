@@ -46,12 +46,12 @@ public class BitVerticalProgressBar : AbstractBitProgressBar
         }
         else
         {
-            GUIClip.Push(fillPoss);
+            GUIClipPush(fillPoss);
 
             Rect completePos = new Rect(0, InverseDirection?0:(height - totalHeight), totalWidth, totalHeight);
             fillStyle.Draw(completePos, IsHover, IsActive, IsOn, false);
 
-            GUIClip.Pop();
+            GUIClipPop();
         }
     }
 

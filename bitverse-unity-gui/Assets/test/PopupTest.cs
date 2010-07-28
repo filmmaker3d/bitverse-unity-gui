@@ -17,7 +17,7 @@ public class PopupTest : MonoBehaviour
 
 
 	private BitPopup p;
-	BitButton b;
+	//BitButton b;
 
 	private void Start()
 	{
@@ -78,7 +78,7 @@ public class PopupTest : MonoBehaviour
 
 	void PopupSelectionChanged(object sender, Bitverse.Unity.Gui.SelectionChangedEventArgs<object> e)
 	{
-		if (e.Selection.Length > 0)
-			b.Content.text = e.Selection[0].ToString();
+		//if (e.Selection.Length > 0)
+		//	b.Content.text = e.Selection[0].ToString();
 	}
 }

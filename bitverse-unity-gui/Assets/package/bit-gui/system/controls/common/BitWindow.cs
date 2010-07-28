@@ -196,9 +196,9 @@ public class BitWindow : BitContainer
             }
         }
 
-        GUIClip.Push(_viewPosition);
+        GUIClipPush(_viewPosition);
         DrawChildren();
-        GUIClip.Pop();
+        GUIClipPop();
     }
 
     #endregion

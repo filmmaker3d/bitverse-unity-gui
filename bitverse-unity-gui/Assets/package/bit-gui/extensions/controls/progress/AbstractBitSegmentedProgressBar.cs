@@ -95,7 +95,8 @@ public abstract class AbstractBitSegmentedProgressBar : AbstractBitProgressBar
 
 	protected override void DoDraw()
 	{
-		(Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
+        if (Event.current.type == EventType.repaint)
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
 
 		if (_segmentedProgressBarCells == null)
 		{

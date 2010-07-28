@@ -78,13 +78,13 @@ public abstract class AbstractBitTextField : BitControl
             // It will only use DoTextField if we are editing the its text (To improve click area by texture background)
             if (ControlID == GUIUtility.keyboardControl)
             {
-                GUI.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, Style ?? DefaultStyle);
+                GUIDoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, Style ?? DefaultStyle);
                 Text = AcceptOnlyNumbers ? Regex.Match(TempContent.text, @"\d+").Value : TempContent.text;
             }
-            else
+            else if (Event.current.type == EventType.repaint)
                 (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
         }
-        else
+        else if (Event.current.type == EventType.repaint)
         {
             (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
         }
