@@ -48,6 +48,38 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitBoxEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitButtonEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitContextMenuEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitContextMenuItemEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitContextMenuOptionsEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitDropDownEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitEditorStageEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitFilteredTextFieldEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitGridListEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitGroupEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitHorizontalProgressBarEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitHorizontalScrollbarEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitHorizontalSliderEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitLabelEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitListEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitModelViewerEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitPasswordFieldEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitPictureEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitPopupEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitRepeatButtonEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitRichTextEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitScrollViewEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitSpriteEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitTabbedPaneEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitTabEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitTextAreaEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitTextFieldEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitToggleEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalProgressBarEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalScrollbarEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalSliderEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitWindowEditor.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\AbstractHandler.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\BitControlEditor.cs" />
      <None Include="Assets\package\bit-gui\Editor\BitControlEditor_old.txt" />

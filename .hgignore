@@ -5,3 +5,4 @@ glob:*.bak
 glob:*.suo
 glob:*.user
 relre:_ReSharper
+glob:bitverse-unity-gui/obj/*
