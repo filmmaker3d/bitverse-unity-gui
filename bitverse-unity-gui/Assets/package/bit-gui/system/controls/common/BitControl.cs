@@ -259,31 +259,31 @@ public abstract partial class BitControl : MonoBehaviour
     public string StyleName
     {
         get { return _styleName; }
-        set { _styleName = value; }
+        set
+        {
+            _styleName = value;
+            // clear the cached style
+            _style = null;
+            _styleSkin = null;
+        }
     }
 
-    [HideInInspector]
-    [SerializeField]
     private GUIStyle _style;
+    private GUISkin _styleSkin;
 
     public GUIStyle Style
     {
         get
         {
-            if (_style != null && !string.IsNullOrEmpty(_style.name))
-            {
+            GUISkin s = Skin;
+            if (s == null)
+                return _style = null;
+            if (_styleSkin == s)
                 return _style;
-            }
-
+            _styleSkin = s;
             if (!string.IsNullOrEmpty(_styleName))
-            {
-                GUISkin s = Skin;
-                if (s != null)
-                {
-                    return s.FindStyle(_styleName);
-                }
-            }
-            return null;
+                return _style = s.FindStyle(_styleName);
+            return _style = null;
         }
         set { _style = value; }
     }
