@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Bitverse.Commons;
 using Bitverse.Unity.Gui;
 using UnityEngine;
 
@@ -148,7 +147,7 @@ public class BitStage : BitContainer
                         if (_errorCountDrawNonWindow > 500)
                         {
                             _errorCountDrawNonWindow = 0;
-                                Logger.Error("BitStage", string.Format("Wrong usage, added something other than a window to a bit stage. Parent = {0}, Name = {1}", transform.GetChild(i).name, (c==null) ? "[non BitControl]" : c.name));
+                                Debug.LogError(string.Format("BitStage - Wrong usage, added something other than a window to a bit stage. Parent = {0}, Name = {1}", transform.GetChild(i).name, (c==null) ? "[non BitControl]" : c.name));
                         }
                     }
                 }
@@ -248,7 +247,7 @@ public class BitStage : BitContainer
                 }
                 catch (Exception ex)
                 {
-                    Logger.Exception("BitStage", string.Format("Errors found during BitStage Draw: WindowName={0}", reg.WindowName), ex);
+                    Debug.Log(string.Format("BitStage - Errors found during BitStage Draw: WindowName={0}\n{1}", reg.WindowName, ex));
                 }
             }
         }
@@ -265,7 +264,7 @@ public class BitStage : BitContainer
         }
         catch (Exception ex)
         {
-            Logger.Exception("BitStage", "Exception on OnGUI! -> TextureCache cleanup", ex);
+            Debug.Log(string.Format("BitStage - Exception on OnGUI! -> TextureCache cleanup\n{0}", ex));
         }
     }
 
