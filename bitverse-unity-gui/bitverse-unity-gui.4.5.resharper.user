@@ -19,45 +19,27 @@
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:list/f:AbstractBitList.cs" caret="5864" fromTop="9" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:helpers/f:ListTestPopulator.cs" caret="2539" fromTop="89" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:helpers/f:GridListTestPopulator.cs" caret="0" fromTop="0" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:modelviewer/f:BitModelViewer.cs" caret="2248" fromTop="15" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:TestMain.cs" caret="7088" fromTop="14" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:AbstractHandler.cs" caret="0" fromTop="0" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:GuiAcessorGenerator.cs" caret="8631" fromTop="13" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:ResizeHandler.cs" caret="0" fromTop="0" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:BitControlEditor_old.txt" caret="0" fromTop="0" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:ResetBitButtons.cs" caret="449" fromTop="8" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:extensions/d:audio/f:BitControlAudio.cs" caret="0" fromTop="0" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:projects/d:calculator/f:CalculatorDemo.cs" caret="1323" fromTop="20" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="4" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:BitStage.cs" caret="12201" fromTop="15" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:BitControlEditor.cs" caret="5839" fromTop="33" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:BitControlInspectorEditor.cs" caret="0" fromTop="0" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:BitGuiEditorToolbox.cs" caret="3188" fromTop="0" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitPicture.cs" caret="645" fromTop="26" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitControl.cs" caret="19664" fromTop="20" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1457" fromTop="15" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitControl.cs" caret="90" fromTop="3" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:modelviewer/f:BitModelViewer.cs" caret="872" fromTop="20" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:ContentBasedTextureCache.cs" caret="2202" fromTop="19" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:tooltip/f:TooltipManager.cs" caret="674" fromTop="17" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="818" fromTop="0" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:BitStage.cs" caret="9478" fromTop="25" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:GuiAcessorGenerator.cs" caret="466" fromTop="17" />
     </RecentFiles>
     <RecentEdits>
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="3" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="26" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="9" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="8" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="23" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="25" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="20" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="15" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:test/f:RepeatButtonTest.cs" caret="1811" fromTop="4" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitPicture.cs" caret="952" fromTop="47" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:BitControlEditor.cs" caret="5990" fromTop="39" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:BitControlEditor.cs" caret="5839" fromTop="33" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:BitGuiEditorToolbox.cs" caret="4027" fromTop="16" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1070" fromTop="26" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1070" fromTop="24" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1070" fromTop="21" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1720" fromTop="22" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="884" fromTop="18" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="602" fromTop="5" />
-      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="0" fromTop="0" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="125" fromTop="7" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1098" fromTop="15" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1242" fromTop="11" />
@@ -68,6 +50,26 @@
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1542" fromTop="24" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1035" fromTop="19" />
       <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitWebImage.cs" caret="1477" fromTop="17" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:BitStage.cs" caret="48" fromTop="1" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:common/f:BitControl.cs" caret="90" fromTop="3" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:modelviewer/f:BitModelViewer.cs" caret="2312" fromTop="14" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:modelviewer/f:BitModelViewer.cs" caret="829" fromTop="19" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:ContentBasedTextureCache.cs" caret="33" fromTop="0" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:tooltip/f:TooltipManager.cs" caret="767" fromTop="17" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="2031" fromTop="48" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="1561" fromTop="22" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="248" fromTop="10" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="13" fromTop="0" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="490" fromTop="21" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="621" fromTop="21" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="755" fromTop="10" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="1358" fromTop="29" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:utils/f:InvokeUtils.cs" caret="1965" fromTop="36" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:BitStage.cs" caret="4919" fromTop="28" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:BitStage.cs" caret="8909" fromTop="19" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:system/d:controls/d:stage/f:BitStage.cs" caret="9331" fromTop="19" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:GuiAcessorGenerator.cs" caret="48" fromTop="1" />
+      <File id="5D5CCBED-46A6-AF5C-37DF-8D0BACD21251/d:Assets/d:package/d:bit-gui/d:Editor/f:GuiAcessorGenerator.cs" caret="775" fromTop="28" />
     </RecentEdits>
   </RecentFiles>
   <UnitTestRunner>
@@ -78,7 +80,7 @@
   </UnitTestRunnerMSTest>
   <CompletionStatisticsManager>
     <ItemStatistics item="Default">
-      <Item value="Debug" priority="4" />
+      <Item value="Debug" priority="10" />
       <Item value="Environment" priority="0" />
       <Item value="ex" priority="0" />
       <Item value="BitEditorStage" priority="0" />
@@ -95,7 +97,7 @@
       <Item value="null" priority="3" />
       <Item value="loadingImage" priority="0" />
       <Item value="Text" priority="2" />
-      <Item value="string" priority="2" />
+      <Item value="string" priority="3" />
       <Item value="BitWebImage" priority="1" />
       <Item value="IEnumerator" priority="0" />
       <Item value="void" priority="0" />
@@ -107,10 +109,16 @@
       <Item value="isLoadingImage" priority="0" />
       <Item value="bool" priority="0" />
       <Item value="enum" priority="0" />
+      <Item value="LayerMask" priority="1" />
+      <Item value="src.collections" priority="0" />
+      <Item value="StateMachine" priority="0" />
+      <Item value="Exception" priority="0" />
+      <Item value="LogTag" priority="0" />
+      <Item value="e" priority="1" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@UnityEngine.Debug">
-      <Item value="LogError" priority="2" />
-      <Item value="Log" priority="0" />
+      <Item value="LogError" priority="3" />
+      <Item value="Log" priority="5" />
       <Item value="LogWarning" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.Environment">
@@ -128,6 +136,7 @@
     </ItemStatistics>
     <ItemStatistics item="Qualified:@System.String">
       <Item value="IsNullOrEmpty" priority="0" />
+      <Item value="Format" priority="0" />
     </ItemStatistics>
     <ItemStatistics item="Qualified:UnityEngine.WWW">
       <Item value="isDone" priority="0" />
@@ -137,6 +146,16 @@
       <Item value="ALREADY_LOADED" priority="0" />
       <Item value="OTHER_LOADING" priority="0" />
       <Item value="OK" priority="0" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:@UnityEngine.LayerMask">
+      <Item value="NameToLayer" priority="1" />
+    </ItemStatistics>
+    <ItemStatistics item="Qualified:System.Exception">
+      <Item value="StackTrace" priority="2" />
+      <Item value="ToString" priority="0" />
+      <Item value="Source" priority="0" />
+      <Item value="Message" priority="0" />
+      <Item value="InnerException" priority="0" />
     </ItemStatistics>
   </CompletionStatisticsManager>
 </Configuration>
