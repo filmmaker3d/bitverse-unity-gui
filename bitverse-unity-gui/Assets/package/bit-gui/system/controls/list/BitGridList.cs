@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class BitGridList : AbstractBitList<IListModel, IPopulator>
 {
+    #region Data
+
+    public bool NotSelectableItems;
+
+    #endregion
+
     #region Draw
 
     //TODO optime this!
@@ -63,7 +69,7 @@ public class BitGridList : AbstractBitList<IListModel, IPopulator>
                 {
                     listRenderer.Location = new Point(itemPosition.x, itemPosition.y);
                     //bool selected = CheckSelection(data, itemPosition);
-                    bool selected = IsSelected(data);
+                    bool selected = NotSelectableItems ? false : IsSelected(data);
                     populator.Populate(listRenderer, data, i, selected);
                     if (!listRenderer.Visible)
                     {

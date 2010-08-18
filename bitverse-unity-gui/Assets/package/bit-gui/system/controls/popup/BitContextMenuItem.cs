@@ -106,7 +106,7 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
 		GUIStyle style = Style ?? menu.DefaultMenuItemStyle ?? DefaultStyle;
         GUIStyle arrowStyle = menu.SubmenuIndicatorStyle ?? DefaultStyle;
 
-		style.Draw(Position, Content, IsHover || ShowingSubmenu, IsActive, IsOn, Focus);
+        style.Draw(Position, Content, IsHover || ShowingSubmenu, IsActive, IsOn | ForceOnState, Focus);
 
 		if (IsHover)
 		{
@@ -124,7 +124,7 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
 		                    Position.y + ((Position.height - arrowStyle.fixedHeight) / 2),
 		                    arrowStyle.fixedWidth,
 		                    arrowStyle.fixedHeight),
-		           IsHover, IsActive, IsOn, false);
+                   IsHover, IsActive, IsOn | ForceOnState, false);
 
 		if (IsHover && !ContextMenu.Visible)
 		{

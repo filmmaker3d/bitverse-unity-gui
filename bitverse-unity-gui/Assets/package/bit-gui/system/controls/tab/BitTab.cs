@@ -58,7 +58,7 @@ public class BitTab : BitGroup
 	{
 		if (Event.current.type == EventType.Repaint)
 		{
-			(Style ?? DefaultStyle).Draw(Position, IsHover, IsActive, IsOn, false);
+            (Style ?? DefaultStyle).Draw(Position, IsHover, IsActive, IsOn | ForceOnState, false);
 		}
 		GUIClip.Push(Position);
 		DrawChildren();

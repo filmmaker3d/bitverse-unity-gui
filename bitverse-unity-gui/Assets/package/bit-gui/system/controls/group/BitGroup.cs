@@ -9,7 +9,7 @@ public class BitGroup : BitContainer
 	{
 		if (Event.current.type == EventType.Repaint)
 		{
-			(Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
 		}
 		GUIClip.Push(Position);
 		DrawChildren();

@@ -2,7 +2,7 @@ using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
-public class BitToggle : BitControl
+public partial class BitToggle : BitControl
 {
     #region Appearance
 
@@ -71,9 +71,9 @@ public class BitToggle : BitControl
         }
         Value = !Value;
         if(Value)
-            Stage.RaiseAudio(this, BitAudioEventTypeEnum.ToggleOn, ToggleOn);
+            Stage.RaiseAudio(this, BitAudioEventTypeEnum.ToggleOn, AudioGuidToggleOn);
         else
-            Stage.RaiseAudio(this, BitAudioEventTypeEnum.ToggleOff, ToggleOff);
+            Stage.RaiseAudio(this, BitAudioEventTypeEnum.ToggleOff, AudioGuidToggleOff);
         base.RaiseMouseClick(mouseButton, mousePosition);
     }
 
@@ -88,23 +88,4 @@ public class BitToggle : BitControl
     }*/
 
     #endregion
-    [HideInInspector]
-    [SerializeField]
-    private string _toggleOn = "default";
-
-    public string ToggleOn
-    {
-        get { return _toggleOn; }
-        set { _toggleOn = value; }
-    }
-
-    [HideInInspector]
-    [SerializeField]
-    private string _toggleOff = "default";
-
-    public string ToggleOff
-    {
-        get { return _toggleOff; }
-        set { _toggleOff = value; }
-    }
 }

@@ -128,7 +128,6 @@ public class MouseEnterEventArgs : EventArgs
 
     public delegate void SelectionChangedEventHandler<T>(object sender, SelectionChangedEventArgs<T> e);
 
-
     public class SelectionChangedEventArgs<T> : EventArgs
     {
         public readonly T[] Selection;
@@ -144,6 +143,8 @@ public class MouseEnterEventArgs : EventArgs
             Selection[0] = selection;
         }
     }
+
+    public delegate void UnselectEventHandler<T>(object sender);
 
 	public delegate void KeyPressedEventHandler(object sender, KeyPressedEventArgs e);
 

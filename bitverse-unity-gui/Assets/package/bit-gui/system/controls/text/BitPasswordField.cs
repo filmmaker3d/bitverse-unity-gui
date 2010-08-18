@@ -44,7 +44,7 @@ public class BitPasswordField : AbstractBitTextField
             if (ControlID == GUIUtility.keyboardControl)
                 GUI.DoTextField(Position, ControlID, TempContent, false, MaxLenght, Style ?? DefaultStyle);
             else
-                (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+                (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
 
             string text = !GUI.changed ? Text : TempContent.text;
             GUI.changed |= changed;
@@ -53,7 +53,7 @@ public class BitPasswordField : AbstractBitTextField
         }
         else
         {
-            (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+            (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
         }
 
 	}

@@ -3,10 +3,8 @@ using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
-public class BitScrollView : BitContainer
+public partial class BitScrollView : BitContainer
 {
-    private  Vector2 _scrollValue;
-
 	#region Appearance
 
 	public override GUIStyle DefaultStyle
@@ -33,14 +31,23 @@ public class BitScrollView : BitContainer
 
 	#region Behaviour
 
-	[SerializeField]
-	private Vector2 _scrollPosition;
+	private Vector2 _scrollPosition = Vector2.zero;
 
 
 	public Vector2 ScrollPosition
 	{
 		get { return _scrollPosition; }
-		set { _scrollPosition = value; }
+		set
+		{
+            
+            if(_scrollPosition != value)
+            {
+                //Debug.LogError(String.Format("Mandelbug: {0} : {1}", _scrollPosition, value));
+                RaiseScroll();
+            }
+                
+		    _scrollPosition = value;
+		}
 	}
 
 	#endregion
@@ -59,12 +66,6 @@ public class BitScrollView : BitContainer
 			Position,
 			ScrollPosition,
 			ScrollRenderer.Position);
-        if(ScrollPosition != _scrollValue)
-        {
-            //UFMAudioSource.Play(AudioConstants.ScrollChanged);
-            RaiseScroll();
-            _scrollValue = ScrollPosition;
-        }
 
 		DrawChildren();
 

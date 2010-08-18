@@ -25,7 +25,7 @@ public class BitModelViewer : BitBox
         _renderTarget = new RenderTexture((int) _width, (int) _height, 24);
         camera.targetTexture = _renderTarget;
         camera.clearFlags = CameraClearFlags.SolidColor;
-        camera.cullingMask = 1 << LayerMask.NameToLayer("ModelViewer");
+        camera.cullingMask = 1 << LayerHelper.GetLayers(LayerHelper.LayerContext.ModelViewer);
         camera.aspect = _width / _height;
         Content = new GUIContent(camera.targetTexture);
         //TODO: replace this with a shader that create a discrete alpha mask with the z buffer channel
@@ -63,7 +63,7 @@ public class BitModelViewer : BitBox
 
         Transform[] childs = theTarget.GetComponentsInChildren<Transform>(true);
 
-        int monitorlayer = LayerMask.NameToLayer("ModelViewer");
+        int monitorlayer = LayerHelper.GetLayers(LayerHelper.LayerContext.ModelViewer);
         if(monitorlayer != 0)
             theTarget.layer = monitorlayer;
 

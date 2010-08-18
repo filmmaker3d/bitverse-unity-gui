@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Bitverse.Commons;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class ContentBasedTextureCache : MonoBehaviour
+public class ContentBasedTextureCache:MonoBehaviour
 {
     private Dictionary<string, Item> _cache = new Dictionary<string, Item>();
 
-    public void Start()
+    public void Start() { InvokeUtils.SafeCall(this, SafeStart); }
+    void SafeStart()
     {
         DisposeAllCache();
     }
@@ -69,13 +71,13 @@ public class ContentBasedTextureCache : MonoBehaviour
     private void DestroyTexture(Texture2D texture)
     {
         if (Application.isEditor)
-        {
-            DestroyImmediate(texture);
-        }
-        else
-        {
-            Destroy(texture);
-        }
+            {
+                DestroyImmediate(texture);
+            }
+            else
+            {
+                Destroy(texture);
+            }
     }
 
     private class Item
@@ -86,7 +88,8 @@ public class ContentBasedTextureCache : MonoBehaviour
         public float expired;
     }
 
-    public void OnDisable()
+    public void OnDisable() { InvokeUtils.SafeCall(this, SafeOnDisable); }
+    void SafeOnDisable()
     {
         DisposeAllCache();
     }
@@ -105,7 +108,7 @@ public class ContentBasedTextureCache : MonoBehaviour
             //Debug.Log("cleaning " + key);
             PurgeTextureFromCache(key);
         }
-        Resources.UnloadUnusedAssets();
+        Resources.UnloadUnusedAssets();      
     }
 }
 

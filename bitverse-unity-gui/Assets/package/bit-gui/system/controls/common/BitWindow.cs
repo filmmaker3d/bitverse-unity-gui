@@ -25,9 +25,18 @@ public class BitWindow : BitContainer
             bool changed = base.Visible != value;
             base.Visible = value;
 
-            if ((changed) && (value))
+            if (!changed)
+            {
+                return;
+            }
+
+            if (value)
             {
                 BringToFront();
+            }
+            else if (TooltipManager != null)
+            {
+                TooltipManager.HideTooltip();
             }
         }
     }

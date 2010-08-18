@@ -17,7 +17,7 @@ public class BitLabel : BitControl
     
 	protected override void DoDraw()
     {
-        (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
+        (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
 	}
 
     #endregion

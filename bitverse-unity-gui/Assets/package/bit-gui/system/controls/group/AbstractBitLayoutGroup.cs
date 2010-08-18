@@ -54,7 +54,7 @@ public abstract class AbstractBitLayoutGroup : BitContainer
 
 	protected override void DoDraw()
 	{
-		(Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
+        (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
 		GUIClip.Push(Position);
 		SecureAutoSizeMe();
 		DrawChildren();

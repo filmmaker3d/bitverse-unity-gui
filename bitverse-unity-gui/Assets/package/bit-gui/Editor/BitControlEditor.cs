@@ -67,6 +67,7 @@ public partial class BitControlEditor : Editor
         ExecuteHandler();
         ProcessShortcuts();
         SetCurrentTarget();
+        CheckDuplicateGuids();
     }
 
     private void SetCurrentTarget()
@@ -153,6 +154,37 @@ public partial class BitControlEditor : Editor
             _testDrag = false;
     }
 
+    // Objects in Scene
+    private Dictionary<Guid, BitControl> _controlsInSceneEditor = new Dictionary<Guid, BitControl>();
+    private float _checkFrequency = 1;
+    private double _lastCheckedTime = Time.frameCount;
+
+    private void CheckDuplicateGuids()
+    {
+        // Small Hack to Check Duplicate Guids
+        if (Time.frameCount - _lastCheckedTime > _checkFrequency)
+        {
+            BitControl[] allControls = (BitControl[])FindObjectsOfType(typeof(BitControl));
+            foreach (BitControl curControl in allControls)
+            {
+                BitControl storedControl;
+                if (_controlsInSceneEditor.TryGetValue(curControl.ID, out storedControl))
+                {
+                    // If different control then change your ID
+                    if (storedControl.gameObject.GetInstanceID() != curControl.gameObject.GetInstanceID())
+                    {
+                        curControl.ID = Guid.NewGuid();
+                    }
+                }
+                else
+                {
+                    _controlsInSceneEditor.Add(curControl.ID, curControl);
+                }
+            }
+            _lastCheckedTime = Time.frameCount;
+        }
+    }
+
     private static bool _addingControl;
     private static BitControl _controlAdded;
 
@@ -180,6 +212,53 @@ public partial class BitControlEditor : Editor
 
     protected virtual void OnAddControl(BitControl control)
     {
+    }
+
+    private void TextKindCheck(bool defaultIsStatic)
+    {
+        Object[] selection = Selection.GetFiltered(typeof(Object), SelectionMode.TopLevel);
+
+        foreach (Object o in selection)
+        {
+            if (o.GetType().IsAssignableFrom(typeof(GameObject)))
+            {
+                GameObject go = (GameObject)o;
+                Component[] comps = go.GetComponentsInChildren(typeof(BitControl));
+                for (int t = 0; t < comps.Length; t++)
+                {
+                    BitControl control = (BitControl)comps[t];
+
+                    CheckThisContent(control, defaultIsStatic);
+                }
+            }
+        }
+    }
+
+    private void CheckThisContent(BitControl control, bool defaultIsStatic)
+    {
+        if (control.Text.Equals(string.Empty))
+            control.textKind = TextKind.NONE;
+        else
+            if (control.textKind == TextKind.NONE && defaultIsStatic)
+                control.textKind = TextKind.STATIC_TEXT;
+            else
+                if (control.textKind == TextKind.NONE && !defaultIsStatic)
+                    control.textKind = TextKind.DINAMIC_TEXT;
+
+        if (control.textKind != TextKind.STATIC_TEXT && control.textKind != TextKind.NONE)
+        {
+            if (!control.Content.text.Contains("<"))
+            {
+                //control.Content.text = "<" + control.Content.text + ">";
+            }
+        }
+        else
+        {
+            if (control.Content.text.Contains("<"))
+            {
+                //control.Content.text = control.Content.text.Substring(1, control.Content.text.Length - 2);
+            }
+        }
     }
 }
 
@@ -265,11 +344,193 @@ public class BitSpriteEditor : BitControlEditor
 [CustomEditor(typeof(BitWindow))]
 public class BitWindowEditor : BitControlEditor
 {
+    private bool drawDefaultInspector;
+
+    private List<TargetInfo> targetList = new List<TargetInfo>();
+    private List<GUIStyle> styles = new List<GUIStyle>();
+    private List<GUIStyle> copyStyles = new List<GUIStyle>();
+    private string report = "";
+
     protected override void OnAddControl(BitControl control)
     {
         control.Size = new Size(500, 300);
     }
+
+    public override void OnInspectorGUI()
+    {
+        base.OnInspectorGUI();
+        //DrawDefault();
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+        DrawButtons();
+    }
+
+    private void DrawDefault()
+    {
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.Space();
+        /*drawDefaultInspector = EditorGUILayout.Foldout(drawDefaultInspector, "Default", EditorStyles.foldout);
+        
+
+        if (drawDefaultInspector)*/
+        DrawDefaultInspector();
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        EditorGUILayout.EndVertical();
+    }
+
+    private GUISkin superSkin;
+
+    private void DrawButtons()
+    {
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Copy all Styles"))
+        {
+            BitControl window = target as BitControl;
+
+            if (window == null)
+                return;
+
+            report = "";
+
+            styles.Clear();
+            copyStyles.Clear();
+            superSkin = window.Skin;
+
+            foreach (GUIStyle s in window.Skin)
+            {
+                if (!Contains(window.Skin, s))
+                {
+                    Debug.Log("name: " + s.name);
+                    GUIStyle clone = new GUIStyle(s);
+                    report += "\nDefault added: " + s.name;
+                    styles.Add(s);
+                    copyStyles.Add(clone);
+                }
+            }
+
+            if (window.Style != null)
+            {
+                Add(window.name, window.Skin.name, window.Style);
+            }
+            else
+            {
+                Debug.Log("window is null");
+            }
+
+            GetChildStyles(window, window.Skin);
+
+            Debug.Log("Number of Styles: " + copyStyles.Count + "\n" + report + "\n");
+
+            GUISkinInspector.Font = window.Skin.font;
+            GUISkinInspector.PrefabCopy = true;
+            GUISkinInspector.CopiedStyleList.Clear();
+            GUISkinInspector.CopiedStyleList = copyStyles;
+        }
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private bool Contains(GUISkin skin, GUIStyle s)
+    {
+        foreach (GUIStyle t in skin.customStyles)
+        {
+            if (s.Equals(t))
+                return true;
+        }
+        return false;
+    }
+
+    private void GetChildStyles(BitControl parent, GUISkin parentSkin)
+    {
+        for (int i = 0; i < parent.transform.GetChildCount(); i++)
+        {
+            Component childd = parent.transform.GetChild(i).GetComponent(typeof(BitControl));
+
+            BitControl child = (BitControl)childd;
+
+            GUISkin childSkin = child.Skin;
+
+            if (child.Skin.name.Equals("InspectorGUISkin"))
+            {
+                childSkin = parentSkin;
+            }
+            else
+            {
+                childSkin = child.Skin;
+            }
+
+            if (!child.StyleName.Equals(""))
+            {
+                GUIStyle style = childSkin.GetStyle(child.StyleName);
+
+                if (!style.name.Equals(""))
+                {
+                    string newName = Add(child.name, childSkin.name, style);
+                    if (!newName.Equals(""))
+                        child.StyleName = newName;
+                }
+
+                //Debug.Log("else -> container: " + child.name + " , Skin Name: " + childSkin.name + " , style: " + style.name);
+
+            }
+            child.Skin = null;
+            GetChildStyles(child, childSkin);
+        }
+    }
+
+    private class StyleInfo
+    {
+        public GUISkin Skin;
+        public GUIStyle Style;
+
+        public string key()
+        {
+            return Skin.name + "-" + Style.name;
+        }
+    }
+
+    private class TargetInfo
+    {
+        public GUIStyle CloneStyle;
+        public StyleInfo SourceStyle;
+    }
+
+    private string Add(string control, string skinName, GUIStyle style)
+    {
+        string actualName = "";
+        int sameName = 0;
+        GUIStyle clone = new GUIStyle(style);
+        foreach (GUIStyle guiStyle in styles)
+        {
+            if (guiStyle.Equals(style))
+            {
+                return "";
+            }
+            if (guiStyle.name.Equals(style.name + "_" + sameName))
+                sameName++;
+        }
+        if (sameName > 0)
+            actualName = clone.name + "_" + sameName;
+        else
+            actualName = clone.name;
+
+        string reportLine = "\nControl Name: " + control + ", Skin Name: " + skinName + ", Style Name: " + actualName;
+
+        Debug.Log(reportLine);
+
+        report += reportLine;
+
+        clone.name = actualName;
+
+        styles.Add(style);
+        copyStyles.Add(clone);
+
+        return actualName;
+    }
+
 }
+
 
 #endregion
 

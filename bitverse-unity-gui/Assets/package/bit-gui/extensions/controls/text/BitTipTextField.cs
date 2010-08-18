@@ -134,7 +134,7 @@ public class BitTipTextField : AbstractBitTextField
                 bool useTip = string.IsNullOrEmpty(Content.text);
                 TempContent.text = useTip ? _tipText : Content.text;
                 DrawStyle = (useTip ? TipTextStyle: Style) ?? DefaultStyle;
-                DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+                DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
                 //GUI.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
             }
         }
@@ -144,7 +144,7 @@ public class BitTipTextField : AbstractBitTextField
             bool useTip = string.IsNullOrEmpty(Content.text);
             TempContent.text = useTip ? _tipText : Content.text;
             DrawStyle = (useTip ? TipTextStyle : Style) ?? DefaultStyle;
-            DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+            DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
         }
 
 	}
