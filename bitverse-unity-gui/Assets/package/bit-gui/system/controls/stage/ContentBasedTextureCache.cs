@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Bitverse.Commons;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]

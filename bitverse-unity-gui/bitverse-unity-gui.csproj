@@ -141,6 +141,7 @@
     <Compile Include="Assets\package\bit-gui\system\models\IFilteredListModel.cs" />
     <Compile Include="Assets\package\bit-gui\system\models\IListModel.cs" />
     <Compile Include="Assets\package\bit-gui\system\models\IPopulator.cs" />
+    <Compile Include="Assets\package\bit-gui\system\tooltip\ITooltipData.cs" />
     <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipManager.cs" />
     <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipProvider.cs" />
     <Compile Include="Assets\projects\calculator\CalculatorDemo.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Assets\test\SkinTest.cs" />
     <Compile Include="Assets\test\TestMain.cs" />
     <Compile Include="Assets\test\WebImageTest.cs" />
+    <Compile Include="Assets\utils\InvokeUtils.cs" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing">
       <HintPath>Assets\lib\System.Drawing.dll</HintPath>
