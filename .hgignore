@@ -1,5 +1,3 @@
 glob:bitverse-unity-gui/Temp/
 glob:bitverse-unity-gui/Library/
-relre:bitverse-unity-gui/_ReSharper
 relre:bitverse-unity-gui/obj
-glob:bitverse-unity-gui/bitverse-unity-gui.4.5.resharper.user
