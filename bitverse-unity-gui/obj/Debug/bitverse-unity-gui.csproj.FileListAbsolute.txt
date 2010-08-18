@@ -1,8 +1,0 @@
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\obj\Debug\ResolveAssemblyReference.cache
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\Temp\bin\Debug\Irrelvant.dll
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\Temp\bin\Debug\Irrelvant.pdb
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\Temp\bin\Debug\UnityEditor.dll
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\Temp\bin\Debug\UnityEngine-Debug.dll
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\obj\Debug\Irrelvant.dll
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\obj\Debug\Irrelvant.pdb
-C:\devel\work\bitiverse-gui\bitverse-unity-gui\Temp\bin\Debug\System.Drawing.Html.dll
