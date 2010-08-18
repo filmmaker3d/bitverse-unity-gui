@@ -76,6 +76,23 @@ public class DefaultBitListModel : IListModel, IEnumerable
         _data.Insert(index, item);
     }
 
+	public void Sort()
+	{
+		_data.Sort();
+	}
+	public void Sort(Comparison<object> comparison)
+	{
+		_data.Sort(comparison);
+	}
+	public void Sort(IComparer<object> comparer)
+	{
+		_data.Sort(comparer);
+	}
+	public void Sort(int index, int count, IComparer<object> comparer)
+	{
+		_data.Sort(index, count, comparer);
+	}
+
     #region Implementation of IEnumerable
 
     public IEnumerator GetEnumerator()

@@ -82,11 +82,11 @@ public abstract class AbstractBitTextField : BitControl
                 Text = AcceptOnlyNumbers ? Regex.Match(TempContent.text, @"\d+").Value : TempContent.text;
             }
             else
-                (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+                (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
         }
         else
         {
-            (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+            (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
         }
     }
 

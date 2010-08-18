@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bitverse.Commons;
 using Bitverse.Unity.Gui;
 using UnityEngine;
 
@@ -64,7 +65,8 @@ public class BitStage : BitContainer
 
     #region MonoBehaviour
 
-    public override void Awake()
+    public override void Awake() { InvokeUtils.SafeCall(this, SafeAwake); }
+    private void SafeAwake()
     {
         base.Awake();
 
@@ -80,13 +82,13 @@ public class BitStage : BitContainer
         {
             _dragManager = new BitDragManager(this);
         }
-
     }
 
     private int _errorCountDrawNonWindow;
     public bool hideAll = false;
 
-    public virtual void OnGUI()
+    public virtual void OnGUI() { InvokeUtils.SafeCall(this, SafeOnGUI); }
+    private void SafeOnGUI()
     {
         if (Event.current.type == EventType.KeyUp && Event.current.keyCode == KeyCode.F11 && Event.current.control)
         {
@@ -97,168 +99,174 @@ public class BitStage : BitContainer
 
         OriginalEvent = Event.current.type;
         ThereIsAFocusedControl = false;
-        try
+
+        Current = this;
+        if (Event.current.type != EventType.Repaint && Event.current.type != EventType.Ignore)
         {
-            Current = this;
-            if (Event.current.type != EventType.Repaint && Event.current.type != EventType.Ignore)
+            foreach (WindowReg reg in _windowDic.Values)
+                reg.Sweep = true;
+            if (Position.width != Screen.width || Position.height != Screen.height)
             {
-                foreach (WindowReg reg in _windowDic.Values)
-                    reg.Sweep = true;
-                if (Position.width != Screen.width || Position.height != Screen.height)
+                Size = new Size(Screen.width, Screen.height);
+                LayoutChildren();
+            }
+
+            //stage events should be global...
+            RaiseMouseMove(Event.current.mousePosition);
+
+            if (Event.current.type == EventType.MouseUp) //Input.GetMouseButtonUp(MouseButtons.Left))
+            {
+                RaiseMouseUp(Event.current.button, Event.current.mousePosition);
+            }
+
+            if (Visible)
+            {
+                DoBeforeOnGUI();
+
+                GUI.matrix = transform.localToWorldMatrix;
+
+                for (int i = transform.childCount - 1; i >= 0; i--)
                 {
-                    Size = new Size(Screen.width, Screen.height);
-                    LayoutChildren();
-                }
-
-                //stage events should be global...
-                RaiseMouseMove(Event.current.mousePosition);
-
-                if (Event.current.type == EventType.MouseUp) //Input.GetMouseButtonUp(MouseButtons.Left))
-                {
-                    RaiseMouseUp(Event.current.button, Event.current.mousePosition);
-                }
-
-                if (Visible)
-                {
-                    DoBeforeOnGUI();
-
-                    GUI.matrix = transform.localToWorldMatrix;
-
-                    for (int i = transform.childCount - 1; i >= 0; i--)
+                    BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+                    if (c is BitWindow)
                     {
-                        BitControl c = transform.GetChild(i).GetComponent<BitControl>();
-                        if (c is BitWindow)
+                        BitWindow win = (BitWindow) c;
+                        if (win.DestroyMe && (c.animation == null || !c.animation.isPlaying))
                         {
-                            BitWindow win = (BitWindow)c;
-                            if (win.DestroyMe && (c.animation == null || !c.animation.isPlaying))
-                            {
-                                _windowDic.Remove(win);
-                                c.Parent = null;
-                                c.transform.parent = null;
-                                win._destroyCallback(0);
-                                Destroy(c.gameObject);
-                            }
-                            else
-                                RegWindow(win);
+                            _windowDic.Remove(win);
+                            c.Parent = null;
+                            c.transform.parent = null;
+                            win._destroyCallback(0);
+                            Destroy(c.gameObject);
                         }
                         else
+                            RegWindow(win);
+                    }
+                    else
+                    {
+                        _errorCountDrawNonWindow++;
+                        if (_errorCountDrawNonWindow > 500)
                         {
-                            _errorCountDrawNonWindow++;
-                            if (_errorCountDrawNonWindow > 500)
-                            {
-                                _errorCountDrawNonWindow = 0;
-                                Debug.LogError(string.Format("BitStage - Wrong usage, added something other than a window to a bit stage: Name={0}", c.name));
-                            }
+                            _errorCountDrawNonWindow = 0;
+                                Logger.Error("BitStage", string.Format("Wrong usage, added something other than a window to a bit stage. Parent = {0}, Name = {1}", transform.GetChild(i).name, (c==null) ? "[non BitControl]" : c.name));
                         }
                     }
                 }
-                List<WindowReg> toDelete = null;
-                foreach (WindowReg reg in _windowDic.Values)
-                    if (reg.Sweep)
-                        (toDelete ?? (toDelete = new List<WindowReg>())).Add(reg);
-                if (toDelete != null)
-                    foreach (WindowReg reg in toDelete)
-                        _windowDic.Remove(reg.Window);
             }
-            if (_windowDic.Count > 0)
+            List<WindowReg> toDelete = null;
+            foreach (WindowReg reg in _windowDic.Values)
+                if (reg.Sweep)
+                    (toDelete ?? (toDelete = new List<WindowReg>())).Add(reg);
+            if (toDelete != null)
+                foreach (WindowReg reg in toDelete)
+                    _windowDic.Remove(reg.Window);
+        }
+        if (_windowDic.Count > 0)
+        {
+            Array.Resize(ref _windows, _windowDic.Count);
+            // inserts the windows after the last empty bucket.
+            _windowDic.Values.CopyTo(_windows, 0);
+
+            _reversed = false;
+            Array.Sort(_windows);
+
+
+            WindowReg topModalWindow = null;
+            WindowReg topPopupWindow = null;
+            WindowReg topMessagesWindow = null;
+            WindowReg topLoadingWindow = null;
+            WindowReg topPanelWindow = null;
+            WindowReg topNormalWindow = null;
+            WindowReg topBackgroundWindow = null;
+
+            if (Event.current.type == EventType.Layout)
+                _hoverWindow = null;
+
+            bool leaveLoop = false;
+            for (int j = _windows.Length - 1; j >= 0; j--)
             {
-                Array.Resize(ref _windows, _windowDic.Count);
-                // inserts the windows after the last empty bucket.
-                _windowDic.Values.CopyTo(_windows, 0);
+                WindowReg r = (WindowReg) _windows.GetValue(j);
 
-                _reversed = false;
-                Array.Sort(_windows);
+                if (!r.Visible)
+                    break;
 
-
-                WindowReg topModalWindow = null;
-                WindowReg topPopupWindow = null;
-                WindowReg topMessagesWindow = null;
-                WindowReg topLoadingWindow = null;
-                WindowReg topPanelWindow = null;
-                WindowReg topNormalWindow = null;
-                WindowReg topBackgroundWindow = null;
-
-                if (Event.current.type == EventType.Layout)
-                    _hoverWindow = null;
-
-                bool leaveLoop = false;
-                for (int j = _windows.Length - 1; j >= 0; j--)
+                switch (r.FormMode)
                 {
-                    WindowReg r = (WindowReg)_windows.GetValue(j);
-
-                    if (!r.Visible)
+                    case FormModes.Popup:
+                        topPopupWindow = (topPopupWindow ?? r);
                         break;
-
-                    switch (r.FormMode)
-                    {
-                        case FormModes.Popup:
-                            topPopupWindow = (topPopupWindow ?? r);
-                            break;
-                        case FormModes.Messages:
-                            topMessagesWindow = (topMessagesWindow ?? r);
-                            break;
-                        case FormModes.Modal:
-                            topModalWindow = (topModalWindow ?? r);
-                            break;
-                        case FormModes.Loading:
-                            topLoadingWindow = (topLoadingWindow ?? r);
-                            break;
-                        case FormModes.Panel:
-                            topPanelWindow = (topPanelWindow ?? r);
-                            break;
-                        case FormModes.Background:
-                            topBackgroundWindow = (topBackgroundWindow ?? r);
-                            leaveLoop = true; // last window type
-                            break;
-                        default:
-                            topNormalWindow = (topNormalWindow ?? r);
-                            break;
-                    }
-                    if (leaveLoop)
+                    case FormModes.Messages:
+                        topMessagesWindow = (topMessagesWindow ?? r);
+                        break;
+                    case FormModes.Modal:
+                        topModalWindow = (topModalWindow ?? r);
+                        break;
+                    case FormModes.Loading:
+                        topLoadingWindow = (topLoadingWindow ?? r);
+                        break;
+                    case FormModes.Panel:
+                        topPanelWindow = (topPanelWindow ?? r);
+                        break;
+                    case FormModes.Background:
+                        topBackgroundWindow = (topBackgroundWindow ?? r);
+                        leaveLoop = true; // last window type
+                        break;
+                    default:
+                        topNormalWindow = (topNormalWindow ?? r);
                         break;
                 }
+                if (leaveLoop)
+                    break;
+            }
 
-                // Mouse handling and other events should be processed top first.
-                if (Event.current.type != EventType.Repaint)
+            // Mouse handling and other events should be processed top first.
+            if (Event.current.type != EventType.Repaint)
+            {
+                _reversed = true;
+                Array.Reverse(_windows);
+            }
+
+            WindowReg firstWindowReg = null;
+            foreach (WindowReg reg in _windows)
+            {
+                try
                 {
-                    _reversed = true;
-                    Array.Reverse(_windows);
+                    if (reg.Window == null)
+                        continue;
+
+                    bool lastEnabled = reg.Window.Enabled;
+                    if (topModalWindow != null && reg.Window != topModalWindow.Window && DisablableByModal(reg.FormMode))
+                        reg.Window.Enabled = false;
+                    reg.Window.Draw();
+                    reg.Window.Enabled = lastEnabled;
+
+                    // Consume Events in modal
+                    if (reg.Window.FormMode == FormModes.Modal && Event.current.type != EventType.Repaint && reg.Visible)
+                    {
+                        Event.current.Use();
+                    }
                 }
-
-                WindowReg firstWindowReg = null;
-                foreach (WindowReg reg in _windows)
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        if (reg.Window == null)
-                            continue;
-
-                        bool lastEnabled = reg.Window.Enabled;
-                        if (topModalWindow != null && reg.Window != topModalWindow.Window && DisablableByModal(reg.FormMode))
-                            reg.Window.Enabled = false;
-                        reg.Window.Draw();
-                        reg.Window.Enabled = lastEnabled;
-
-                        // Consume Events in modal
-                        if (reg.Window.FormMode == FormModes.Modal && Event.current.type != EventType.Repaint && reg.Visible)
-                        {
-                            Event.current.Use();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.LogError(string.Format("BitStage - Errors found during BitStage Draw: WindowName={0}" + Environment.NewLine + ex, reg.WindowName));
-                    }
+                    Logger.Exception("BitStage", string.Format("Errors found during BitStage Draw: WindowName={0}", reg.WindowName), ex);
                 }
             }
-            _isAnyControlFocused = ThereIsAFocusedControl;
-            UpdateCursor();
+        }
+        _isAnyControlFocused = ThereIsAFocusedControl;
+        UpdateCursor();
+
+
+        try
+        {
+            if (TextureCache != null)
+            {
+                TextureCache.Cleanup();
+            }
         }
         catch (Exception ex)
         {
-            Debug.LogError(ex);
+            Logger.Exception("BitStage", "Exception on OnGUI! -> TextureCache cleanup", ex);
         }
-        TextureCache.Cleanup();
     }
 
     private bool DisablableByModal(FormModes mode)
@@ -409,7 +417,8 @@ public class BitStage : BitContainer
         reg.Visible = window.Visible;
 
         // to speedup comparison
-        reg.FormModeSortIndex = WindowReg.FormMode2SortIndex[window.FormMode];
+        if (WindowReg.FormMode2SortIndex.ContainsKey(window.FormMode))
+            reg.FormModeSortIndex = WindowReg.FormMode2SortIndex[window.FormMode];
     }
 
     public void BringWindowToFront(BitWindow window)
@@ -481,10 +490,6 @@ public class BitStage : BitContainer
 
     private void UpdateCursor()
     {
-        if (currentCursorState == null)
-        {
-            return;
-        }
         if (_lastCursorState != currentCursorState)
         {
             Screen.showCursor = false;
@@ -521,7 +526,7 @@ public class BitStage : BitContainer
             }
             _lastCursorState = currentCursorState;
         }
-        if (_currentCursorArray != null)
+        if (_currentCursorArray != null && cursorIndex < _currentCursorArray.Length)
         {
             Vector3 pos = Input.mousePosition;
             Texture2D tex = _currentCursorArray[cursorIndex];
@@ -541,7 +546,8 @@ public class BitStage : BitContainer
         }
     }
 
-    public void OnDisable()
+    public void OnDisable() { InvokeUtils.SafeCall(this, SafeOnDisable); }
+    void SafeOnDisable()
     {
         Screen.showCursor = true;
     }

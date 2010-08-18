@@ -17,8 +17,8 @@ using UnityEngine;
 /// |__|__|___________________________________|__|__|
 /// </summary>
 public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelectableControl<object>
-	where TModel : IListModel
-	where TPopulator : IPopulator
+    where TModel : IListModel
+    where TPopulator : IPopulator
 {
 
     #region MonoBehaviour
@@ -40,154 +40,162 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
     #region Behaviour
 
     [SerializeField]
-	private bool _alwaysShowScroll;
+    private bool _alwaysShowScroll;
 
-	private Vector2 _scrollPosition;
+    private Vector2 _scrollPosition;
 
-	public Vector2 ScrollPosition
-	{
-		get { return _scrollPosition; }
-		set { _scrollPosition = value; }
-	}
+    public Vector2 ScrollPosition
+    {
+        get { return _scrollPosition; }
+        set { _scrollPosition = value; }
+    }
 
-	protected Rect ScrollRect;
-	protected Rect ScrollView;
+    protected Rect ScrollRect;
+    protected Rect ScrollView;
 
-	protected bool ShowScroll;
+    protected bool ShowScroll;
 
-	/// <summary>
-	/// Gets and sets whether the scroll is always visible (only vertical).
-	/// </summary>
-	public bool ScrollAlwaysVisible
-	{
-		get { return _alwaysShowScroll; }
-		set { _alwaysShowScroll = value; }
-	}
-
-	/// <summary>
-	/// [Read-only] Whether the scroll is current visible or not (only vertical).
-	/// </summary>
-	public bool ScrollIsVisible
-	{
-		get { return _alwaysShowScroll || ShowScroll; }
-	}
-
-	#endregion
+    protected bool _allowUnselect;
+    public bool AllowUnselect
+    {
+        get { return _allowUnselect; }
+        set { _allowUnselect = value; }
+    }
 
 
-	#region Data
+    /// <summary>
+    /// Gets and sets whether the scroll is always visible (only vertical).
+    /// </summary>
+    public bool ScrollAlwaysVisible
+    {
+        get { return _alwaysShowScroll; }
+        set { _alwaysShowScroll = value; }
+    }
 
-	protected BitControl _renderer;
+    /// <summary>
+    /// [Read-only] Whether the scroll is current visible or not (only vertical).
+    /// </summary>
+    public bool ScrollIsVisible
+    {
+        get { return _alwaysShowScroll || ShowScroll; }
+    }
 
-	/// <summary>
-	/// The renderer that is used as a template to draw all list items.
-	/// </summary>
-	public BitControl Renderer
-	{
-		get
-		{
-			if (_renderer == null)
-			{
-				_renderer = FindControl<BitControl>();
-			}
-			return _renderer;
-		}
-	}
-
-
-	protected TModel _model;
-
-	/// <summary>
-	/// List data.
-	/// </summary>
-	public TModel Model
-	{
-		get { return _model; }
-		set
-		{
-			_model = value;
-			_scrollPosition.y = 0;
-		}
-	}
-
-	protected TPopulator _populator;
-
-	/// <summary>
-	/// Populator that populates the <see cref="Renderer"/> using <see cref="Model"/> data.
-	/// </summary>
-	public TPopulator Populator
-	{
-		get { return _populator; }
-		set
-		{
-			_populator = value;
-			_scrollPosition.y = 0;
-		}
-	}
-
-	#endregion
+    #endregion
 
 
-	#region Draw
+    #region Data
 
-	private float _scrollHorizontalPadding;
+    protected BitControl _renderer;
 
-	private void BeforeDraw(GUIStyle listStyle, GUIStyle scrollStyle, bool showScroll)
-	{
-		if (showScroll)
-		{
-			_scrollHorizontalPadding =
-				scrollStyle.padding.right +
-				Skin.verticalScrollbar.margin.horizontal +
-				Skin.verticalScrollbarThumb.fixedWidth;
+    /// <summary>
+    /// The renderer that is used as a template to draw all list items.
+    /// </summary>
+    public BitControl Renderer
+    {
+        get
+        {
+            if (_renderer == null)
+            {
+                _renderer = FindControl<BitControl>();
+            }
+            return _renderer;
+        }
+    }
 
-			ScrollRect = new Rect(
-				listStyle.padding.left + scrollStyle.margin.left,
-				listStyle.padding.top + scrollStyle.margin.top,
-				Position.width - listStyle.padding.horizontal - scrollStyle.margin.horizontal,
-				Position.height - listStyle.padding.vertical - scrollStyle.margin.vertical);
-		}
-		else
-		{
-			_scrollHorizontalPadding = 0;
 
-			ScrollRect = new Rect(
-				listStyle.padding.left + scrollStyle.margin.left,
-				listStyle.padding.top + scrollStyle.margin.top,
-				Position.width - listStyle.padding.horizontal,
-				Position.height - listStyle.padding.vertical);
-		}
+    protected TModel _model;
 
-		ScrollView.width = ScrollRect.width - _scrollHorizontalPadding;
-	}
-    
-	protected override void DoDraw()
-	{
-		GUIStyle listStyle = Style ?? DefaultStyle;
-		GUIStyle scrollStyle = Skin.scrollView ?? new GUIStyle();
-		bool showScroll = ScrollIsVisible;
+    /// <summary>
+    /// List data.
+    /// </summary>
+    public TModel Model
+    {
+        get { return _model; }
+        set
+        {
+            _model = value;
+            _scrollPosition.y = 0;
+        }
+    }
 
-		BeforeDraw(listStyle, scrollStyle, showScroll);
+    protected TPopulator _populator;
 
-		GUI.BeginGroup(Position, Content, listStyle);
+    /// <summary>
+    /// Populator that populates the <see cref="Renderer"/> using <see cref="Model"/> data.
+    /// </summary>
+    public TPopulator Populator
+    {
+        get { return _populator; }
+        set
+        {
+            _populator = value;
+            _scrollPosition.y = 0;
+        }
+    }
 
-		if (showScroll && ScrollView.height < ScrollRect.height)
-		{
+    #endregion
+
+
+    #region Draw
+
+    private float _scrollHorizontalPadding;
+
+    private void BeforeDraw(GUIStyle listStyle, GUIStyle scrollStyle, bool showScroll)
+    {
+        if (showScroll)
+        {
+            _scrollHorizontalPadding =
+                scrollStyle.padding.right +
+                Skin.verticalScrollbar.margin.horizontal +
+                Skin.verticalScrollbarThumb.fixedWidth;
+
+            ScrollRect = new Rect(
+                listStyle.padding.left + scrollStyle.margin.left,
+                listStyle.padding.top + scrollStyle.margin.top,
+                Position.width - listStyle.padding.horizontal - scrollStyle.margin.horizontal,
+                Position.height - listStyle.padding.vertical - scrollStyle.margin.vertical);
+        }
+        else
+        {
+            _scrollHorizontalPadding = 0;
+
+            ScrollRect = new Rect(
+                listStyle.padding.left + scrollStyle.margin.left,
+                listStyle.padding.top + scrollStyle.margin.top,
+                Position.width - listStyle.padding.horizontal,
+                Position.height - listStyle.padding.vertical);
+        }
+
+        ScrollView.width = ScrollRect.width - _scrollHorizontalPadding;
+    }
+
+    protected override void DoDraw()
+    {
+        GUIStyle listStyle = Style ?? DefaultStyle;
+        GUIStyle scrollStyle = Skin.scrollView ?? new GUIStyle();
+        bool showScroll = ScrollIsVisible;
+
+        BeforeDraw(listStyle, scrollStyle, showScroll);
+
+        GUI.BeginGroup(Position, Content, listStyle);
+
+        if (showScroll && ScrollView.height < ScrollRect.height)
+        {
             ScrollView.height = ScrollRect.height;
-		}
-		_scrollPosition = GUI.BeginScrollView(ScrollRect, _scrollPosition, ScrollView, false, showScroll);
+        }
+        _scrollPosition = GUI.BeginScrollView(ScrollRect, _scrollPosition, ScrollView, false, showScroll);
 
-		BeforeDrawChildren(listStyle, scrollStyle);
-		DrawChildren();
+        BeforeDrawChildren(listStyle, scrollStyle);
+        DrawChildren();
         RollScroll();
 
-	    GUI.EndScrollView();
-		GUI.EndGroup();
-		//_mouseClickInfo = null;
-		IsActive = false;
-		IsHover = false;
-		IsOn = false;
-	}
+        GUI.EndScrollView();
+        GUI.EndGroup();
+        //_mouseClickInfo = null;
+        IsActive = false;
+        IsHover = false;
+        IsOn = false;
+    }
 
     protected virtual void BeforeDrawChildren(GUIStyle listStyle, GUIStyle scrollStyle)
     {
@@ -207,33 +215,33 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
         return true;
     }
 
-	protected override void DrawChildren()
-	{
-		if (EditMode)
-		{
-			DrawInEditMode();
-			return;
-		}
+    protected override void DrawChildren()
+    {
+        if (EditMode)
+        {
+            DrawInEditMode();
+            return;
+        }
 
-		BitControl listRenderer;
-		TModel model;
-		TPopulator populator;
+        BitControl listRenderer;
+        TModel model;
+        TPopulator populator;
 
-        if (!GetRendererModelAndPopulator(out listRenderer,out model,out populator))
+        if (!GetRendererModelAndPopulator(out listRenderer, out model, out populator))
         {
             return;
         }
-        
-        PopulateAndDraw(listRenderer, model, populator);
-	}
 
-	/// <summary>
-	/// Populates and draws list items.
-	/// </summary>
-	/// <param name="listRenderer">A not-null list renderer.</param>
-	/// <param name="model">A not-null list model.</param>
-	/// <param name="populator">A not-null populator.</param>
-	protected abstract void PopulateAndDraw(BitControl listRenderer, TModel model, TPopulator populator);
+        PopulateAndDraw(listRenderer, model, populator);
+    }
+
+    /// <summary>
+    /// Populates and draws list items.
+    /// </summary>
+    /// <param name="listRenderer">A not-null list renderer.</param>
+    /// <param name="model">A not-null list model.</param>
+    /// <param name="populator">A not-null populator.</param>
+    protected abstract void PopulateAndDraw(BitControl listRenderer, TModel model, TPopulator populator);
 
     private bool _rollDownScroll = false;
     private bool _rollUpScroll = false;
@@ -265,30 +273,40 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
 
     }
 
-	#endregion
+    #endregion
 
 
-	#region Editor
+    #region Editor
 
-	/// <summary>
-	/// Method called to draw gizmos in editor mode.
-	/// </summary>
-	protected abstract void DrawInEditMode();
+    /// <summary>
+    /// Method called to draw gizmos in editor mode.
+    /// </summary>
+    protected abstract void DrawInEditMode();
 
-	#endregion
+    #endregion
 
 
-	#region Events
+    #region Events
 
-	public event SelectionChangedEventHandler<object> SelectionChanged;
+    public event SelectionChangedEventHandler<object> SelectionChanged;
 
-	protected void RaiseSelectionChanged()
-	{
-		if (SelectionChanged != null)
-		{
-			SelectionChanged(this, new SelectionChangedEventArgs<object>(_selectedItems.ToArray()));
-		}
-	}
+    protected void RaiseSelectionChanged()
+    {
+        if (SelectionChanged != null)
+        {
+            SelectionChanged(this, new SelectionChangedEventArgs<object>(_selectedItems.ToArray()));
+        }
+    }
+
+
+    public event UnselectEventHandler<object> ItemUnselected;
+    protected void RaiseUnselectItem()
+    {
+        if (ItemUnselected != null)
+        {
+            ItemUnselected(this);
+        }
+    }
 
     /*
     protected override void InternalOnMouseClick(int mouseButton, Vector2 mousePosition)
@@ -299,187 +317,198 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
                 _mouseClickInfo = new MouseClickInfo(mouseButton, new Vector2(mousePosition.x - Position.x, mousePosition.y - Position.y + _scrollPosition.y), Event.current.control, Event.current.shift);
             }
         }*/
-    
+
 
     private void OnChildMouseDown(object sender, MouseEventArgs e)
     {
-        short Modifiers = KeyboardModifiers.None;
-        if (Event.current.shift)
+        if (e.MouseButton == MouseButtons.Left)
         {
-            Modifiers |= KeyboardModifiers.Shift;
+            short Modifiers = KeyboardModifiers.None;
+            if (Event.current.shift)
+            {
+                Modifiers |= KeyboardModifiers.Shift;
+            }
+            if (Event.current.control)
+            {
+                Modifiers |= KeyboardModifiers.Control;
+            }
+            AddSelectionItem(BitGuiContext.Current.Data, Modifiers);
         }
-        if (Event.current.control)
-        {
-            Modifiers |= KeyboardModifiers.Control;
-        }
-        AddSelectionItem(BitGuiContext.Current.Data, Modifiers);
     }
-    
 
 
 
-	#endregion
+
+    #endregion
 
 
-	#region Hierarchy
+    #region Hierarchy
 
-	protected override T InternalAddControl<T>(string controlName)
-	{
-		if (Renderer != null && Renderer.gameObject != null)
-		{
-			if (EditMode)
-			{
-				DestroyImmediate(Renderer.gameObject);
-			}
-			else
-			{
-				Destroy(Renderer.gameObject);
-			}
-			_renderer.transform.parent = null;
-			_renderer = null;
-		}
-		BitControl control = base.InternalAddControl<T>(controlName);
-		control.Size = new Size(0, 20);
-		return (T) control;
-	}
+    protected override T InternalAddControl<T>(string controlName)
+    {
+        if (Renderer != null && Renderer.gameObject != null)
+        {
+            if (EditMode)
+            {
+                DestroyImmediate(Renderer.gameObject);
+            }
+            else
+            {
+                Destroy(Renderer.gameObject);
+            }
+            _renderer.transform.parent = null;
+            _renderer = null;
+        }
+        BitControl control = base.InternalAddControl<T>(controlName);
+        control.Size = new Size(0, 20);
+        return (T)control;
+    }
 
-	protected override BitControl InternalAddControl(Type controlType, string controlName)
-	{
-		if (Renderer != null && Renderer.gameObject != null)
-		{
-			if (EditMode)
-			{
-				DestroyImmediate(Renderer.gameObject);
-			}
-			else
-			{
-				Destroy(Renderer.gameObject);
-			}
-		}
-		BitControl control = base.InternalAddControl(controlType, controlName);
-		control.Size = new Size(0, 20);
-		return control;
-	}
+    protected override BitControl InternalAddControl(Type controlType, string controlName)
+    {
+        if (Renderer != null && Renderer.gameObject != null)
+        {
+            if (EditMode)
+            {
+                DestroyImmediate(Renderer.gameObject);
+            }
+            else
+            {
+                Destroy(Renderer.gameObject);
+            }
+        }
+        BitControl control = base.InternalAddControl(controlType, controlName);
+        control.Size = new Size(0, 20);
+        return control;
+    }
 
-	#endregion
-
-
-	#region Layout
-
-	internal override void LayoutChildren()
-	{
-	}
-
-	#endregion
+    #endregion
 
 
-	//TODO Selection Manager please!
+    #region Layout
+
+    internal override void LayoutChildren()
+    {
+    }
+
+    #endregion
 
 
-	#region Selection
-
-	private readonly List<object> _selectedItems = new List<object>();
-
-	public object[] SelectedItems
-	{
-		get { return _selectedItems.ToArray(); }
-	}
+    //TODO Selection Manager please!
 
 
-	[SerializeField]
-	private bool _multiSelection;
+    #region Selection
 
-	public bool MultiSelection
-	{
-		get { return _multiSelection; }
-		set
-		{
-			_multiSelection = value;
-			if (!value && _selectedItems.Count > 0)
-			{
-				ClearSelection();
-				AddSelectionItem(_lastSelectedItem, KeyboardModifiers.None);
-			}
-		}
-	}
+    private readonly List<object> _selectedItems = new List<object>();
 
-	//TODO Implement keep selection
-	private bool _keepSelection;
-
-	public bool KeepSelection
-	{
-		get { return _keepSelection; }
-		set { _keepSelection = value; }
-	}
-
-	public int IndexOf(object item)
-	{
-		if (item != null)
-		{
-			return _selectedItems.IndexOf(item);
-		}
-		return -1;
-	}
-
-	public void AddSelectionItem(object item, short modifiers)
-	{
-		if (item == null)
-		{
-			return;
-		}
-
-		if (!MultiSelection)
-		{
-			if (IsSelected(item))
-			{
-				return;
-			}
-			ClearSelection();
-			SelectItem(item);
-			return;
-		}
-
-		if (modifiers == KeyboardModifiers.None)
-		{
-			ClearSelection();
-			SelectItem(item);
-			return;
-		}
+    public object[] SelectedItems
+    {
+        get { return _selectedItems.ToArray(); }
+    }
 
 
-		bool shift = (modifiers & KeyboardModifiers.Shift) == KeyboardModifiers.Shift;
-		bool control = (modifiers & KeyboardModifiers.Control) == KeyboardModifiers.Control;
-		if (shift)
-		{
-			if (!control)
-			{
-				ClearSelection();
-			}
-			SelectRange(Model.IndexOf(_lastSelectedItem), Model.IndexOf(item));
-			return;
-		}
+    [SerializeField]
+    private bool _multiSelection;
 
-		if (control)
-		{
-			if (IsSelected(item))
-			{
-				RemoveSelectionItem(item);
-			}
-			else
-			{
-				SelectItem(item);
-			}
-		}
-	}
+    public bool MultiSelection
+    {
+        get { return _multiSelection; }
+        set
+        {
+            _multiSelection = value;
+            if (!value && _selectedItems.Count > 0)
+            {
+                ClearSelection();
+                AddSelectionItem(_lastSelectedItem, KeyboardModifiers.None);
+            }
+        }
+    }
 
-	private object _lastSelectedItem;
+    //TODO Implement keep selection
+    private bool _keepSelection;
 
-	public void SelectItem(object item)
-	{
-		_lastSelectedItem = item;
-		_selectedItems.Add(item);
-		RaiseSelectionChanged();
-	}
+    public bool KeepSelection
+    {
+        get { return _keepSelection; }
+        set { _keepSelection = value; }
+    }
+
+    public int IndexOf(object item)
+    {
+        if (item != null)
+        {
+            return _selectedItems.IndexOf(item);
+        }
+        return -1;
+    }
+
+    public void AddSelectionItem(object item, short modifiers)
+    {
+        if (item == null)
+        {
+            return;
+        }
+
+        if (!MultiSelection)
+        {
+            if (IsSelected(item))
+            {
+                if (!AllowUnselect)
+                {
+                    return;
+                }
+
+                RemoveSelectionItem(item);
+                return;
+            }
+
+            ClearSelection();
+            SelectItem(item);
+            return;
+        }
+
+        if (modifiers == KeyboardModifiers.None)
+        {
+            ClearSelection();
+            SelectItem(item);
+            return;
+        }
+
+
+        bool shift = (modifiers & KeyboardModifiers.Shift) == KeyboardModifiers.Shift;
+        bool control = (modifiers & KeyboardModifiers.Control) == KeyboardModifiers.Control;
+        if (shift)
+        {
+            if (!control)
+            {
+                ClearSelection();
+            }
+            SelectRange(Model.IndexOf(_lastSelectedItem), Model.IndexOf(item));
+            return;
+        }
+
+        if (control)
+        {
+            if (IsSelected(item))
+            {
+                RemoveSelectionItem(item);
+            }
+            else
+            {
+                SelectItem(item);
+            }
+        }
+    }
+
+
+    private object _lastSelectedItem;
+
+    public void SelectItem(object item)
+    {
+        _lastSelectedItem = item;
+        _selectedItems.Add(item);
+        RaiseSelectionChanged();
+    }
 
     public void SelectItemWithoutRaise(object item)
     {
@@ -487,85 +516,86 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
         _selectedItems.Add(item);
     }
 
-	public void SelectRange(int first, int last)
-	{
-		if (first < 0)
-		{
-			if (last < 0)
-			{
-				return;
-			}
-			SelectItem(_model[last]);
-			return;
-		}
+    public void SelectRange(int first, int last)
+    {
+        if (first < 0)
+        {
+            if (last < 0)
+            {
+                return;
+            }
+            SelectItem(_model[last]);
+            return;
+        }
 
-		if (last < 0)
-		{
-			if (first < 0)
-			{
-				return;
-			}
-			SelectItem(_model[first]);
-			return;
-		}
+        if (last < 0)
+        {
+            if (first < 0)
+            {
+                return;
+            }
+            SelectItem(_model[first]);
+            return;
+        }
 
-		if (first == last)
-		{
-			SelectItem(_model[first]);
-			return;
-		}
+        if (first == last)
+        {
+            SelectItem(_model[first]);
+            return;
+        }
 
-		if (first > last)
-		{
-			int aux = first;
-			first = last;
-			last = aux;
-		}
-		for (int i = first; i < last; i++)
-		{
-			_selectedItems.Add(_model[i]);
-		}
-		SelectItem(_model[last]);
-	}
+        if (first > last)
+        {
+            int aux = first;
+            first = last;
+            last = aux;
+        }
+        for (int i = first; i < last; i++)
+        {
+            _selectedItems.Add(_model[i]);
+        }
+        SelectItem(_model[last]);
+    }
 
-	public bool RemoveSelectionItem(object item)
-	{
-		return _selectedItems.Remove(item);
-	}
+    public bool RemoveSelectionItem(object item)
+    {
+        RaiseUnselectItem();
+        return _selectedItems.Remove(item);
+    }
 
-	public void ClearSelection()
-	{
-		_selectedItems.Clear();
-	}
+    public void ClearSelection()
+    {
+        _selectedItems.Clear();
+    }
 
-	public bool IsSelected(object item)
-	{
-		return _selectedItems.Contains(item);
-	}
-/*
+    public bool IsSelected(object item)
+    {
+        return _selectedItems.Contains(item);
+    }
+    /*
 	
-		private MouseClickInfo _mouseClickInfo;
+            private MouseClickInfo _mouseClickInfo;
 	
-		protected bool CheckSelection(object item, Rect itemPosition)
-		{
-			if (_mouseClickInfo != null)
-			{
-				if (itemPosition.Contains(_mouseClickInfo.MousePosition))
-				{
-					RaiseMouseClick(_mouseClickInfo.Button, _mouseClickInfo.MousePosition);
-					AddSelectionItem(item, _mouseClickInfo.Modifiers);
-					_mouseClickInfo = null;
-				}
-			}
+            protected bool CheckSelection(object item, Rect itemPosition)
+            {
+                if (_mouseClickInfo != null)
+                {
+                    if (itemPosition.Contains(_mouseClickInfo.MousePosition))
+                    {
+                        RaiseMouseClick(_mouseClickInfo.Button, _mouseClickInfo.MousePosition);
+                        AddSelectionItem(item, _mouseClickInfo.Modifiers);
+                        _mouseClickInfo = null;
+                    }
+                }
 	
-			return IsSelected(item);
-		}*/
-	
+                return IsSelected(item);
+            }*/
 
-	#endregion
+
+    #endregion
 
     [Obsolete("Use BitGuiContext.Current.Data instead")]
-	public abstract object GetObjectDataAt(Vector2 position);
+    public abstract object GetObjectDataAt(Vector2 position);
 
     protected override bool ConsumeEvent(EventType type)
     {

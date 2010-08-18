@@ -1,3 +1,4 @@
+using System;
 using Bitverse.Unity.Gui;
 using UnityEditor;
 using UnityEngine;
@@ -25,7 +26,7 @@ public partial class BitControlEditor
     private static bool _animationScaleFoldout;
     private static bool _animationRotationPivotFoldout;
 
-
+    private bool defaultIsStatic = false;
     public override void OnInspectorGUI()
 	{
 		if (!(target is BitControl))
@@ -35,6 +36,10 @@ public partial class BitControlEditor
 
 		BitControl control = (BitControl) target;
 
+        if(GUILayout.Button("New ID"))
+        {
+            control.ID = Guid.NewGuid();
+        }
 		base.OnInspectorGUI();
 		EditorGUI.indentLevel = 0;
         MakeMouseButtonEditor(control);
@@ -47,13 +52,35 @@ public partial class BitControlEditor
 		MakeAnchorEditor(control);
 		EditorGUI.indentLevel = 0;
 		MakeSpecificEditors(control);
-		MakeAudioEditor(control);
+		//MakeAudioEditor(control);
 
 		if (_displayChanges)
 		{
 			ForceDisplayChanges();
 			_displayChanges = false;
 		}
+
+        CheckThisContent(control, defaultIsStatic);
+
+        GUILayout.Space(10);
+
+        defaultIsStatic = GUILayout.Toggle(defaultIsStatic, "Use Static as Default");
+
+        if (defaultIsStatic)
+        {
+            if (GUILayout.Button("Change all blank Text kind to STATIC"))
+            {
+                TextKindCheck(defaultIsStatic);
+            }
+        }
+        else
+        {
+            if (GUILayout.Button("Change all blank Text kind to DINAMIC"))
+            {
+                TextKindCheck(defaultIsStatic);
+            }
+        }
+
 	}
 
     private void MakeMouseButtonEditor(BitControl control)
@@ -294,47 +321,46 @@ public partial class BitControlEditor
 	{
 	}
 
-	protected virtual void MakeAudioEditor(BitControl control)
-	{
-		EditorGUI.indentLevel = 0;
-		_audioFoldout = EditorGUILayout.Foldout(_audioFoldout, "Audio");
-		if (_audioFoldout)
-		{
-			EditorGUI.indentLevel = 2;
-			EditorGUILayout.BeginVertical();
+    //protected virtual void MakeAudioEditor(BitControl control)
+    //{
+    //    EditorGUI.indentLevel = 0;
+    //    _audioFoldout = EditorGUILayout.Foldout(_audioFoldout, "Audio");
+    //    if (_audioFoldout)
+    //    {
+    //        EditorGUI.indentLevel = 2;
+    //        EditorGUILayout.BeginVertical();
 
-		    string mouseClickToggleOn = "";
-		    string mouseclickToggleOff = "";
-            BitToggle toggle = new BitToggle();
-			string mouseUpText = EditorGUILayout.TextField("Mouse Up", control.MouseUpAudioName);
-            string mouseDownText = EditorGUILayout.TextField("Mouse Down", control.MouseDownAudioName);
-            string mouseClickText = EditorGUILayout.TextField("Mouse Click", control.MouseClickAudioName);
-            string mouseEnterText = EditorGUILayout.TextField("Mouse Enter", control.MouseEnterAudioName);
-            string mouseExitText = EditorGUILayout.TextField("Mouse Exit", control.MouseExitAudioName);
-            if(control is BitToggle)
-            {
-                toggle = control as BitToggle;
-                mouseClickToggleOn = EditorGUILayout.TextField("Mouse Click Toggle On", toggle.ToggleOn);
-                mouseclickToggleOff = EditorGUILayout.TextField("Mouse Click Toggle Off", toggle.ToggleOff);
-            }
-		    EditorGUILayout.EndVertical();
+    //        string mouseUpText = EditorGUILayout.TextField("Mouse Up", control.AudioGuidMouseUp);
+    //        string mouseDownText = EditorGUILayout.TextField("Mouse Down", control.AudioGuidMouseDown);
+    //        string mouseClickText = EditorGUILayout.TextField("Mouse Click", control.AudioGuidMouseClick);
+    //        string mouseEnterText = EditorGUILayout.TextField("Mouse Enter", control.AudioGuidMouseEnter);
+    //        string mouseExitText = EditorGUILayout.TextField("Mouse Exit", control.AudioGuidMouseExit);
+            
+    //        if(control is BitToggle)
+    //        {
+    //            BitToggle toggle = control as BitToggle;
+    //            string mouseClickToggleOn = EditorGUILayout.TextField("Mouse Click Toggle On", toggle.AudioGuidToggleOn);
+    //            string mouseclickToggleOff = EditorGUILayout.TextField("Mouse Click Toggle Off", toggle.AudioGuidToggleOff);
 
-			if (GUI.changed)
-			{
-				control.MouseUpAudioName = mouseUpText;
-                control.MouseDownAudioName = mouseDownText;
-                control.MouseClickAudioName = mouseClickText;
-                control.MouseEnterAudioName = mouseEnterText;
-                control.MouseExitAudioName = mouseExitText;
-                if (control is BitToggle)
-                {
-                    toggle.ToggleOn = mouseClickToggleOn;
-                    toggle.ToggleOff = mouseclickToggleOff;
-                }
-			}
-		}
-		EditorGUI.indentLevel = 0;
-	}
+    //            if (GUI.changed)
+    //            {
+    //                toggle.AudioGuidToggleOn = mouseClickToggleOn;
+    //                toggle.AudioGuidToggleOff = mouseclickToggleOff;
+    //            }
+    //        }
+    //        EditorGUILayout.EndVertical();
+
+    //        if (GUI.changed)
+    //        {
+    //            control.AudioGuidMouseUp = mouseUpText;
+    //            control.AudioGuidMouseDown = mouseDownText;
+    //            control.AudioGuidMouseClick = mouseClickText;
+    //            control.AudioGuidMouseEnter = mouseEnterText;
+    //            control.AudioGuidMouseExit = mouseExitText;
+    //        }
+    //    }
+    //    EditorGUI.indentLevel = 0;
+    //}
 
 	// Informations only for child of AbstractBitLayoutGroup
 	protected virtual void MakeChildInGroup(BitControl control)

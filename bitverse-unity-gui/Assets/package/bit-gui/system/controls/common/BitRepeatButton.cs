@@ -48,7 +48,7 @@ public class BitRepeatButton : BitControl
 
 	protected override void DoDraw()
     {
-        (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, Focus);
+        (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, Focus);
 	    _value = (IsHover && IsActive);
 		//_value = GUI.RepeatButton(Position, Content, Style ?? DefaultStyle);
 	}

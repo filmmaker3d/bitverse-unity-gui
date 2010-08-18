@@ -10,17 +10,31 @@ public abstract class BitContainer : BitControl
 	{
 		set
 		{
-			for (int i = 0, count = InternalControlCount; i < count; i++)
-			{
-				BitControl c = InternalGetControlWithoutIndexCheck(i);
-				if (c != null)
-				{
-					c.Color = value;
-				}
-			}
-			base.Color = value;
+            if (PropagateColors)
+            {
+                for (int i = 0, count = InternalControlCount; i < count; i++)
+                {
+                    BitControl c = InternalGetControlWithoutIndexCheck(i);
+                    if (c != null)
+                    {
+                        c.Color = value;
+                    }
+                }
+
+            }
+            base.Color = value;
 		}
 	}
+
+    /// <summary>
+    /// Propagate color to child when changeColor.
+    /// </summary>
+    private bool _propagateColors = true; 
+    public bool PropagateColors
+    { 
+        get { return _propagateColors; }
+        set { _propagateColors = value; }
+    }
 
 	#endregion
 

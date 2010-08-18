@@ -1,3 +1,4 @@
+using System;
 using bitgui;
 using Bitverse.Unity.Gui;
 using UnityEngine;
@@ -56,6 +57,12 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
         get { return GUI.skin.box; }
     }
 
+    public bool LimitRows;
+
+    public bool LimitColumns;
+
+    public Vector2 MaximumSize = new Vector2(10, 10);
+
     #endregion
 
 
@@ -103,9 +110,19 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
 
         _cols = (int)(ScrollView.width / _stepx);
 
+        if ((LimitColumns) && (MaximumSize.y > 0))
+        {
+            _cols = Math.Min(_cols, (int)MaximumSize.y);
+        }
+
         _rows = (Model == null)
                     ? (int)(ScrollRect.height / _stepy)
                     : (int)Mathf.Max(Mathf.Ceil((Model.GetLastSlot() + 1) / (float)_cols) + (NoExtraRow ? 0 : 1), Mathf.Round(ScrollRect.height / _stepy));
+
+        if ((LimitRows) && (MaximumSize.x > 0))
+        {
+            _rows = Math.Min(_rows, (int)MaximumSize.x);
+        }
 
         if (_rows == 0 || _cols == 0)
         {
@@ -232,6 +249,6 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
         int row = (int)Mathf.Floor(((mousePosition.y - AbsolutePosition.y) - _initialPosy - ScrollPosition.y) / _stepy);
         int col = (int)Mathf.Floor(((mousePosition.x - AbsolutePosition.x) - _initialPosx - ScrollPosition.x) / _stepx);
 
-        return ((row * _cols) + col);        
+        return ((row * _cols) + col);
     }
 }

@@ -22,14 +22,6 @@ public class BitPopup : AbstractBitPopup
 
 	#endregion
 
-
-	protected override void DoAutoSize()
-	{
-		//TODO
-		_options.Size = ViewSize;
-	}
-
-
 	#region Events
 
 	public event SelectionChangedEventHandler<object> SelectionChanged;

@@ -1,11 +1,10 @@
+using System;
 using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
 public partial class BitControl
 {
-	#region Audio 
-
 	// TODO fix this in a way that Main partial class BitControl doesn't know about this partial class
 	public bool AudioManagerAwake()
 	{
@@ -23,31 +22,31 @@ public partial class BitControl
 	private void OnMouseUpAudio(object sender, MouseEventArgs e)
 	{
         if (Enabled && Visible)
-		    Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseUp, MouseUpAudioName);
+		    Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseUp, AudioGuidMouseUp);
 	}
 
 	private void OnMouseDownAudio(object sender, MouseEventArgs e)
 	{
         if (Enabled && Visible)
-            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseDown, MouseDownAudioName);
+            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseDown, AudioGuidMouseDown);
     }
 
     private void OnMouseClickAudio(object sender, MouseEventArgs e)
     {
         if (Enabled && Visible)
-            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseClick, MouseClickAudioName);
+            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseClick, AudioGuidMouseClick);
     }
 
     private void OnMouseEnterAudio(object sender, MouseMoveEventArgs e)
     {
         if (Enabled && Visible)
-            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseEnter, MouseEnterAudioName);
+            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseEnter, AudioGuidMouseEnter);
     }
 
     private void OnMouseExitAudio(object sender, MouseMoveEventArgs e)
     {
         if (Enabled && Visible)
-            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseExit, MouseExitAudioName);
+            Stage.RaiseAudio(this, BitAudioEventTypeEnum.MouseExit, AudioGuidMouseExit);
     }
 
     private void OnScroll(object sender)
@@ -65,53 +64,40 @@ public partial class BitControl
 
 	[HideInInspector]
 	[SerializeField]
-	private string _mouseUpAudioName = "default";
-
-	public string MouseUpAudioName
-	{
-		get { return _mouseUpAudioName; }
-		set { _mouseUpAudioName = value; }
-	}
+    public string AudioGuidMouseUp = Guid.Empty.ToString();
 
 	[HideInInspector]
 	[SerializeField]
-	private string _mouseDownAudioName = "default";
-
-	public string MouseDownAudioName
-	{
-		get { return _mouseDownAudioName; }
-		set { _mouseDownAudioName = value; }
-	}
+    public string AudioGuidMouseDown = Guid.Empty.ToString();
 
 	[HideInInspector]
 	[SerializeField]
-	private string _mouseClickAudioName = "default";
+    public string AudioGuidMouseClick = Guid.Empty.ToString();
 
-	public string MouseClickAudioName
-	{
-		get { return _mouseClickAudioName; }
-		set { _mouseClickAudioName = value; }
-    }
 
     [HideInInspector]
     [SerializeField]
-    private string _mouseEnterAudioName = "default";
-
-    public string MouseEnterAudioName
-    {
-        get { return _mouseEnterAudioName; }
-        set { _mouseEnterAudioName = value; }
-    }
+    public string AudioGuidMouseEnter = Guid.Empty.ToString();
 
     [HideInInspector]
     [SerializeField]
-    private string _mouseExitAudioName = "default";
+    public string AudioGuidMouseExit = Guid.Empty.ToString();
+}
 
-    public string MouseExitAudioName
-    {
-        get { return _mouseExitAudioName; }
-        set { _mouseExitAudioName = value; }
-    }
+public partial class BitToggle : BitControl
+{
+    [HideInInspector]
+    [SerializeField]
+    public string AudioGuidToggleOn = Guid.Empty.ToString();
 
-	#endregion
+    [HideInInspector]
+    [SerializeField]
+    public string AudioGuidToggleOff = Guid.Empty.ToString();
+}
+
+public partial class BitScrollView : BitContainer
+{
+    [HideInInspector]
+    [SerializeField]
+    public string AudioGuidScroll = Guid.Empty.ToString();
 }

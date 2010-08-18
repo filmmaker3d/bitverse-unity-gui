@@ -61,7 +61,7 @@ public class BitDropDown : BitControl
 
 	protected override void DoDraw()
     {
-        (Style ?? DefaultStyle ?? EmptyStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
+        (Style ?? DefaultStyle ?? EmptyStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
 	}
 
 	#endregion
