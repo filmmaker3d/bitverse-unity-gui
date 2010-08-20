@@ -56,6 +56,7 @@
     <Compile Include="Assets\package\bit-gui\Editor\ResizeHandler.cs" />
     <Compile Include="Assets\package\bit-gui\Editor\SelectHandler.cs" />
     <Compile Include="Assets\package\bit-gui\Editor\Shortcut.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\TranslationGenerator.cs" />
     <Compile Include="Assets\package\bit-gui\Editor\VirtualMenu.cs" />
     <Compile Include="Assets\package\bit-gui\extensions\audio\BitControlAudio.cs" />
     <Compile Include="Assets\package\bit-gui\extensions\controls\list\BitSlotList.cs" />
@@ -145,8 +146,11 @@
     <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipManager.cs" />
     <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipProvider.cs" />
     <Compile Include="Assets\projects\calculator\CalculatorDemo.cs" />
+    <Compile Include="Assets\projects\calculator\Initializer.cs" />
+    <Compile Include="Assets\projects\calculator\TextTooltipProvider.cs" />
     <Compile Include="Assets\test\ListAndGridTest.cs" />
     <Compile Include="Assets\test\PopupTest.cs" />
+    <Compile Include="Assets\test\RepeatButtonTest.cs" />
     <Compile Include="Assets\test\SkinTest.cs" />
     <Compile Include="Assets\test\TestMain.cs" />
     <Compile Include="Assets\test\WebImageTest.cs" />
