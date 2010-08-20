@@ -167,6 +167,44 @@ public class CalculatorDemo : MonoBehaviour
         CalculateResult();
     }
 
+    public string PreviewResult()
+    {
+        double right = _rightValue;
+
+        if (_newRightValue)
+        {
+            right = double.Parse(_result.Content.text);
+        }
+
+        double result;
+
+        switch (_operation)
+        {
+            case Operations.Plus:
+                result = _leftValue + right;
+                break;
+            case Operations.Minus:
+                result = _leftValue - right;
+                break;
+            case Operations.Multiplication:
+                result = _leftValue * right;
+                break;
+            case Operations.Division:
+                result = _leftValue / right;
+                break;
+            default:
+                return "ERROR";
+        }
+
+        string s = string.Format("{0:F2}", result);
+        if (!s.Contains("."))
+        {
+            s += ".";
+        }
+
+        return s;
+    }
+
     private void CalculateResult()
     {
         if (_newRightValue)
