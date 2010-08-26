@@ -24,7 +24,9 @@ public partial class BitControlEditor : Editor
 
     internal static ExecuteNextFrame ExecuteNextFrame;
 
+#pragma warning disable 649
     private Vector2 _startDragPosition;
+#pragma warning restore 649
 
     public Vector2 StartDragPosition
     {
@@ -59,6 +61,19 @@ public partial class BitControlEditor : Editor
         return (T)_modeHandlers[typeof(T)];
     }
 
+
+    private Object _lastChangedObject;
+    private String _lastChangeAction;
+
+    void RegisterChange(Object obj, String text)
+    {
+        if (_lastChangedObject != obj || _lastChangeAction != text)
+        {
+            Undo.RegisterUndo(_lastChangedObject = obj, _lastChangeAction = text);
+        }
+        EditorUtility.SetDirty(obj);
+    }
+
     public void OnSceneGUI()
     {
         //Handles.BeginGUI();
@@ -66,6 +81,11 @@ public partial class BitControlEditor : Editor
         UpdateMouseState();
         ExecuteDelayedOperations();
         ExecuteHandler();
+
+        if(Event.current.button==0)
+        {
+            _lastChangeAction = null;
+        }
         
         // Move and resize body
         var selectionObjects = Selection.objects;
@@ -90,6 +110,7 @@ public partial class BitControlEditor : Editor
                     abs.xMax = npos.x;
                     abs.yMax = npos.z;
                     control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
                     break;
                 }
 
@@ -100,6 +121,7 @@ public partial class BitControlEditor : Editor
                 {
                     abs.xMax = npos.x;
                     control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
                     break;
                 }
 
@@ -111,6 +133,7 @@ public partial class BitControlEditor : Editor
                 {
                     abs.yMax = npos.z;
                     control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component resized");
                     break;
                 }
 
@@ -124,6 +147,7 @@ public partial class BitControlEditor : Editor
                     abs.x = npos.x;
                     abs.y = npos.z;
                     control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
                     break;
                 }
                 // Move
@@ -135,6 +159,7 @@ public partial class BitControlEditor : Editor
                     abs.x = npos.x - abs.width / 2;
                     abs.y = npos.z - abs.height / 2;
                     control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
                     break;
                 }
             }

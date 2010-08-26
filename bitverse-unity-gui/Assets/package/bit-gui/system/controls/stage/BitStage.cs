@@ -68,6 +68,7 @@ public class BitStage : BitContainer
     {
         base.Awake();
 
+        _lastCursorTime = Time.time;
         WindowReg.FormMode2SortIndex[FormModes.Popup] = 1;
         WindowReg.FormMode2SortIndex[FormModes.Messages] = 2;
         WindowReg.FormMode2SortIndex[FormModes.Modal] = 3;
@@ -475,7 +476,7 @@ public class BitStage : BitContainer
     public float cursorRate = 0.1f;
     private CursorState _lastCursorState;
     private int cursorIndex = 0;
-    private float _lastCursorTime = Time.time;
+    private float _lastCursorTime;
 
     public void RefreshCursor()
     {

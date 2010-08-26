@@ -4,7 +4,8 @@ using UnityEngine;
 
 internal sealed class MoveHandler : AbstractHandler
 {
-	private bool _enableSnap;
+#pragma warning disable 414
+    private bool _enableSnap;
 	private bool _enableGrid;
 
 	internal MoveHandler(BitControlEditor editor)
