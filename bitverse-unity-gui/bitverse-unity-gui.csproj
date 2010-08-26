@@ -35,16 +35,16 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
 	<Reference Include="Boo.Lang">
-	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityScript">
-	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
+	  <HintPath>C:/Program Files/Unity/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -180,11 +180,11 @@
      <Compile Include="Assets\package\bit-gui\system\models\IPopulator.cs" />
      <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipManager.cs" />
      <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipProvider.cs" />
-     <Compile Include="Assets\projects\calculator\CalculatorDemo.cs" />
-     <Compile Include="Assets\test\ListAndGridTest.cs" />
-     <Compile Include="Assets\test\PopupTest.cs" />
-     <Compile Include="Assets\test\SkinTest.cs" />
-     <Compile Include="Assets\test\TestMain.cs" />
+     <Compile Include="Assets\samples\projects\calculator\CalculatorDemo.cs" />
+     <Compile Include="Assets\samples\test\ListAndGridTest.cs" />
+     <Compile Include="Assets\samples\test\PopupTest.cs" />
+     <Compile Include="Assets\samples\test\SkinTest.cs" />
+     <Compile Include="Assets\samples\test\TestMain.cs" />
  <Reference Include="System.Drawing">
  <HintPath>Assets\lib\System.Drawing.dll</HintPath>
  </Reference>
@@ -200,5 +200,6 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  
 </Project>
 	
