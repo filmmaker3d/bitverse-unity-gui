@@ -1486,7 +1486,7 @@ public abstract partial class BitControl : MonoBehaviour
             return;
         }
 
-        if (Stage.HoverWindow != TopWindow)
+        if (Stage!=null && Stage.HoverWindow != TopWindow)
         {
             controlHover = false;
         }

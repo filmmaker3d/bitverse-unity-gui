@@ -300,7 +300,8 @@ public partial class BitControlEditor : Editor
             return;
         }
         _addingControl = true;
-        control.Size = new Size(80, 20);
+        if(control.Size.Width==0)
+            control.Size = new Size(80, 20);
         _controlAdded = control;
     }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Bitverse.Unity.Gui;
 using UnityEditor;
 using UnityEngine;
 using System.Text.RegularExpressions;
@@ -14,6 +15,7 @@ public partial class BitGuiEditorToolbox : EditorWindow
         public readonly bool IsSpecial;
         public readonly bool GenerateDefaultContent;
         public readonly GUIContent Content;
+        public Size Size;
 
         public ControlInfo(Type type, bool isSpecial, bool generateDefaultContent, GUIContent content)
         {
@@ -38,14 +40,18 @@ public partial class BitGuiEditorToolbox : EditorWindow
             Controls = new List<ControlInfo>();
         }
 
-        public void AddComponent(Type type, bool generateDefaultContent)
+        public ControlInfo AddComponent(Type type, bool generateDefaultContent)
         {
-            Controls.Add(new ControlInfo(type, false, generateDefaultContent, GetGUIContent(type)));
+            var ci = new ControlInfo(type, false, generateDefaultContent, GetGUIContent(type));
+            Controls.Add(ci);
+            return ci;
         }
 
-        public void AddSpecialComponent(Type type, bool generateDefaultContent)
+        public ControlInfo AddSpecialComponent(Type type, bool generateDefaultContent)
         {
-            Controls.Add(new ControlInfo(type, true, generateDefaultContent, GetGUIContent(type)));
+            var ci = new ControlInfo(type, true, generateDefaultContent, GetGUIContent(type));
+            Controls.Add(ci);
+            return ci;
         }
     }
 
@@ -133,7 +139,8 @@ public partial class BitGuiEditorToolbox : EditorWindow
         buttonInfo.AddComponent(typeof(BitPicture), false);
         buttonInfo.AddComponent(typeof(BitSprite), false);
         buttonInfo.AddComponent(typeof(BitDropDown), false);
-        buttonInfo.AddSpecialComponent(typeof(BitWindow), true);
+        var ci = buttonInfo.AddSpecialComponent(typeof(BitWindow), true);
+        ci.Size = new Size(400, 200);
         AddEnhancedCommonControls(buttonInfo);
         _buttonsInfo.Add(buttonInfo);
 
@@ -264,6 +271,7 @@ public partial class BitGuiEditorToolbox : EditorWindow
     //}
 
     public static Type ControlTypeToCreate;
+    private static ControlInfo ControlToCreate;
     private static bool _generateDefaultContent;
 
     private void AddComponent(ControlInfo info)
@@ -278,6 +286,7 @@ public partial class BitGuiEditorToolbox : EditorWindow
         if (toggle)
         {
             ControlTypeToCreate = info.Type;
+            ControlToCreate = info;
             _generateDefaultContent = info.GenerateDefaultContent;
         }
         else
@@ -306,7 +315,7 @@ public partial class BitGuiEditorToolbox : EditorWindow
                     {
                         control.Content.text = controlName;
                     }
-                    Selection.activeTransform = control.transform;
+                    Selection.activeGameObject = control.gameObject;
                 }
                 else
                 {
@@ -323,6 +332,14 @@ public partial class BitGuiEditorToolbox : EditorWindow
                         }
                     }
                     Selection.activeGameObject = go;
+                }
+                if (info.Size.Width != 0 && control!=null)
+                {
+                    control.Size = info.Size;
+                }
+                if (control != null)
+                {
+                    EditorUtility.SetDirty(control);
                 }
                 AddControlCount(info.Type);
                 BitControlEditor.AddControl(control);
@@ -353,7 +370,12 @@ public partial class BitGuiEditorToolbox : EditorWindow
         {
             c.Content.text = name;
         }
-        Selection.activeTransform = c.transform;
+        Selection.activeGameObject = c.gameObject;
+        if (ControlToCreate.Type == ControlTypeToCreate && ControlToCreate.Size.Width != 0)
+        {
+            c.Size = ControlToCreate.Size;
+        }
+        EditorUtility.SetDirty(c);
 
         AddControlCount(ControlTypeToCreate);
 
