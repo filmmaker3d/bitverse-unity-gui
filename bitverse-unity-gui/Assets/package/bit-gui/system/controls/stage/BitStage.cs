@@ -69,6 +69,7 @@ public class BitStage : BitContainer
     {
         base.Awake();
 
+        _lastCursorTime = Time.time;
         WindowReg.FormMode2SortIndex[FormModes.Popup] = 1;
         WindowReg.FormMode2SortIndex[FormModes.Messages] = 2;
         WindowReg.FormMode2SortIndex[FormModes.Modal] = 3;
@@ -225,7 +226,7 @@ public class BitStage : BitContainer
                 Array.Reverse(_windows);
             }
 
-            WindowReg firstWindowReg = null;
+                //WindowReg firstWindowReg = null;
             foreach (WindowReg reg in _windows)
             {
                 try
@@ -266,6 +267,8 @@ public class BitStage : BitContainer
         {
             Debug.Log(string.Format("BitStage - Exception on OnGUI! -> TextureCache cleanup\n{0}", ex));
         }
+		if(TextureCache!=null)
+			TextureCache.Cleanup();
     }
 
     private bool DisablableByModal(FormModes mode)
@@ -416,8 +419,10 @@ public class BitStage : BitContainer
         reg.Visible = window.Visible;
 
         // to speedup comparison
-        if (WindowReg.FormMode2SortIndex.ContainsKey(window.FormMode))
-            reg.FormModeSortIndex = WindowReg.FormMode2SortIndex[window.FormMode];
+        if(!WindowReg.FormMode2SortIndex.TryGetValue(window.FormMode, out reg.FormModeSortIndex))
+        {
+            reg.FormModeSortIndex = 6;
+        }
     }
 
     public void BringWindowToFront(BitWindow window)
@@ -479,7 +484,7 @@ public class BitStage : BitContainer
     public float cursorRate = 0.1f;
     private CursorState _lastCursorState;
     private int cursorIndex = 0;
-    private float _lastCursorTime = Time.time;
+    private float _lastCursorTime;
 
     public void RefreshCursor()
     {
@@ -489,6 +494,10 @@ public class BitStage : BitContainer
 
     private void UpdateCursor()
     {
+        //if (currentCursorState == null)
+        //{
+        //    return;
+        //}
         if (_lastCursorState != currentCursorState)
         {
             Screen.showCursor = false;
@@ -525,7 +534,7 @@ public class BitStage : BitContainer
             }
             _lastCursorState = currentCursorState;
         }
-        if (_currentCursorArray != null && cursorIndex < _currentCursorArray.Length)
+        if (_currentCursorArray != null && cursorIndex > 0 && cursorIndex<_currentCursorArray.Length)
         {
             Vector3 pos = Input.mousePosition;
             Texture2D tex = _currentCursorArray[cursorIndex];

@@ -16,7 +16,8 @@ public class BitBox : BitControl
 
 	protected override void DoDraw()
     {
-        (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
+        if (Event.current.type == EventType.repaint)
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
 		//GUI.Box(Position, Content, Style ?? DefaultStyle);
 	}
 

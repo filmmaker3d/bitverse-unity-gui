@@ -41,11 +41,11 @@ internal class SelectHandler : AbstractHandler
 			_processed = false;
 		}
 		GuiEditorUtils.CurrentCorner(_editor.ComponentList);
-		if (_editor.IsDrag)
-		{
-			_editor.Mode = CornerInfo.Corner == Corners.None ? typeof(MoveHandler) : typeof(ResizeHandler);
-			return;
-		}
+        //if (_editor.IsDrag)
+        //{
+        //    _editor.Mode = CornerInfo.Corner == Corners.None ? typeof(MoveHandler) : typeof(ResizeHandler);
+        //    return;
+        //}
 
 		if (_selectedItems != null)
 			DrawSelectedItems();
@@ -85,37 +85,25 @@ internal class SelectHandler : AbstractHandler
 
 	private void DrawSelectedItems()
 	{
-		Rect selectionPosition = new Rect(float.MaxValue, float.MaxValue, 0, 0);
-		foreach (GameObject o in _selectedItems)
-		{
-			BitControl control = o.GetComponent<BitControl>();
-            if (control == null)
-                continue;
-            if (typeof(BitStage).IsAssignableFrom(control.GetType()))
-                continue;
-			Rect abs = control.AbsolutePosition;
-			GuiEditorUtils.DrawSelected(abs, Color.white);
-			GuiEditorUtils.DrawLabel(abs.x + 4, abs.y + 3, control.gameObject.name, Color.white);
-			EditorUtility.SetDirty(control);
+        //Rect selectionPosition = new Rect(float.MaxValue, float.MaxValue, 0, 0);
+        //foreach (GameObject o in _selectedItems)
+        //{
+        //    BitControl control = o.GetComponent<BitControl>();
+        //    if (control == null)
+        //        continue;
+        //    if (typeof(BitStage).IsAssignableFrom(control.GetType()))
+        //        continue;
+        //    Rect abs = control.AbsolutePosition;
+        //    GuiEditorUtils.DrawSelected(abs, Color.white);
+        //    GuiEditorUtils.DrawLabel(abs.x + 4, abs.y + 3, control.gameObject.name, Color.white);
+        //    EditorUtility.SetDirty(control);
 
-			selectionPosition.x = Mathf.Min(selectionPosition.x, abs.x);
-			selectionPosition.y = Mathf.Min(selectionPosition.y, abs.y);
-			selectionPosition.width = Mathf.Max(selectionPosition.width, abs.width);
-			selectionPosition.height = Mathf.Max(selectionPosition.height, abs.height);
-		}
+        //    selectionPosition.x = Mathf.Min(selectionPosition.x, abs.x);
+        //    selectionPosition.y = Mathf.Min(selectionPosition.y, abs.y);
+        //    selectionPosition.width = Mathf.Max(selectionPosition.width, abs.width);
+        //    selectionPosition.height = Mathf.Max(selectionPosition.height, abs.height);
+        //}
 
 		//GuiEditorUtils.DrawMoveHelperRect(selectionPosition);
 	}
-
-	/*private void DrawHilite()
-	{
-		BitControl controlUnderMouse = GuiEditorUtils.GetCompUnderMouse(_editor.ComponentList);
-		if (controlUnderMouse != null)
-		{
-			Rect abs = controlUnderMouse.AbsolutePosition;
-			GuiEditorUtils.DrawRect2(Color.black, abs);
-			//GuiEditorUtils.DrawLabel(abs.x, abs.y, controlUnderMouse.gameObject.name,Color.white);
-			EditorUtility.SetDirty(controlUnderMouse);
-		}
-	}*/
 }

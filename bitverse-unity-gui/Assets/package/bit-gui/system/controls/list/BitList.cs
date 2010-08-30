@@ -102,7 +102,8 @@ public class BitList : AbstractBitList<IListModel, IPopulator>
 		Renderer.Size = new Size(ScrollView.width - rs.margin.horizontal, Renderer.Size.Height);
 		Renderer.Location = new Point(rs.margin.left + ss.padding.left, rs.margin.top);
 
-		rs.Draw(new Rect(rs.margin.left + ss.padding.left, rs.margin.top, ScrollView.width - rs.margin.horizontal, Renderer.Size.Height), Renderer.Content, false, true, false,
+		if (Event.current.type == EventType.repaint)
+			rs.Draw(new Rect(rs.margin.left + ss.padding.left, rs.margin.top, ScrollView.width - rs.margin.horizontal, Renderer.Size.Height), Renderer.Content, false, true, false,
 		        false);
 		//ScrollRenderer.Draw();
 	}

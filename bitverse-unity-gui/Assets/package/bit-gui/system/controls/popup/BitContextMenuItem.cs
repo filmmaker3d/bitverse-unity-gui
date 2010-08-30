@@ -89,8 +89,8 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
         BitContextMenu menu = ParentContextMenu;
         GUIStyle menuStyle = menu.Style ?? menu.DefaultStyle;
         GUIStyle style = Style ?? menu.DefaultMenuItemStyle ?? DefaultStyle;
-        GUIStyle arrowStyle = menu.SubmenuIndicatorStyle ?? DefaultStyle;
-        float arrowWidth = (HasSubMenu && arrowStyle != null) ? arrowStyle.fixedWidth : 0.0f;
+        //GUIStyle arrowStyle = menu.SubmenuIndicatorStyle ?? DefaultStyle;
+        //float arrowWidth = (HasSubMenu && arrowStyle != null) ? arrowStyle.fixedWidth : 0.0f;
 
         Position = new Rect(0,
                             Position.y,
@@ -106,7 +106,8 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
 		GUIStyle style = Style ?? menu.DefaultMenuItemStyle ?? DefaultStyle;
         GUIStyle arrowStyle = menu.SubmenuIndicatorStyle ?? DefaultStyle;
 
-        style.Draw(Position, Content, IsHover || ShowingSubmenu, IsActive, IsOn | ForceOnState, Focus);
+        if (Event.current.type == EventType.repaint) 
+            style.Draw(Position, Content, IsHover || ShowingSubmenu, IsActive, IsOn, Focus);
 
 		if (IsHover)
 		{

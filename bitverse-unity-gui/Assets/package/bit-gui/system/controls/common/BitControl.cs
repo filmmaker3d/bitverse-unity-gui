@@ -296,10 +296,13 @@ public abstract partial class BitControl : MonoBehaviour
     public string StyleName
     {
         get { return _styleName; }
-        set { _styleName = value;
+        set
+        {
+            _styleName = value;
             // clear the cached style
             _style = null;
-            _styleSkin = null; }
+            _styleSkin = null;
+        }
     }
 
     private GUIStyle _style;
@@ -310,7 +313,7 @@ public abstract partial class BitControl : MonoBehaviour
         get
         {
             GUISkin s = Skin;
-            if(s == null)
+            if (s == null)
                 return _style = null;
             if (_styleSkin == s)
                 return _style;
@@ -1580,7 +1583,7 @@ public abstract partial class BitControl : MonoBehaviour
             return;
         }
 
-        if (Stage.HoverWindow != TopWindow)
+        if (Stage!=null && Stage.HoverWindow != TopWindow)
         {
             controlHover = false;
         }
@@ -2728,4 +2731,29 @@ public abstract partial class BitControl : MonoBehaviour
     }
 
     #endregion
+
+    #region "API Change Workaround"
+    protected static void GUIClipPush(Rect position)
+    {
+        GUI.BeginGroup(position, GUIContent.none, GUIStyle.none);
+    }
+
+    protected static void GUIClipPop()
+    {
+        GUI.EndGroup();
+    }
+
+    protected static void GUIDoTextField(Rect position, int id, GUIContent content, bool multiline, int maxLength, GUIStyle style)
+    {
+        // ignoring id
+        //if (Event.current.type == EventType.repaint)
+        {
+            if (multiline)
+                content.text = GUI.TextArea(position, content.text, maxLength, style);
+            else
+                content.text = GUI.TextField(position, content.text, maxLength, style);
+        }
+    }
+    #endregion
+
 }
