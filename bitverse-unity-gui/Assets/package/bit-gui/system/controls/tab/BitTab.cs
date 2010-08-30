@@ -60,9 +60,9 @@ public class BitTab : BitGroup
 		{
             (Style ?? DefaultStyle).Draw(Position, IsHover, IsActive, IsOn | ForceOnState, false);
 		}
-		GUIClip.Push(Position);
+		GUIClipPush(Position);
 		DrawChildren();
-		GUIClip.Pop();
+		GUIClipPop();
 	}
 
 

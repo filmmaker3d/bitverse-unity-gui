@@ -17,14 +17,16 @@ public partial class BitControlEditor : Editor
 
     internal bool IsMouseUp;
     internal bool IsMouseDown;
-    internal bool IsDrag;
+    //internal bool IsDrag;
 
-    private bool _testDrag;
+    //private bool _testDrag;
     internal Object[] ComponentList;
 
     internal static ExecuteNextFrame ExecuteNextFrame;
 
+#pragma warning disable 649
     private Vector2 _startDragPosition;
+#pragma warning restore 649
 
     public Vector2 StartDragPosition
     {
@@ -59,16 +61,139 @@ public partial class BitControlEditor : Editor
         return (T)_modeHandlers[typeof(T)];
     }
 
+
+    private Object _lastChangedObject;
+    private String _lastChangeAction;
+
+    void RegisterChange(Object obj, String text)
+    {
+        if (_lastChangedObject != obj || _lastChangeAction != text)
+        {
+            Undo.RegisterUndo(_lastChangedObject = obj, _lastChangeAction = text);
+        }
+        EditorUtility.SetDirty(obj);
+    }
+
     public void OnSceneGUI()
     {
+        //Handles.BeginGUI();
         UpdateComponentList();
         UpdateMouseState();
         ExecuteDelayedOperations();
         ExecuteHandler();
+
+        if(Event.current.button==0)
+        {
+            _lastChangeAction = null;
+        }
+        
+        // Move and resize body
+        var selectionObjects = Selection.objects;
+        if (selectionObjects!=null)
+            foreach(Object o in selectionObjects)
+            {
+                var g = o as GameObject;
+                if(g==null) continue;
+                //Debug.Log(g);
+                var control = g.GetComponent<BitControl>();
+                var abs = control.AbsolutePosition;
+                capColor = Color.cyan;
+                Vector3 pos,npos;
+                capSize = HandleUtility.GetHandleSize(new Vector3(abs.x,0,abs.y)) / 15f;
+
+                
+                // Resize from bottom-right
+                pos = new Vector3(abs.xMax, 0, abs.yMax);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos != pos)
+                {
+                    abs.xMax = npos.x;
+                    abs.yMax = npos.z;
+                    control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
+                    break;
+                }
+
+                // Resize from right
+                pos = new Vector3(abs.xMax, 0, abs.yMin + abs.height/2);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos.x != pos.x)
+                {
+                    abs.xMax = npos.x;
+                    control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
+                    break;
+                }
+
+
+                // Resize from bottom
+                pos = new Vector3(abs.xMin + abs.width / 2, 0, abs.yMax);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos.z != pos.z)
+                {
+                    abs.yMax = npos.z;
+                    control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component resized");
+                    break;
+                }
+
+
+                // Move from top-left
+                capColor = Color.blue;
+                pos = new Vector3(abs.xMin, 0, abs.yMin);
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos != pos)
+                {
+                    abs.x = npos.x;
+                    abs.y = npos.z;
+                    control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
+                    break;
+                }
+                // Move
+                pos = new Vector3(abs.xMin + abs.width / 2, 0, abs.yMin + abs.height / 2);
+                capSize = Math.Max(1,Math.Min(abs.width / 2 - 8, abs.height / 2 - 8));
+                npos = Handles.FreeMoveHandle(pos, Quaternion.identity, capSize, new Vector3(1, 1, 1), DrawCornerCap);
+                if (npos != pos)
+                {
+                    abs.x = npos.x - abs.width / 2;
+                    abs.y = npos.z - abs.height / 2;
+                    control.AbsolutePosition = abs;
+                    RegisterChange(control, "Component moved");
+                    break;
+                }
+            }
+            
+
         ProcessShortcuts();
         SetCurrentTarget();
+        //Handles.EndGUI();
         CheckDuplicateGuids();
     }
+
+
+    private static Color capColor;
+    private static float capSize;
+    private static Vector3[] points = new Vector3[5];
+
+    public static void DrawCornerCap(int controlID, Vector3 position, Quaternion rotation, float size)
+    {
+        if (Event.current.type == EventType.Repaint)
+        {
+            var vector = new Vector3(capSize, 0, 0);
+            var vector2 = new Vector3(0, 0, capSize);
+            points[0] = position + vector + vector2;
+            points[1] = position + vector - vector2;
+            points[2] = position - vector - vector2;
+            points[3] = position - vector + vector2;
+            points[4] = position + vector + vector2;
+
+            Color color = Handles.color;
+            Handles.color = capColor;
+            Handles.DrawPolyLine(points);
+            Handles.color = color;
+        }
+    } 
 
     private void SetCurrentTarget()
     {
@@ -142,16 +267,25 @@ public partial class BitControlEditor : Editor
         {
             return;
         }
+
+
+        
         IsMouseDown = Event.current.type == EventType.MouseDown;
         IsMouseUp = Event.current.type == EventType.MouseUp;
-        IsDrag = Event.current.type == EventType.MouseDrag;
-        if ((!_testDrag) && (IsDrag))
-        {
-            _startDragPosition = GuiEditorUtils.MousePosition;
-            _testDrag = true;
-        }
-        if (IsMouseUp)
-            _testDrag = false;
+        //IsDrag = Event.current.type == EventType.MouseDrag;
+        //if ((!_testDrag) && (IsDrag))
+        //{
+        //    Debug.Log("Start drag");
+        //    _startDragPosition = GuiEditorUtils.MousePosition;
+        //    _testDrag = true;
+        //}
+        //if (IsMouseUp)
+        //{
+        //    if (_testDrag)
+        //    {
+        //        _testDrag = false;
+        //    }
+        //}
     }
 
     // Objects in Scene
@@ -195,7 +329,8 @@ public partial class BitControlEditor : Editor
             return;
         }
         _addingControl = true;
-        control.Size = new Size(80, 20);
+        if(control.Size.Width==0)
+            control.Size = new Size(80, 20);
         _controlAdded = control;
     }
 
@@ -262,66 +397,6 @@ public partial class BitControlEditor : Editor
     }
 }
 
-
-#region Common
-
-[CustomEditor(typeof(BitLabel))]
-public class BitLabelEditor : BitControlEditor
-{
-}
-
-
-[CustomEditor(typeof(BitButton))]
-public class BitButtonEditor : BitControlEditor
-{
-}
-
-
-[CustomEditor(typeof(BitToggle))]
-public class BitToggleEditor : BitControlEditor
-{
-}
-
-
-[CustomEditor(typeof(BitRepeatButton))]
-public class BitRepeatButtonEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(110, 20);
-    }
-}
-
-
-[CustomEditor(typeof(BitBox))]
-public class BitBoxEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(200, 100);
-    }
-}
-
-
-[CustomEditor(typeof(BitDropDown))]
-public class BitDropDownEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(150, 29);
-    }
-}
-
-
-[CustomEditor(typeof(BitPicture))]
-public class BitPictureEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(100, 100);
-    }
-}
-
 [CustomEditor(typeof(BitWebImage))]
 public class BitWebImageEditor : BitControlEditor
 {
@@ -330,20 +405,6 @@ public class BitWebImageEditor : BitControlEditor
         control.Size = new Size(100, 100);
     }
 }
-
-[CustomEditor(typeof(BitSprite))]
-public class BitSpriteEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(100, 100);
-    }
-}
-
-
-[CustomEditor(typeof(BitWindow))]
-public class BitWindowEditor : BitControlEditor
-{
     private bool drawDefaultInspector;
 
     private List<TargetInfo> targetList = new List<TargetInfo>();
@@ -351,10 +412,6 @@ public class BitWindowEditor : BitControlEditor
     private List<GUIStyle> copyStyles = new List<GUIStyle>();
     private string report = "";
 
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(500, 300);
-    }
 
     public override void OnInspectorGUI()
     {
@@ -530,277 +587,3 @@ public class BitWindowEditor : BitControlEditor
     }
 
 }
-
-
-#endregion
-
-
-#region Group
-
-[CustomEditor(typeof(BitGroup))]
-public class BitGroupEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(200, 100);
-    }
-}
-
-#endregion
-
-
-#region List
-
-[CustomEditor(typeof(BitList))]
-public class BitListEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(150, 200);
-    }
-}
-
-
-[CustomEditor(typeof(BitGridList))]
-public class BitGridListEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(260, 160);
-    }
-}
-
-#endregion
-
-
-#region Popup
-
-[CustomEditor(typeof(BitPopup))]
-public class BitPopupEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(120, 160);
-    }
-}
-
-
-[CustomEditor(typeof(BitContextMenu))]
-public class BitContextMenuEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(120, 160);
-    }
-}
-
-[CustomEditor(typeof(BitContextMenuItem))]
-public class BitContextMenuItemEditor : BitControlEditor
-{
-}
-
-[CustomEditor(typeof(BitContextMenuOptions))]
-public class BitContextMenuOptionsEditor : BitControlEditor
-{
-}
-
-#endregion
-
-
-#region Progress
-
-[CustomEditor(typeof(BitHorizontalProgressBar))]
-public class BitHorizontalProgressBarEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(160, 20);
-    }
-}
-
-
-[CustomEditor(typeof(BitVerticalProgressBar))]
-public class BitVerticalProgressBarEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(20, 160);
-    }
-}
-
-#endregion
-
-
-#region Scroll
-
-[CustomEditor(typeof(BitScrollView))]
-public class BitScrollViewEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(200, 100);
-    }
-}
-
-
-[CustomEditor(typeof(BitHorizontalScrollbar))]
-public class BitHorizontalScrollbarEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        BitControl p = control.Parent;
-        if (p != null)
-        {
-            Rect parentPosition = p.Position;
-            control.Location = new Point(0, parentPosition.height - 20);
-            control.Size = new Size(parentPosition.width, 20);
-            control.Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Bottom;
-        }
-        else
-        {
-            control.Size = new Size(200, 20);
-        }
-    }
-}
-
-
-[CustomEditor(typeof(BitVerticalScrollbar))]
-public class BitVerticalScrollbarEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        BitControl p = control.Parent;
-        if (p != null)
-        {
-            Rect parentPosition = p.Position;
-            control.Location = new Point(parentPosition.width - 20, 0);
-            control.Size = new Size(20, parentPosition.height);
-            control.Anchor = AnchorStyles.Right | AnchorStyles.Top | AnchorStyles.Bottom;
-        }
-        else
-        {
-            control.Size = new Size(20, 100);
-        }
-    }
-}
-
-#endregion
-
-
-#region Slider
-
-[CustomEditor(typeof(BitHorizontalSlider))]
-public class BitHorizontalSliderEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(100, 10);
-    }
-}
-
-
-[CustomEditor(typeof(BitVerticalSlider))]
-public class BitVerticalSliderEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(10, 100);
-    }
-}
-
-#endregion
-
-
-#region Stage
-
-[CustomEditor(typeof(BitEditorStage))]
-public class BitEditorStageEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        BitEditorStage stage = ((BitEditorStage)target);
-        stage.Background = (Texture)EditorGUILayout.ObjectField("Background", stage.Background, typeof(Texture2D));
-        stage.BackgroundScaleMode = (ScaleMode)EditorGUILayout.EnumPopup(stage.BackgroundScaleMode);
-    }
-}
-
-#endregion
-
-
-#region Tab
-
-[CustomEditor(typeof(BitTabbedPane))]
-public class BitTabbedPaneEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(230, 140);
-    }
-}
-
-
-[CustomEditor(typeof(BitTab))]
-public class BitTabEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(230, 140);
-    }
-}
-
-#endregion
-
-
-#region Text
-
-[CustomEditor(typeof(BitTextField))]
-public class BitTextFieldEditor : BitControlEditor
-{
-}
-
-
-[CustomEditor(typeof(BitTextArea))]
-public class BitTextAreaEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(200, 100);
-    }
-}
-
-
-[CustomEditor(typeof(BitPasswordField))]
-public class BitPasswordFieldEditor : BitControlEditor
-{
-}
-
-
-[CustomEditor(typeof(BitFilteredTextField))]
-public class BitFilteredTextFieldEditor : BitControlEditor
-{
-}
-
-[CustomEditor(typeof(BitRichText))]
-public class BitRichTextEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(200, 100);
-    }
-}
-
-#endregion
-
-
-#region ModelViewer
-
-[CustomEditor(typeof(BitModelViewer))]
-public class BitModelViewerEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(200, 100);
-    }
-}
-
-#endregion

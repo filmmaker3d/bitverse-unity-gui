@@ -26,7 +26,8 @@ public class BitButton : BitControl
 
     protected override void DoDraw()
     {
-        (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, Focus);
+        if(Event.current.type == EventType.repaint)
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, Focus);
 	}
 
 	#endregion

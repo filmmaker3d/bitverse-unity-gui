@@ -157,8 +157,8 @@ public class BitContextMenu : AbstractBitPopup
 
     protected override void DoAutoSize()
     {
-        Size before = Size;
-        Size options = _options.Size;
+	    //Size before = Size;
+	    //Size options = _options.Size;
         //_options.AutoSize = true;
         base.DoAutoSize();
 

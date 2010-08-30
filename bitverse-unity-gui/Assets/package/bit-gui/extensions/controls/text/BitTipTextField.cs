@@ -125,20 +125,21 @@ public class BitTipTextField : AbstractBitTextField
                 // Focused
                 TempContent.text = Content.text;
                 DrawStyle = Style ?? DefaultStyle;
-                GUI.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
+                GUIDoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
                 Text = TempContent.text;
             }
-            else
+            else 
             {
                 // Not Focused
                 bool useTip = string.IsNullOrEmpty(Content.text);
                 TempContent.text = useTip ? _tipText : Content.text;
                 DrawStyle = (useTip ? TipTextStyle: Style) ?? DefaultStyle;
-                DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
+                if (Event.current.type == EventType.repaint)
+                    DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
                 //GUI.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
             }
         }
-        else
+        else if (Event.current.type == EventType.repaint)
         {
             // Not Focused
             bool useTip = string.IsNullOrEmpty(Content.text);
