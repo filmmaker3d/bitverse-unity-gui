@@ -8,8 +8,18 @@ public class WebImageTest : MonoBehaviour
     private BitWebImage pictureWebimage;
     private BitHorizontalProgressBar pictureHorizontalprogressbar;
 
+    private LoadState loadState;
+
+    private enum LoadState
+    {
+        Iddle,
+        LoadingImage
+    }
+
     public void Start()
     {
+        loadState = LoadState.Iddle; 
+
         Component[] windows = gameObject.GetComponents(typeof(BitWindow));
         BitWindow window = null;
 
@@ -52,6 +62,7 @@ public class WebImageTest : MonoBehaviour
                     case BitWebImage.LoadImageResponse.OK:
                         consoleTextarea.Text += "Loading image... " + url + Environment.NewLine;
                         pictureHorizontalprogressbar.Value = 0;
+                        loadState = LoadState.LoadingImage;
                         break;
                 }
             };
@@ -60,10 +71,18 @@ public class WebImageTest : MonoBehaviour
 
     public void Update()
     {
-        if (pictureWebimage.IsLoading())
+        if (loadState == LoadState.LoadingImage)
         {
-            float progress = pictureWebimage.GetProgress();
-            pictureHorizontalprogressbar.Value = progress * 100;
+            if (pictureWebimage.IsLoading())
+            {
+                float progress = pictureWebimage.GetProgress();
+                pictureHorizontalprogressbar.Value = progress * 100;
+            }
+            else
+            {
+                loadState = LoadState.Iddle;
+                pictureHorizontalprogressbar.Value = 100;
+            }
         }
     }
 

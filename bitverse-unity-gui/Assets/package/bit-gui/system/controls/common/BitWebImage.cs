@@ -58,7 +58,7 @@ public class BitWebImage : BitPicture
             return LoadImageResponse.OTHER_LOADING;
         }
 
-        Image = new Texture2D(4, 4, TextureFormat.DXT1, false);
+        Image = new Texture2D(4, 4, TextureFormat.RGB24, false);
 
         www = new WWW(url);
         isLoadingImage = true;
