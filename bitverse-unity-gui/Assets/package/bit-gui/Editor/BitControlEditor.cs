@@ -395,16 +395,7 @@ public partial class BitControlEditor : Editor
             }
         }
     }
-}
 
-[CustomEditor(typeof(BitWebImage))]
-public class BitWebImageEditor : BitControlEditor
-{
-    protected override void OnAddControl(BitControl control)
-    {
-        control.Size = new Size(100, 100);
-    }
-}
     private bool drawDefaultInspector;
 
     private List<TargetInfo> targetList = new List<TargetInfo>();
@@ -413,14 +404,14 @@ public class BitWebImageEditor : BitControlEditor
     private string report = "";
 
 
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        //DrawDefault();
-        EditorGUILayout.Space();
-        EditorGUILayout.Space();
-        DrawButtons();
-    }
+//    public override void OnInspectorGUI()
+//    {
+//        base.OnInspectorGUI();
+//        //DrawDefault();
+//        EditorGUILayout.Space();
+//        EditorGUILayout.Space();
+//        DrawButtons();
+//    }
 
     private void DrawDefault()
     {

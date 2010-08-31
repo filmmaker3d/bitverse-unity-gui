@@ -42,14 +42,16 @@ public class BitHorizontalProgressBar : AbstractBitProgressBar
 
         if (StrechBar)
         {
-            fillStyle.Draw(fillPoss, IsHover, IsActive, IsOn | ForceOnState, false);
+            if (Event.current.type == EventType.repaint)
+                fillStyle.Draw(fillPoss, IsHover, IsActive, IsOn | ForceOnState, false);
         }
         else
         {
             GUIClipPush(fillPoss);
 
             Rect completePos = new Rect(InverseDirection ? (width - totalWidth) : 0, 0, totalWidth, totalHeight);
-            fillStyle.Draw(completePos, IsHover, IsActive, IsOn | ForceOnState, false);
+            if (Event.current.type == EventType.repaint)
+                fillStyle.Draw(completePos, IsHover, IsActive, IsOn | ForceOnState, false);
 
             GUIClipPop();
         }

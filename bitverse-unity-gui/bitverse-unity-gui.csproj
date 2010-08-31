@@ -35,16 +35,16 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
 	<Reference Include="Boo.Lang">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityScript">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3beta/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +79,7 @@
      <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalProgressBarEditor.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalScrollbarEditor.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalSliderEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\editors\BitWebImageEditor.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\editors\BitWindowEditor.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\AbstractHandler.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\BitControlEditor.cs" />
@@ -94,7 +95,7 @@
      <Compile Include="Assets\package\bit-gui\Editor\ResizeHandler.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\SelectHandler.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\Shortcut.cs" />
-    <Compile Include="Assets\package\bit-gui\Editor\TranslationGenerator.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\TranslationGenerator.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\VirtualMenu.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\audio\BitControlAudio.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\controls\list\BitSlotList.cs" />
@@ -124,7 +125,7 @@
      <Compile Include="Assets\package\bit-gui\system\controls\common\BitRichText.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\common\BitSprite.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\common\BitToggle.cs" />
-    <Compile Include="Assets\package\bit-gui\system\controls\common\BitWebImage.cs" />
+     <Compile Include="Assets\package\bit-gui\system\controls\common\BitWebImage.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\common\BitWindow.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\group\AbstractBitLayoutGroup.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\group\BitGroup.cs" />
@@ -180,18 +181,19 @@
      <Compile Include="Assets\package\bit-gui\system\models\IFilteredListModel.cs" />
      <Compile Include="Assets\package\bit-gui\system\models\IListModel.cs" />
      <Compile Include="Assets\package\bit-gui\system\models\IPopulator.cs" />
-    <Compile Include="Assets\package\bit-gui\system\tooltip\ITooltipData.cs" />
+     <Compile Include="Assets\package\bit-gui\system\tooltip\ITooltipData.cs" />
      <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipManager.cs" />
      <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipProvider.cs" />
      <Compile Include="Assets\samples\projects\calculator\CalculatorDemo.cs" />
+     <Compile Include="Assets\samples\projects\calculator\Initializer.cs" />
+     <Compile Include="Assets\samples\projects\calculator\TextTooltipProvider.cs" />
      <Compile Include="Assets\samples\test\ListAndGridTest.cs" />
      <Compile Include="Assets\samples\test\PopupTest.cs" />
+     <Compile Include="Assets\samples\test\RepeatButtonTest.cs" />
      <Compile Include="Assets\samples\test\SkinTest.cs" />
      <Compile Include="Assets\samples\test\TestMain.cs" />
-    <Compile Include="Assets\test\TestMain.cs" />
-    <Compile Include="Assets\test\WebImageTest.cs" />
-    <Compile Include="Assets\utils\InvokeUtils.cs" />
-    <Reference Include="System.Data" />
+     <Compile Include="Assets\samples\test\WebImageTest.cs" />
+     <Compile Include="Assets\utils\InvokeUtils.cs" />
  <Reference Include="System.Drawing">
  <HintPath>Assets\lib\System.Drawing.dll</HintPath>
  </Reference>

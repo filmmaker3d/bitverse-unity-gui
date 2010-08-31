@@ -138,6 +138,7 @@ public partial class BitGuiEditorToolbox : EditorWindow
         buttonInfo.AddComponent(typeof(BitBox), false);
         buttonInfo.AddComponent(typeof(BitPicture), false);
         buttonInfo.AddComponent(typeof(BitSprite), false);
+        buttonInfo.AddComponent(typeof(BitWebImage), false);
         buttonInfo.AddComponent(typeof(BitDropDown), false);
         var ci = buttonInfo.AddSpecialComponent(typeof(BitWindow), true);
         ci.Size = new Size(400, 200);
