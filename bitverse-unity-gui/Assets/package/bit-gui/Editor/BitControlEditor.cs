@@ -398,7 +398,6 @@ public partial class BitControlEditor : Editor
 
     private bool drawDefaultInspector;
 
-    private List<TargetInfo> targetList = new List<TargetInfo>();
     private List<GUIStyle> styles = new List<GUIStyle>();
     private List<GUIStyle> copyStyles = new List<GUIStyle>();
     private string report = "";
@@ -428,7 +427,7 @@ public partial class BitControlEditor : Editor
         EditorGUILayout.EndVertical();
     }
 
-    private GUISkin superSkin;
+    //private GUISkin superSkin;
 
     private void DrawButtons()
     {
@@ -444,7 +443,7 @@ public partial class BitControlEditor : Editor
 
             styles.Clear();
             copyStyles.Clear();
-            superSkin = window.Skin;
+            //superSkin = window.Skin;
 
             foreach (GUIStyle s in window.Skin)
             {
@@ -527,26 +526,9 @@ public partial class BitControlEditor : Editor
         }
     }
 
-    private class StyleInfo
-    {
-        public GUISkin Skin;
-        public GUIStyle Style;
-
-        public string key()
-        {
-            return Skin.name + "-" + Style.name;
-        }
-    }
-
-    private class TargetInfo
-    {
-        public GUIStyle CloneStyle;
-        public StyleInfo SourceStyle;
-    }
-
     private string Add(string control, string skinName, GUIStyle style)
     {
-        string actualName = "";
+        string actualName;
         int sameName = 0;
         GUIStyle clone = new GUIStyle(style);
         foreach (GUIStyle guiStyle in styles)

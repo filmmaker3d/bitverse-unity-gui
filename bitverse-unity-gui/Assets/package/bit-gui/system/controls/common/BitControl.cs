@@ -412,7 +412,7 @@ public abstract partial class BitControl : MonoBehaviour
                 }
                 return _parent;
             }
-            catch (Exception e) { Debug.Log("no transform for: " + this.GetType().Name); return null; }
+            catch (Exception) { Debug.Log("no transform for: " + this.GetType().Name); return null; }
         }
         set
         {
@@ -639,9 +639,8 @@ public abstract partial class BitControl : MonoBehaviour
     private AbstractBitPopup _contextMenu;
 
     /// <remarks>
-    /// DO NOT USE THIS. THIS CAUSES THE MENU TO BE SHOWN AGAIN WITHOUT BEING REFRESHED.
+    /// XXX - DO NOT USE THIS. THIS CAUSES THE MENU TO BE SHOWN AGAIN WITHOUT BEING REFRESHED.
     /// </remarks>
-    [Obsolete]
     public AbstractBitPopup ContextMenu
     {
         get { return _contextMenu; }
