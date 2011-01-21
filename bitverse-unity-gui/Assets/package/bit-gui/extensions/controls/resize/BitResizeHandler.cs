@@ -4,22 +4,35 @@ using UnityEngine;
 
 public class BitResizeHandler : BitControl
 {
-	#region Appearance
+    [HideInInspector]
+    [SerializeField]
+    private AnchorStyles _resizeAnchor = AnchorStyles.Invalid;
 
-	public override GUIStyle DefaultStyle
-	{
-		get { return GUI.skin.button; }
-	}
-
-	#endregion
-    
-    #region Event
-    
-    protected override bool ConsumeEvent(EventType type)
-	{
-		return true;
+    public AnchorStyles ResizeAnchor
+    {
+        get { return _resizeAnchor; }
+        set
+        {
+            _resizeAnchor = value;
+        }
     }
-    
+
+    #region Appearance
+
+    public override GUIStyle DefaultStyle
+    {
+        get { return GUI.skin.button; }
+    }
+
+    #endregion
+
+    #region Event
+
+    protected override bool ConsumeEvent(EventType type)
+    {
+        return true;
+    }
+
     protected override void RaiseMouseDrag(int mouseButton, Vector2 mousePosition, Vector2 positionOffset)
     {
         OnDrag(mouseButton, mousePosition, positionOffset);
@@ -34,30 +47,30 @@ public class BitResizeHandler : BitControl
 
     protected void OnDrag(int mouseButton, Vector2 mousePosition, Vector2 positionOffset)
     {
-        //Debug.Log("Event " + Event.current.type + " OnDrag " + Event.current.button + " " + Event.current.mousePosition + " " + positionOffset);
+        Debug.Log("Event " + Event.current.type + " OnDrag " + Event.current.button + " " + Event.current.mousePosition + " " + positionOffset);
         Rect p = Parent.Position;
         bool l = false;
         bool t = false;
-        if ((Anchor & AnchorStyles.Left) == AnchorStyles.Left)
+        if ((ResizeAnchor & AnchorStyles.Left) == AnchorStyles.Left)
         {
-            p.x += positionOffset.x;
-            p.width -= positionOffset.x;
+            p.x += (int)positionOffset.x;
+            p.width -= (int)positionOffset.x;
             l = true;
         }
-        else if ((Anchor & AnchorStyles.Right) == AnchorStyles.Right)
+        else if ((ResizeAnchor & AnchorStyles.Right) == AnchorStyles.Right)
         {
-            p.width += positionOffset.x;
+            p.width += (int)positionOffset.x;
         }
 
-        if ((Anchor & AnchorStyles.Top) == AnchorStyles.Top)
+        else if ((ResizeAnchor & AnchorStyles.Top) == AnchorStyles.Top)
         {
-            p.y += positionOffset.y;
-            p.height -= positionOffset.y;
+            p.y += (int)positionOffset.y;
+            p.height -= (int)positionOffset.y;
             t = true;
         }
-        else if ((Anchor & AnchorStyles.Bottom) == AnchorStyles.Bottom)
+        else if ((ResizeAnchor & AnchorStyles.Bottom) == AnchorStyles.Bottom)
         {
-            p.height += positionOffset.y;
+            p.height += (int)positionOffset.y;
         }
         Parent.Position = p;
 
@@ -66,22 +79,22 @@ public class BitResizeHandler : BitControl
             MouseStatus ms = GetMouseStatus();
             MouseButtonStatus mbs;
             GetMouseButtonStatus(ms, out mbs);
-            mbs.LastDragPosition.x = l ? mbs.MouseDownPosition.x : mbs.LastDragPosition.x;
-            mbs.LastDragPosition.y = t ? mbs.MouseDownPosition.y : mbs.LastDragPosition.y;
+            mbs.LastDragPosition.x = l ? (int)mbs.MouseDownPosition.x : (int)mbs.LastDragPosition.x;
+            mbs.LastDragPosition.y = t ? (int)mbs.MouseDownPosition.y : (int)mbs.LastDragPosition.y;
             SetMouseButtonStatus(ref ms, mbs);
             SaveMouseStatus(ms);
         }
     }
 
     #endregion
-    
+
     #region Draw
 
     protected override void DoDraw()
     {
-        if (Event.current.type == EventType.repaint)
-            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, Focus);
-	}
+        if (Event.current.type == EventType.Repaint)
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, Focus);
+    }
 
-	#endregion
+    #endregion
 }

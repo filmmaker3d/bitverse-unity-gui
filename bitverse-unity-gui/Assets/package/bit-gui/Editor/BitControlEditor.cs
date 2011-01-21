@@ -167,6 +167,7 @@ public partial class BitControlEditor : Editor
 
         ProcessShortcuts();
         SetCurrentTarget();
+        CheckDuplicateGuids();
         //Handles.EndGUI();
     }
 
@@ -319,4 +320,84 @@ public partial class BitControlEditor : Editor
     protected virtual void OnAddControl(BitControl control)
     {
     }
+
+    // Objects in Scene
+    private Dictionary<Guid, BitControl> _controlsInSceneEditor = new Dictionary<Guid, BitControl>();
+    private float _checkFrequency = 1;
+    private double _lastCheckedTime = Time.frameCount;
+
+    private void CheckDuplicateGuids()
+    {
+        // Small Hack to Check Duplicate Guids
+        if (Time.frameCount - _lastCheckedTime > _checkFrequency)
+        {
+            BitControl[] allControls = (BitControl[])FindObjectsOfType(typeof(BitControl));
+            foreach (BitControl curControl in allControls)
+            {
+                BitControl storedControl;
+                if (_controlsInSceneEditor.TryGetValue(curControl.ID, out storedControl))
+                {
+                    // If different control then change your ID
+                    if (storedControl.gameObject.GetInstanceID() != curControl.gameObject.GetInstanceID())
+                    {
+                        curControl.ID = Guid.NewGuid();
+                    }
+                }
+                else
+                {
+                    _controlsInSceneEditor.Add(curControl.ID, curControl);
+                }
+            }
+            _lastCheckedTime = Time.frameCount;
+        }
+    }
+
+
+    private void TextKindCheck(bool defaultIsStatic)
+    {
+        Object[] selection = Selection.GetFiltered(typeof(Object), SelectionMode.TopLevel);
+
+        foreach (Object o in selection)
+        {
+            if (o.GetType().IsAssignableFrom(typeof(GameObject)))
+            {
+                GameObject go = (GameObject)o;
+                Component[] comps = go.GetComponentsInChildren(typeof(BitControl));
+                for (int t = 0; t < comps.Length; t++)
+                {
+                    BitControl control = (BitControl)comps[t];
+
+                    CheckThisContent(control, defaultIsStatic);
+                }
+            }
+        }
+    }
+
+    private void CheckThisContent(BitControl control, bool defaultIsStatic)
+    {
+        if (control.Text.Equals(string.Empty))
+            control.textKind = TextKind.NONE;
+        else
+            if (control.textKind == TextKind.NONE && defaultIsStatic)
+                control.textKind = TextKind.STATIC_TEXT;
+            else
+                if (control.textKind == TextKind.NONE && !defaultIsStatic)
+                    control.textKind = TextKind.DINAMIC_TEXT;
+
+        if (control.textKind != TextKind.STATIC_TEXT && control.textKind != TextKind.NONE)
+        {
+            if (!control.Content.text.Contains("<"))
+            {
+                //control.Content.text = "<" + control.Content.text + ">";
+            }
+        }
+        else
+        {
+            if (control.Content.text.Contains("<"))
+            {
+                //control.Content.text = control.Content.text.Substring(1, control.Content.text.Length - 2);
+            }
+        }
+    }
+
 }

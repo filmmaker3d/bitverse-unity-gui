@@ -1,124 +1,78 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
-using Random=UnityEngine.Random;
+﻿using UnityEngine;
 
 
 [ExecuteInEditMode]
 public class ListTestPopulator : MonoBehaviour
 {
-
-    public int ItemCount = 10;
-    private bool _randomItems = true;
-    public bool RandomItems = true;
-
-    private BitStage stage;
-    public BitList list;
-    private BitLabel[] _labels;
-
-	private class EmptyPopulator : IPopulator
-	{
-        private BitLabel[] _labels;
-	    public bool updateText;
-
-        public EmptyPopulator(BitLabel[] labels)
+    private class EmptyPopulator : IPopulator
+    {
+        private const string FormaterEmpty = "{0}";
+        private const string FormaterIndexed = "{0}{1}";
+        private readonly ListTestPopulator _parent;
+        public EmptyPopulator(ListTestPopulator parent)
         {
-            _labels = labels;
+            _parent = parent;
         }
 
-	    public void Populate(BitControl renderer, object data, int index, bool selected)
+        public void Populate(BitControl renderer, object data, int index, bool selected)
         {
-            if (_labels == null || !updateText)
+            int i = 0;
+            string formater = _parent.indexer ? FormaterIndexed : FormaterEmpty;
+            if (_parent._labels != null && _parent.texts != null && _parent.texts.Length > 0)
+            {
+                foreach (BitLabel b in _parent._labels)
+                {
+                    b.Text = string.Format(formater, _parent.texts[(index + i++) % _parent.texts.Length], index);
+                }
+            }
+
+            if (_parent._images == null || _parent.images == null || _parent.images.Length == 0)
                 return;
 
-	        updateText = false;
-
-		    int i = 0;
-            foreach (BitLabel b in _labels)
+            foreach (BitPicture p in _parent._images)
             {
-                b.Text = ((List<String>) data)[i++];
+                p.Image = _parent.images[index % _parent.images.Length];
             }
         }
-	}
+    }
 
+    public int ItemCount = 10;
+    public string[] texts;
+    public Texture2D[] images;
+    public BitList list;
+    public bool indexer;
 
-	private void OnGUI()
-	{
-		if (stage == null)
-		{
-			stage = gameObject.GetComponent<BitStage>();
-			if (stage == null)
-			{
-				Debug.Log("Form not found");
-				return;
-			}
-		}
+    private BitLabel[] _labels;
+    private BitPicture[] _images;
 
-		if (list == null)
-		{
-			return;
-		}
-
-        _labels = list.GetComponentsInChildren<BitLabel>();
-
-		if (list.Model == null)
-		{
-			list.Model = new DefaultBitListModel();
-			list.Populator = new EmptyPopulator(_labels);
-		}
-
-        if (_randomItems != RandomItems || (list.Model.Count >= 0 && list.Model.Count != ItemCount))
+    private void OnGUI()
+    {
+        if (list == null)
         {
-            _randomItems = RandomItems;
+            return;
+        }
+
+        if (list.Model == null)
+        {
+            list.Model = new DefaultBitListModel();
+            list.Populator = new EmptyPopulator(this);
+            _labels = list.GetComponentsInChildren<BitLabel>();
+            _images = list.GetComponentsInChildren<BitPicture>();
+        }
+
+        if (list.Model.Count != ItemCount)
+        {
             PopulateList();
         }
-	}
 
-    private static String str = "item ";
+    }
 
     private void PopulateList()
-	{
-		list.Model.Clear();
-		for (int i = 0; i < ItemCount; i++)
-        {
-            String s = "";
-		    s += str;
-            List<String> strings = new List<string>();
-            strings.Add(s + i);
-            for (int j = 1; j < _labels.Length;j++ )
-            {
-                if (RandomItems)
-                {
-                    char letter = (char) Random.Range('a', 'z');
-                    int lenght = Random.Range(1, 10);
-
-                    s = "";
-                    for (int c = 0; c < lenght; c++)
-                        s += letter;
-
-                    strings.Add(s);
-                }
-                else
-                {
-                    strings.Add(s+i+"-"+j);
-                }
-            }
-            list.Model.Add(strings);
-
-            PrintList(strings);
-
-		}
-        list.RollDownScroll();
-        ((EmptyPopulator) list.Populator).updateText = true;
-	}
-
-    private void PrintList (List<String> strings)
     {
-        String f = "";
-        foreach (String s in strings)
+        list.Model.Clear();
+        for (int i = 0; i < ItemCount; i++)
         {
-            f += s + " ";
+            list.Model.Add(string.Empty);
         }
-        Debug.Log(f);
     }
 }

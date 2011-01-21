@@ -148,10 +148,10 @@ public partial class BitGuiEditorToolbox : EditorWindow
         buttonInfo.AddComponent(typeof(BitTextField), false);
         buttonInfo.AddComponent(typeof(BitTextArea), false);
         buttonInfo.AddComponent(typeof(BitPasswordField), false);
-#pragma warning disable 618,612
+//#pragma warning disable 618,612
         buttonInfo.AddComponent(typeof(BitFilteredTextField), false);
-#pragma warning restore 618,612
-        buttonInfo.AddComponent(typeof(BitRichText), true);
+//#pragma warning restore 618,612
+        //buttonInfo.AddComponent(typeof(BitRichText), true);
         AddEnhancedTextControls(buttonInfo);
         _buttonsInfo.Add(buttonInfo);
 

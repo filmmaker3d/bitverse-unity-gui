@@ -1,3 +1,4 @@
+using System;
 using bitgui;
 using Bitverse.Unity.Gui;
 using UnityEngine;
@@ -56,6 +57,12 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
         get { return GUI.skin.box; }
     }
 
+    public bool LimitRows;
+
+    public bool LimitColumns;
+
+    public Vector2 MaximumSize = new Vector2(10, 10);
+
     #endregion
 
 
@@ -103,9 +110,19 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
 
         _cols = (int)(ScrollView.width / _stepx);
 
+        if ((LimitColumns) && (MaximumSize.y > 0))
+        {
+            _cols = Math.Min(_cols, (int)MaximumSize.y);
+        }
+
         _rows = (Model == null)
                     ? (int)(ScrollRect.height / _stepy)
                     : (int)Mathf.Max(Mathf.Ceil((Model.GetLastSlot() + 1) / (float)_cols) + (NoExtraRow ? 0 : 1), Mathf.Round(ScrollRect.height / _stepy));
+
+        if ((LimitRows) && (MaximumSize.x > 0))
+        {
+            _rows = Math.Min(_rows, (int)MaximumSize.x);
+        }
 
         if (_rows == 0 || _cols == 0)
         {
@@ -130,7 +147,8 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
             for (int j = 0; j < _cols; j++)
             {
                 Rect pos = new Rect(x, y, _slotSize.x, _slotSize.y);
-                slotStyle.Draw(pos, pos.Contains(Event.current.mousePosition) && Stage.HoverWindow == TopWindow, false, false, false);
+                if (Event.current.type == EventType.Repaint)
+                    slotStyle.Draw(pos, pos.Contains(Event.current.mousePosition) && Stage.HoverWindow == TopWindow, false, false, false);
                 x += _stepx;
             }
             y += _stepy;
@@ -229,9 +247,13 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
             return -1;
         }
 
-        int row = (int)Mathf.Floor(((mousePosition.y - AbsolutePosition.y) - _initialPosy - ScrollPosition.y) / _stepy);
-        int col = (int)Mathf.Floor(((mousePosition.x - AbsolutePosition.x) - _initialPosx - ScrollPosition.x) / _stepx);
+        Rect ap = AbsolutePosition;
+        int border = 0;
+        //if (SlotStyle != null)
+        //    border = Math.Max(0,(SlotStyle.border.left-1) + (SlotStyle.border.right-1));
+        int row = (int)Mathf.Floor(((mousePosition.y - ap.y) - (_initialPosy - ScrollPosition.y)) / _stepy);
+        int col = (int)Mathf.Floor(((mousePosition.x - ap.x - border) - (_initialPosx - ScrollPosition.x)) / _stepx);
 
-        return ((row * _cols) + col);        
+        return ((row * _cols) + col);
     }
 }

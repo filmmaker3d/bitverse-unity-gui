@@ -4,65 +4,65 @@ using UnityEngine;
 
 public class BitTipTextField : AbstractBitTextField
 {
-	#region Appearance
+    #region Appearance
 
-	[SerializeField]
-	private string _tipTextStyleName = "TipTextField Tip";
+    [SerializeField]
+    private string _tipTextStyleName = "TipTextField Tip";
 
-	public string TipTextStyleName
-	{
-		get { return _tipTextStyleName; }
-		set { _tipTextStyleName = value; }
-	}
+    public string TipTextStyleName
+    {
+        get { return _tipTextStyleName; }
+        set { _tipTextStyleName = value; }
+    }
 
-	[HideInInspector]
-	[SerializeField]
-	private GUIStyle _tipTextStyle;
+    [HideInInspector]
+    [SerializeField]
+    private GUIStyle _tipTextStyle;
 
-	public GUIStyle TipTextStyle
-	{
-		get
-		{
-			if (_tipTextStyle != null && !string.IsNullOrEmpty(_tipTextStyle.name))
-			{
-				return _tipTextStyle;
-			}
+    public GUIStyle TipTextStyle
+    {
+        get
+        {
+            if (_tipTextStyle != null && !string.IsNullOrEmpty(_tipTextStyle.name))
+            {
+                return _tipTextStyle;
+            }
 
-			if (!string.IsNullOrEmpty(_tipTextStyleName))
-			{
-				GUISkin s = Skin;
-				if (s != null)
-				{
-					return s.FindStyle(_tipTextStyleName);
-				}
-			}
-			return null;
-		}
-		set { _tipTextStyle = value; }
-	}
+            if (!string.IsNullOrEmpty(_tipTextStyleName))
+            {
+                GUISkin s = Skin;
+                if (s != null)
+                {
+                    return s.FindStyle(_tipTextStyleName);
+                }
+            }
+            return null;
+        }
+        set { _tipTextStyle = value; }
+    }
 
     public GUIStyle DrawStyle;
 
-	#endregion
+    #endregion
 
 
-	#region Data
+    #region Data
 
-	protected override bool IsMultiline()
-	{
-		return false;
-	}
+    protected override bool IsMultiline()
+    {
+        return false;
+    }
 
-	[SerializeField]
-	private string _tipText = "Tip Text...";
+    [SerializeField]
+    private string _tipText = "Tip Text...";
 
-	private bool _initialized;
+    private bool _initialized;
 
-	public string TipText
-	{
-		get { return _tipText; }
-		set { _tipText = value; }
-	}
+    public string TipText
+    {
+        get { return _tipText; }
+        set { _tipText = value; }
+    }
 
     /*
     protected override void RaiseFocusGainEvent()
@@ -96,22 +96,22 @@ public class BitTipTextField : AbstractBitTextField
 		}
 	}*/
 
-	#endregion
+    #endregion
 
-	#region Draw
+    #region Draw
 
-	protected override void DoDraw()
-	{
-		/*if (!_initialized)
-		{
-			_initialized = true;
-			if (string.IsNullOrEmpty(_tipText))
-			{
-				_tipText = Content.text;
-			}
-			Content.text = _tipText;
-			Style = TipTextStyle;
-		}*/
+    protected override void DoDraw()
+    {
+        /*if (!_initialized)
+        {
+            _initialized = true;
+            if (string.IsNullOrEmpty(_tipText))
+            {
+                _tipText = Content.text;
+            }
+            Content.text = _tipText;
+            Style = TipTextStyle;
+        }*/
 
         // hAcK
         // Windows are processed from front to back window for mouse events and from back to front window for repaint events
@@ -125,30 +125,31 @@ public class BitTipTextField : AbstractBitTextField
                 // Focused
                 TempContent.text = Content.text;
                 DrawStyle = Style ?? DefaultStyle;
-                GUIDoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
+                AbstractBitTextField.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
                 Text = TempContent.text;
             }
-            else 
+            else
             {
                 // Not Focused
                 bool useTip = string.IsNullOrEmpty(Content.text);
                 TempContent.text = useTip ? _tipText : Content.text;
-                DrawStyle = (useTip ? TipTextStyle: Style) ?? DefaultStyle;
-                if (Event.current.type == EventType.repaint)
-                    DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
-                //GUI.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
+                DrawStyle = (useTip ? TipTextStyle : Style) ?? DefaultStyle;
+                if (Event.current.type == EventType.Repaint)
+                    DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
+                //GUIDoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
             }
         }
-        else if (Event.current.type == EventType.repaint)
+        else
         {
             // Not Focused
             bool useTip = string.IsNullOrEmpty(Content.text);
             TempContent.text = useTip ? _tipText : Content.text;
             DrawStyle = (useTip ? TipTextStyle : Style) ?? DefaultStyle;
-            DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn, false);
+            if (Event.current.type == EventType.Repaint)
+                DrawStyle.Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
         }
 
-	}
+    }
 
-	#endregion
+    #endregion
 }

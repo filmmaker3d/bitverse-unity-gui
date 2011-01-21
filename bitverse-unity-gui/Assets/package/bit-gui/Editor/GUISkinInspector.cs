@@ -2,10 +2,20 @@ using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
 
-//[CustomEditor (typeof (GUISkin))]
+[CustomEditor(typeof(GUISkin))]
 public class GUISkinInspector : Editor
 {
-    private static GUIStyle copiedStyle;
+    private static List<GUIStyle> copiedStyleList = new List<GUIStyle>();
+
+    public static bool PrefabCopy = false;
+
+    public static Font Font;
+
+    public static List<GUIStyle> CopiedStyleList
+    {
+        get { return copiedStyleList; }
+        set { copiedStyleList = value; }
+    }
 
     private List<GUIStyle> customStyles = new List<GUIStyle>();
     private List<string> customStylesNames = new List<string>();
@@ -20,25 +30,193 @@ public class GUISkinInspector : Editor
 
     private GUISkin Skin
     {
-        get { return (GUISkin) target; }
+        get { return (GUISkin)target; }
     }
 
     #region CopyNPaste
 
     private void CopySelectedStyle()
     {
-        copiedStyle = Skin.customStyles[selectedStyle];
+        GUIStyle copiedStyle = Skin.customStyles[selectedStyle];
+        copiedStyleList.Add(copiedStyle);
         Debug.Log("Copied GUIStyle: " + copiedStyle.name);
+    }
+
+    private void CopyAllCustomStyles()
+    {
+        if (copiedStyleList == null)
+            return;
+        copiedStyleList.Clear();
+
+        PrefabCopy = false;
+
+        foreach (GUIStyle guiStyle in customStyles)
+        {
+            copiedStyleList.Add(guiStyle);
+            Debug.Log("Copied GUIStyle: " + guiStyle.name);
+        }
+        
+    }
+
+    private void CopyAllDefaultStyles()
+    {
+        List<GUIStyle> defaultSkins = GetDefaultSkins();
+        foreach (GUIStyle guiStyle in defaultSkins)
+            AddStyleToLists(guiStyle);
+
+        if (copiedStyleList == null)
+            return;
+        copiedStyleList.Clear();
+
+        PrefabCopy = true;
+
+        foreach (GUIStyle guiStyle in customStyles)
+        {
+            copiedStyleList.Add(guiStyle);
+            Debug.Log("Copied GUIStyle: " + guiStyle.name);
+        }
+
     }
 
     private void PasteSelectedStyle()
     {
-        if (copiedStyle == null)
+        if (copiedStyleList == null)
             return;
 
-        GUIStyle clone = new GUIStyle(copiedStyle);
-        AddStyle(clone);
-        Debug.Log("Pasted GUIStyle: " + clone.name);
+        if (PrefabCopy)
+        {
+            foreach (GUIStyle copiedStyle in copiedStyleList)
+            {
+                // XXX HARDCODED
+                if (copiedStyle.name.Equals("box"))
+                {
+                    Skin.box = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("button"))
+                {
+                    Skin.button = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("toggle"))
+                {
+                    Skin.toggle = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("label"))
+                {
+                    Skin.label = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("textfield"))
+                {
+                    Skin.textField = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("textarea"))
+                {
+                    Skin.textArea = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("window"))
+                {
+                    Skin.window = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("horizontalslider"))
+                {
+                    Skin.horizontalSlider = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("horizontalsliderthumb"))
+                {
+                    Skin.horizontalSliderThumb = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("verticalslider"))
+                {
+                    Skin.verticalSlider = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("verticalsliderthumb"))
+                {
+                    Skin.verticalSliderThumb = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("horizontalscrollbar"))
+                {
+                    Skin.horizontalScrollbar = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("horizontalscrollbarthumb"))
+                {
+                    Skin.horizontalScrollbarThumb = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("horizontalscrollbarthumbleftbutton"))
+                {
+                    Skin.horizontalScrollbarLeftButton = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("horizontalscrollbarrightbutton"))
+                {
+                    Skin.horizontalScrollbarRightButton = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("verticalscrollbar"))
+                {
+                    Skin.verticalScrollbar = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("scrollview"))
+                {
+                    Skin.scrollView = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("verticalscrollbarthumb"))
+                {
+                    Skin.verticalScrollbarThumb = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("verticalscrollbarupbutton"))
+                {
+                    Skin.verticalScrollbarUpButton = new GUIStyle(copiedStyle);
+                    continue;
+                }
+                if (copiedStyle.name.Equals("verticalscrollbardownbutton"))
+                {
+                    Skin.verticalScrollbarDownButton = new GUIStyle(copiedStyle);
+                    continue;
+                }
+
+
+                GUIStyle clone = new GUIStyle(copiedStyle);
+
+                GUIStyle style = Skin.GetStyle(clone.name);
+
+                Debug.Log("checking: " + style.name);
+
+                if (style.name.Equals(""))
+                {
+                    AddStyle(copiedStyle);
+                    Debug.Log("Created GUIStyle: " + clone.name);
+                }
+                else
+                {
+                    Debug.Log("Pasted GUIStyle: " + clone.name);
+                }
+            }
+            Skin.font = Font;
+        }
+        else
+            foreach (GUIStyle copiedStyle in copiedStyleList)
+            {
+                GUIStyle clone = new GUIStyle(copiedStyle);
+                AddStyle(clone);
+                Debug.Log("Pasted GUIStyle: " + clone.name);
+            }
+
+
     }
 
     #endregion
@@ -98,6 +276,32 @@ public class GUISkinInspector : Editor
             }
 
         EditorUtility.SetDirty(Skin);
+    }
+
+    private List<GUIStyle> GetDefaultSkins()
+    {
+        List<GUIStyle> defaultSkins = new List<GUIStyle>();
+        defaultSkins.Add(Skin.box);
+        defaultSkins.Add(Skin.button);
+        defaultSkins.Add(Skin.toggle);
+        defaultSkins.Add(Skin.label);
+        defaultSkins.Add(Skin.textField);
+        defaultSkins.Add(Skin.textArea);
+        defaultSkins.Add(Skin.window);
+        defaultSkins.Add(Skin.horizontalSlider);
+        defaultSkins.Add(Skin.horizontalSliderThumb);
+        defaultSkins.Add(Skin.verticalSlider);
+        defaultSkins.Add(Skin.verticalSliderThumb);
+        defaultSkins.Add(Skin.horizontalScrollbar);
+        defaultSkins.Add(Skin.horizontalScrollbarThumb);
+        defaultSkins.Add(Skin.horizontalScrollbarLeftButton);
+        defaultSkins.Add(Skin.horizontalScrollbarRightButton);
+        defaultSkins.Add(Skin.verticalScrollbar);
+        defaultSkins.Add(Skin.verticalScrollbarThumb);
+        defaultSkins.Add(Skin.verticalScrollbarUpButton);
+        defaultSkins.Add(Skin.verticalScrollbarDownButton);
+        defaultSkins.Add(Skin.scrollView);
+        return defaultSkins;
     }
 
     private void OrganizeStyles()
@@ -178,6 +382,22 @@ public class GUISkinInspector : Editor
         EditorGUILayout.EndHorizontal();
     }
 
+    private void DrawCopyAllCustomButton()
+    {
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Copy all Custom Styles"))
+            CopyAllCustomStyles();
+        EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawCopyAllDefaultButton()
+    {
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Copy all Styles (+Default)"))
+            CopyAllDefaultStyles();
+        EditorGUILayout.EndHorizontal();
+    }
+
     private void CheckEvents()
     {
         if (Event.current.type == EventType.keyUp && Event.current.keyCode == KeyCode.C && Event.current.shift)
@@ -201,27 +421,33 @@ public class GUISkinInspector : Editor
 
     private void DrawStyles()
     {
+        EditorGUILayout.Space();
 
         EditorGUILayout.BeginVertical();
         selectedStyle = EditorGUILayout.Popup("CustomStyles", selectedStyle, customStylesNames.ToArray());
 
         EditorGUILayout.Space();
+
+        DrawButtons();
+
         EditorGUILayout.Space();
 
         if (customStyles.Count > 0)
         {
             SerializedObject serializedGuiStyle = new SerializedObject(target);
-            SerializedProperty iterator = serializedGuiStyle.FindProperty("customStyles.Array.data[" + selectedStyle + "]");
+            SerializedProperty iterator = serializedGuiStyle.FindProperty("m_CustomStyles.Array.data[" + selectedStyle + "]");
+            //SerializedProperty iterator = serializedGuiStyle.
+
+            if (iterator == null)
+            {
+                Debug.LogError("DrawStyles -> iterator is null");
+                EditorGUILayout.EndVertical();
+                return;
+            }
 
             bool enterChildren = true;
-
-            if (iterator != null)
-            {
-                while (iterator.NextVisible(enterChildren) &&
-                       !iterator.propertyPath.Contains("customStyles.Array.data[" + (selectedStyle + 1) + "]") &&
-                       iterator.propertyPath != "m_Settings")
-                    enterChildren = EditorGUILayout.PropertyField(iterator);
-            }
+            while (iterator.NextVisible(enterChildren) && !iterator.propertyPath.Contains("m_CustomStyles.Array.data[" + (selectedStyle + 1) + "]") && iterator.propertyPath != "m_Settings")
+                enterChildren = EditorGUILayout.PropertyField(iterator);
 
             serializedGuiStyle.ApplyModifiedProperties();
 
@@ -229,13 +455,14 @@ public class GUISkinInspector : Editor
                 Skin.customStyles[selectedStyle].name = "Empty";
 
             Skin.customStyles[selectedStyle].name = CheckRepeatedNames(Skin.customStyles[selectedStyle]);
+
             EditorUtility.SetDirty(Skin);
 
             RefreshLists();
         }
 
         EditorGUILayout.EndVertical();
-      
+
     }
 
 
@@ -243,11 +470,13 @@ public class GUISkinInspector : Editor
     {
         CheckEvents();
 
-        DrawButtons();
-
         DrawStyles();
 
         DrawDefault();
+
+        DrawCopyAllCustomButton();
+
+        DrawCopyAllDefaultButton();
     }
 
     #endregion

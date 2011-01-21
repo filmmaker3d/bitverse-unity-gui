@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class BitRepeatButton : BitControl
 {
-	#region Appearance
+    #region Appearance
 
-	public override GUIStyle DefaultStyle
-	{
-		get { return GUI.skin.button; }
-	}
+    public override GUIStyle DefaultStyle
+    {
+        get { return GUI.skin.button; }
+    }
 
-	#endregion
-    
-	#region Data
+    #endregion
 
-	private bool _value;
+    #region Data
+
+    private bool _value;
 
     private bool _mouseIsDown;
     private bool _startRepeat;
@@ -27,8 +27,8 @@ public class BitRepeatButton : BitControl
     public float TimeToStartRepeat
     {
         get { return _timeToStartRepeat; }
-        set{ _timeToStartRepeat = value; }
-        
+        set { _timeToStartRepeat = value; }
+
     }
 
     [SerializeField]
@@ -37,25 +37,25 @@ public class BitRepeatButton : BitControl
     public float TimeToRepeat
     {
         get { return _timeToRepeat; }
-        set{ _timeToRepeat = value; }
-        
+        set { _timeToRepeat = value; }
+
     }
 
 
-	#endregion
-    
-	#region Draw
+    #endregion
 
-	protected override void DoDraw()
+    #region Draw
+
+    protected override void DoDraw()
     {
-        if (Event.current.type == EventType.repaint) 
-            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, Focus);
-	    _value = (IsHover && IsActive);
-		//_value = GUI.RepeatButton(Position, Content, Style ?? DefaultStyle);
-	}
+        if (Event.current.type == EventType.Repaint)
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, Focus);
+        _value = (IsHover && IsActive);
+        //_value = GUI.RepeatButton(Position, Content, Style ?? DefaultStyle);
+    }
 
-	#endregion
-    
+    #endregion
+
     #region Events
 
     public event MouseHoldEventHandler MouseHold;
@@ -64,7 +64,10 @@ public class BitRepeatButton : BitControl
     {
         if (MouseHold != null)
         {
-            MouseHold(this, new MouseEventArgs(mouseButton, mousePosition));
+            MouseEventArgs args;
+            args.MouseButton = mouseButton;
+            args.MousePosition = mousePosition;
+            MouseHold(this, args);
         }
     }
 
@@ -75,8 +78,8 @@ public class BitRepeatButton : BitControl
         if (!_mouseIsDown)
             _lastTime = currentTime;
 
-		if (!_value)
-			return false;
+        if (!_value)
+            return false;
 
         if (!_startRepeat)
         {
@@ -93,8 +96,8 @@ public class BitRepeatButton : BitControl
             return false;
         }
 
-		return true;
-	}
+        return true;
+    }
 
     private void ResetVariables()
     {
@@ -111,7 +114,7 @@ public class BitRepeatButton : BitControl
     protected override void RaiseMouseUp(int mouseButton, Vector2 mousePosition)
     {
         ResetVariables();
-        base.RaiseMouseUp(mouseButton,mousePosition);
+        base.RaiseMouseUp(mouseButton, mousePosition);
     }
 
     protected override bool ConsumeEvent(EventType type)

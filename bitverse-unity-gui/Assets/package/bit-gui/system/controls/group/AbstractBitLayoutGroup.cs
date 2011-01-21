@@ -5,113 +5,116 @@ using UnityEngine;
 
 public abstract class AbstractBitLayoutGroup : BitContainer
 {
-	#region MonoBehaviour
+    #region MonoBehaviour
 
-	public override void Awake()
-	{
-		base.Awake();
-		SortChildren();
-	}
+    public override void Awake()
+    {
+        base.Awake();
+        SortChildren();
+    }
 
-	#endregion
-
-
-	#region IndexManager
-
-	[HideInInspector]
-	public readonly List<BitControl> IndexMap = new List<BitControl>();
+    #endregion
 
 
-	private class IndexComparer : IComparer<BitControl>
-	{
-		public int Compare(BitControl x, BitControl y)
-		{
-			return x.Index - y.Index;
-		}
-	}
+    #region IndexManager
+
+    [HideInInspector]
+    public readonly List<BitControl> IndexMap = new List<BitControl>();
 
 
-	public void SortChildren()
-	{
-		IndexMap.Clear();
-		for (int i = 0; i < ControlCount; i++)
-		{
-			IndexMap.Add(InternalGetControlAt(i));
-		}
-
-		IndexMap.Sort(new IndexComparer());
-	}
-
-	private int GetNextIndex()
-	{
-		return (IndexMap.Count > 0) ? IndexMap[IndexMap.Count - 1].Index + 1 : 0;
-	}
-
-	#endregion
+    private class IndexComparer : IComparer<BitControl>
+    {
+        public int Compare(BitControl x, BitControl y)
+        {
+            return x.Index - y.Index;
+        }
+    }
 
 
-	#region Draw
+    public void SortChildren()
+    {
+        IndexMap.Clear();
+        for (int i = 0; i < ControlCount; i++)
+        {
+            IndexMap.Add(InternalGetControlAt(i));
+        }
 
-	protected override void DoDraw()
-	{
-        if (Event.current.type == EventType.repaint) 
-            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn, false);
-		GUIClipPush(Position);
-		SecureAutoSizeMe();
-		DrawChildren();
-		GUIClipPop();
-	}
+        IndexMap.Sort(new IndexComparer());
+    }
 
-	public abstract void FitContent();
+    private int GetNextIndex()
+    {
+        return (IndexMap.Count > 0) ? IndexMap[IndexMap.Count - 1].Index + 1 : 0;
+    }
 
-	protected override bool SecureAutoSizeMe()
-	{
-		FixAutoSizeInChildren();
-		FitContent();
-		return base.SecureAutoSizeMe();
-	}
-
-	private void FixAutoSizeInChildren()
-	{
-		for (int i = 0; i < IndexMap.Count; i++)
-		{
-			BitControl c = IndexMap[i];
-
-			if (c == null || !c.AutoSize)
-			{
-				continue;
-			}
-			c.FixedWidth = true;
-			c.FixedHeight = true;
-
-		    c.SecureAutoSize();
-		}
-	}
-
-	#endregion
+    #endregion
 
 
-	#region Hierarchy
+    #region Draw
 
-	protected override T InternalAddControl<T>(string controlName)
-	{
-		T control = base.InternalAddControl<T>(controlName);
-		control.Index = GetNextIndex();
-		return control;
-	}
+    protected override void DoDraw()
+    {
+        if (Event.current.type == EventType.Repaint)
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
+        SecureAutoSizeMe();
+        bool needClip = NeedClip();
+        if (needClip)
+            GUIClipPush(Position);
+        DrawChildren();
+        if (needClip)
+            GUIClipPop();
+    }
 
-	protected override void InternalAddControl(BitControl control)
-	{
-		control.Index = GetNextIndex();
-		base.InternalAddControl(control);
-	}
+    public abstract void FitContent();
 
-	protected override BitControl InternalAddControl(Type controlType, string controlName)
-	{
-		BitControl control = base.InternalAddControl(controlType, controlName);
-		control.Index = GetNextIndex();
-		return control;
-	}
+    protected override bool SecureAutoSizeMe()
+    {
+        FixAutoSizeInChildren();
+        FitContent();
+        return base.SecureAutoSizeMe();
+    }
 
-	#endregion
+    private void FixAutoSizeInChildren()
+    {
+        for (int i = 0; i < IndexMap.Count; i++)
+        {
+            BitControl c = IndexMap[i];
+
+            if (c == null || !c.AutoSize)
+            {
+                continue;
+            }
+            c.FixedWidth = true;
+            c.FixedHeight = true;
+
+            c.SecureAutoSize();
+        }
+    }
+
+    #endregion
+
+
+    #region Hierarchy
+
+    protected override T InternalAddControl<T>(string controlName)
+    {
+        T control = base.InternalAddControl<T>(controlName);
+        control.Index = GetNextIndex();
+        return control;
+    }
+
+    protected override void InternalAddControl(BitControl control)
+    {
+        control.Index = GetNextIndex();
+        base.InternalAddControl(control);
+    }
+
+    protected override BitControl InternalAddControl(Type controlType, string controlName)
+    {
+        BitControl control = base.InternalAddControl(controlType, controlName);
+        control.Index = GetNextIndex();
+        return control;
+    }
+
+    #endregion
 }

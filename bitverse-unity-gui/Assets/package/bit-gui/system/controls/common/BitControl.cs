@@ -4,20 +4,29 @@ using bitgui;
 using Bitverse.Unity.Gui;
 using UnityEngine;
 
+public enum TextKind
+{
+    NONE,
+    STATIC_TEXT,
+    DINAMIC_TEXT,
+    IGNORE,
+    FLOAT,
+    INT
+}
+
 /// <summary>
 /// Base class for all controls.
 /// </summary>
 public abstract partial class BitControl : MonoBehaviour
 {
+
     // TODO Use this for Focus Control in future (implementation in BitWindow)
     [HideInInspector]
     public int TabIndex;
     [HideInInspector]
     public bool TabStop;
 
-    protected static bool ThereIsAFocusedControl;
-
-    private static int unid = 0;
+    private static int unid;
     [HideInInspector]
     public int UniqueControlID = unid++;
 
@@ -49,17 +58,38 @@ public abstract partial class BitControl : MonoBehaviour
 
     #region Accessibility
 
-    [SerializeField]
-    private readonly Guid _id = Guid.NewGuid();
+    private Guid _id;
 
-    protected string _idToString;
+    public string _idToString = Guid.NewGuid().ToString();
 
     /// <summary>
     /// Control ID.
     /// </summary>
     public Guid ID
     {
-        get { return _id; }
+        get
+        {
+            if (_id == Guid.Empty)
+            {
+                try
+                {
+                    _id = new Guid(_idToString);
+                }
+                catch
+                {
+                    _id = Guid.NewGuid();
+                    _idToString = _id.ToString();
+                }
+            }
+
+            return _id;
+        }
+
+        set
+        {
+            _id = value;
+            _idToString = _id.ToString();
+        }
     }
 
     private int _controlID;
@@ -184,7 +214,7 @@ public abstract partial class BitControl : MonoBehaviour
     //Runs all the animations registered for given trigger
     protected void RunBitAnimations(BitAnimationTrigger trigger)
     {
-        if (gameObject.animation != null && gameObject.animation.isPlaying)
+        if (controlAnimation != null && controlAnimation.isPlaying)
             return;
         if (_animationEvents == null || _animationEvents.Length == 0)
             return;
@@ -193,15 +223,15 @@ public abstract partial class BitControl : MonoBehaviour
         {
             if (be.Trigger == trigger)
             {
-                if (gameObject.animation == null)
+                if (controlAnimation == null)
                     gameObject.AddComponent(new Animation().GetType());
 
-                if (gameObject.animation[be.ClipName] == null)
+                if (controlAnimation.GetClip(be.ClipName) == null)
                 {
-                    gameObject.animation.AddClip(be.Animation.GetClip(be.ClipName), be.ClipName);
+                    controlAnimation.AddClip(be.Animation.GetClip(be.ClipName), be.ClipName);
                 }
 
-                gameObject.animation.Play(be.ClipName);
+                controlAnimation.Play(be.ClipName);
                 _isPlaying = true;
             }
         }
@@ -236,6 +266,11 @@ public abstract partial class BitControl : MonoBehaviour
         set { _color = value; }
     }
 
+    public void SetColor(Color c)
+    {
+        _color = c;
+    }
+
     [SerializeField]
     private GUISkin _skin;
 
@@ -249,6 +284,7 @@ public abstract partial class BitControl : MonoBehaviour
         set
         {
             _skin = value;
+            _style = null;
             PerformLayoutItself();
         }
     }
@@ -300,7 +336,7 @@ public abstract partial class BitControl : MonoBehaviour
     #region Behaviour
 
     // Parent disabled
-    private bool _dirty;
+    private bool _dirtyList;
 
     [HideInInspector]
     [SerializeField]
@@ -341,8 +377,26 @@ public abstract partial class BitControl : MonoBehaviour
         set { _enabled = value; }
     }
 
+    [SerializeField]
+    private bool _mouseEnabled = true;
+    /// <summary>
+    /// Checks if mouse can consume events.
+    /// </summary>
+    public virtual bool MouseEnabled
+    {
+        get { return _mouseEnabled; }
+        set
+        {
+            _mouseEnabled = value;
+            foreach (KeyValuePair<string, object> o in UserProperties)
+            {
+
+            }
+        }
+    }
+
     [HideInInspector]
-    public bool KeepEnabled = false;
+    public bool KeepEnabled;
 
     private bool _invalidated = true;
 
@@ -356,12 +410,27 @@ public abstract partial class BitControl : MonoBehaviour
 
     private BitControl _parent;
 
+    private bool _isFather;
+
     /// <summary>
     /// Control's parent.
     /// </summary>
     public BitControl Parent
     {
-        get { try { return _parent ?? (transform.parent != null ? transform.parent.GetComponent<BitControl>() : null); } catch (Exception e) { Debug.Log("no transform for: " + this.GetType().Name + e); return null; } }
+        get
+        {
+            try
+            {
+                if (_parent == null && !_isFather)
+                {
+                    _parent = (transform.parent != null ? transform.parent.GetComponent<BitControl>() : null);
+                    if (_parent == null)
+                        _isFather = true;
+                }
+                return _parent;
+            }
+            catch (Exception e) { Debug.Log("no transform for: " + this.GetType().Name); return null; }
+        }
         set
         {
             _parent = value;
@@ -381,6 +450,8 @@ public abstract partial class BitControl : MonoBehaviour
     {
         get
         {
+            if (Application.isPlaying && _topWindow != null)
+                return _topWindow;
             // THIS IS SPARTAAA!!!
             if (this is BitWindow)
             {
@@ -399,10 +470,15 @@ public abstract partial class BitControl : MonoBehaviour
         }
     }
 
+    private BitStage _stage;
+
     public BitStage Stage
     {
         get
         {
+            if (Application.isPlaying && _stage != null)
+                return _stage;
+
             if (TopWindow == null)
             {
                 // When a BitStage without a parent Window asks for his BitStage it returns itself. correct?
@@ -415,7 +491,7 @@ public abstract partial class BitControl : MonoBehaviour
                 Debug.Log(GetType().Name);
                 throw new Exception("cant find Stage without a window");
             }
-            return TopWindow.transform.parent.GetComponent<BitStage>();
+            return _stage = TopWindow.transform.parent.GetComponent<BitStage>();
         }
     }
 
@@ -526,6 +602,14 @@ public abstract partial class BitControl : MonoBehaviour
     }
 
 
+    private object _tooltipData;
+
+    public object TooltipData
+    {
+        set { _tooltipData = value; }
+    }
+
+
     private bool _controlHover;
 
     public bool IsControlHover
@@ -552,10 +636,23 @@ public abstract partial class BitControl : MonoBehaviour
         set { _content = value; }
     }
 
+    [SerializeField]
+    public TextKind textKind = TextKind.NONE;
+
     public virtual string Text
     {
         get { return _content.text; }
         set { _content.text = value; }
+    }
+
+    public virtual string TextVisibleIfNotNullOrEmpty
+    {
+        get { return Text; }
+        set
+        {
+            Text = value;
+            Visible = (!String.IsNullOrEmpty(value));
+        }
     }
 
     public virtual Texture Image
@@ -568,6 +665,10 @@ public abstract partial class BitControl : MonoBehaviour
     [SerializeField]
     private AbstractBitPopup _contextMenu;
 
+    /// <remarks>
+    /// DO NOT USE THIS. THIS CAUSES THE MENU TO BE SHOWN AGAIN WITHOUT BEING REFRESHED.
+    /// </remarks>
+    [Obsolete]
     public AbstractBitPopup ContextMenu
     {
         get { return _contextMenu; }
@@ -598,6 +699,11 @@ public abstract partial class BitControl : MonoBehaviour
 
             return _userProperties;
         }
+        set
+        {
+            // Use this carefully so no old values are lost.
+            _userProperties = value;
+        }
     }
 
     #endregion
@@ -620,6 +726,14 @@ public abstract partial class BitControl : MonoBehaviour
     public bool LastFrameWasHover
     {
         get { return _lastFrameWasHover; }
+    }
+
+    private bool _forceSelectedState;
+
+    public bool ForceOnState
+    {
+        get { return _forceSelectedState; }
+        set { _forceSelectedState = value; }
     }
 
     private static bool _isOn;
@@ -720,7 +834,8 @@ public abstract partial class BitControl : MonoBehaviour
     internal void Draw()
     {
         Backup();
-        if (IsAnimating || (gameObject.animation != null && gameObject.animation.isPlaying))
+
+        if (IsAnimating || (controlAnimation != null && controlAnimation.isPlaying))
         {
             Position = new Rect(Position.x + AnimationPosition.x,
                                 Position.y + AnimationPosition.y,
@@ -743,13 +858,13 @@ public abstract partial class BitControl : MonoBehaviour
             ResetAnimation();
         }
 
-        if (!Visible && !(gameObject.animation != null && gameObject.animation.isPlaying))
+        if (!Visible && !(controlAnimation != null && controlAnimation.isPlaying))
         {
             if (IsOpen) RaiseControlClose();
             return;
         }
 
-        if (Visible && !IsOpen && !(gameObject.animation != null && gameObject.animation.isPlaying))
+        if (Visible && !IsOpen && !(controlAnimation != null && controlAnimation.isPlaying))
         {
             RaiseControlOpen();
         }
@@ -767,8 +882,9 @@ public abstract partial class BitControl : MonoBehaviour
         GUI.SetNextControlName(_idToString);
         GUI.enabled = Enabled;
 
+        ChangeModalColor(); //recent change, probably will conflict with animation color (currently deprecated)
+
         // HACKs
-        DoCentralizeIfPossible();
         ShowAsTooltipIfShould();
 
         // Rotates Matrix
@@ -783,10 +899,12 @@ public abstract partial class BitControl : MonoBehaviour
         SecureAutoSize();
 
         //Stop layout while there is an animation running
-        if (gameObject.animation == null || !gameObject.animation.isPlaying)
+        if (controlAnimation == null || !controlAnimation.isPlaying)
         {
             DoLayout();
         }
+
+        DoCentralizeIfPossible();
 
         if (!SupressNextDraw)
         {
@@ -803,12 +921,12 @@ public abstract partial class BitControl : MonoBehaviour
 
         GUI.skin = oldSkin;
 
-        if (IsAnimating || (gameObject.animation != null && gameObject.animation.isPlaying))
+        if (IsAnimating || (controlAnimation != null && controlAnimation.isPlaying))
         {
             RecoverFromBackup();
         }
 
-        if (!_showTooltip || !_lastFrameWasHover)
+        if ((!_showTooltip) || (!_lastFrameWasHover) || ((_tooltipData != null) && (_tooltipData != BitGuiContext.Current.Data)))
         {
             return;
         }
@@ -817,7 +935,16 @@ public abstract partial class BitControl : MonoBehaviour
         {
             if (TooltipManager != null)
             {
+                // Raise before tooltip to set up user properties if needed.
                 RaiseBeforeTooltip(Event.current.mousePosition);
+
+                // Try to get the current user properties from BitGuiContext.
+                ITooltipData tooltipData = BitGuiContext.Current.Data as ITooltipData;
+
+                if ((tooltipData != null) && (tooltipData.TooltipProperties != null))
+                {
+                    UserProperties = tooltipData.TooltipProperties;
+                }
 
                 TooltipManager.ShowTooltip(this, new Point(Input.mousePosition.x + 2, Screen.height - Input.mousePosition.y + 2));
             }
@@ -826,9 +953,20 @@ public abstract partial class BitControl : MonoBehaviour
         _showTooltip = false;
     }
 
+    private void ChangeModalColor()
+    {
+        if (!Enabled)
+        {
+            GUI.color = Stage.ModalColor;
+        }else
+        {
+            GUI.color = Color;
+        }
+    }
+
     private void InternalUserEventsAfterDraw()
     {
-        if (Event.current.type == EventType.Used)
+        if (Event.current.type == EventType.Used || !MouseEnabled)
         {
             return;
         }
@@ -894,7 +1032,7 @@ public abstract partial class BitControl : MonoBehaviour
 
         }
 
-        if (consume && ConsumeEvent(Event.current.type))
+        if (TopWindow.Enabled && (consume && ConsumeEvent(Event.current.type)))
         {
             Event.current.Use();
         }
@@ -1160,7 +1298,10 @@ public abstract partial class BitControl : MonoBehaviour
 
         if (MouseDown != null)
         {
-            MouseDown(this, new MouseEventArgs(mouseButton, mousePosition));
+            MouseEventArgs args;
+            args.MouseButton = mouseButton;
+            args.MousePosition = mousePosition;
+            MouseDown(this, args);
         }
     }
 
@@ -1172,7 +1313,10 @@ public abstract partial class BitControl : MonoBehaviour
 
         if (MouseUp != null)
         {
-            MouseUp(this, new MouseEventArgs(mouseButton, mousePosition));
+            MouseEventArgs args;
+            args.MouseButton = mouseButton;
+            args.MousePosition = mousePosition;
+            MouseUp(this, args);
         }
     }
 
@@ -1183,7 +1327,11 @@ public abstract partial class BitControl : MonoBehaviour
         RunBitAnimations(BitAnimationTrigger.OnMouseClick);
         if (MouseClick != null)
         {
-            MouseClick(this, new MouseEventArgs(mouseButton, mousePosition));
+            MouseEventArgs args;
+            args.MouseButton = mouseButton;
+            args.MousePosition = mousePosition;
+
+            MouseClick(this, args);
         }
     }
 
@@ -1195,7 +1343,10 @@ public abstract partial class BitControl : MonoBehaviour
         RunBitAnimations(BitAnimationTrigger.OnMouseDoubleClick);
         if (MouseDoubleClick != null)
         {
-            MouseDoubleClick(this, new MouseEventArgs(mouseButton, mousePosition));
+            MouseEventArgs args;
+            args.MouseButton = mouseButton;
+            args.MousePosition = mousePosition;
+            MouseDoubleClick(this, args);
         }
     }
 
@@ -1225,7 +1376,7 @@ public abstract partial class BitControl : MonoBehaviour
     {
         if (MouseMove != null)
         {
-            MouseMove(this, new MouseMoveEventArgs(mousePos));
+            MouseMove(this, mousePos);
         }
     }
 
@@ -1246,7 +1397,7 @@ public abstract partial class BitControl : MonoBehaviour
 
         if (MouseEnter != null)
         {
-            MouseEnter(this, new MouseMoveEventArgs(mousePos));
+            MouseEnter(this, mousePos);
         }
     }
 
@@ -1267,7 +1418,7 @@ public abstract partial class BitControl : MonoBehaviour
 
         if (MouseExit != null)
         {
-            MouseExit(this, new MouseMoveEventArgs(mousePos));
+            MouseExit(this, mousePos);
         }
     }
 
@@ -1313,7 +1464,7 @@ public abstract partial class BitControl : MonoBehaviour
     {
         if (BeforeTooltip != null)
         {
-            BeforeTooltip(this, new BeforeTooltipEventArgs(mousePosition));
+            BeforeTooltip(this, mousePosition);
         }
     }
 
@@ -1357,6 +1508,16 @@ public abstract partial class BitControl : MonoBehaviour
         if (KeyPressed != null)
         {
             KeyPressed(this, new KeyPressedEventArgs(code, character, alt, command, control, shift));
+        }
+    }
+
+    public event KeyPressedEventHandler KeyFunctionPressed;
+
+    protected void RaiseFunctionKeyPressedEvent(KeyCode code, char character, bool alt, bool command, bool control, bool shift)
+    {
+        if (KeyFunctionPressed != null)
+        {
+            KeyFunctionPressed(this, new KeyPressedEventArgs(code, character, alt, command, control, shift));
         }
     }
 
@@ -1471,10 +1632,15 @@ public abstract partial class BitControl : MonoBehaviour
 
     protected void InternalUserEventsBeforeDraw()
     {
+        if (!MouseEnabled)
+            return;
+
         bool canConsume = UserEventsBeforeDraw();
 
         bool consume = false;
         bool controlHover = HoverTest(Event.current.mousePosition);
+
+        _controlHover = controlHover;
 
         if (controlHover && Event.current.type == EventType.Layout && Stage.HoverWindow == null)
         {
@@ -1486,7 +1652,7 @@ public abstract partial class BitControl : MonoBehaviour
             return;
         }
 
-        if (Stage!=null && Stage.HoverWindow != TopWindow)
+        if (Stage.HoverWindow != TopWindow)
         {
             controlHover = false;
         }
@@ -1519,10 +1685,10 @@ public abstract partial class BitControl : MonoBehaviour
             RaiseMouseMove(Event.current.mousePosition);
         }
 
-        //if (CheckFocusEvent())
-        //{
-        //    FocusEvent();
-        //}
+        if (CheckFocusEvent())
+        {
+            FocusEvent();
+        }
 
         // Drag
         if (Enabled)
@@ -1557,41 +1723,38 @@ public abstract partial class BitControl : MonoBehaviour
             }
         }
 
-        if ((consume && ConsumeEvent(Event.current.type)) || canConsume)
+        if (TopWindow.Enabled && ((consume && ConsumeEvent(Event.current.type)) || canConsume))
         {
             Event.current.Use();
         }
     }
 
-    /*protected virtual bool CheckFocusEvent()
+
+    protected virtual bool CheckFocusEvent()
     {
         return GetFocusType() != FocusType.Passive;
-    }*/
+    }
 
-    /*
-    private static int _focusedControlID;
 
     public void FocusEvent()
     {
-        if (_controlID == _focusedControlID)
-        {
-            return;
-        }
+        int focusedControl = BitStage.FocusedComponentId;
 
         if (_focus)
         {
-            RaiseFocusLostEvent();
-            //_focusedControlID = GUIUtility.keyboardControl;// 0;
-            _focus = false;
+            if (focusedControl != ControlID)
+            {
+                RaiseFocusLostEvent();
+                _focus = false;
+            }
         }
-        else if (_controlID == GUIUtility.keyboardControl)
+        else if (focusedControl == ControlID)
         {
             RaiseFocusGainEvent();
             _focus = true;
-            _focusedControlID = _controlID;
         }
     }
-     * */
+
 
     protected virtual void MakePopupMenu(int mouseButton, Vector2 mousePosition)
     {
@@ -1626,14 +1789,14 @@ public abstract partial class BitControl : MonoBehaviour
         try
         {
             //TODO check default events
-            if (UserEventsAfterDraw() && Event.current.type != EventType.Repaint)
+            if (TopWindow.Enabled && (UserEventsAfterDraw() && Event.current.type != EventType.Repaint) && MouseEnabled)
             {
                 Event.current.Use();
             }
         }
         catch (Exception e)
         {
-            Debug.Log("An event exception occurred: " + e.Message);
+            Debug.LogError("An event exception occurred: " + e.Message);
             Event.current.Use();
         }
     }
@@ -1663,12 +1826,18 @@ public abstract partial class BitControl : MonoBehaviour
     {
         get
         {
-            bool f = _focus;
-            _focus = false;
-            return f;
+            return _focus;
         }
+        set
+        {
+            bool oldFocus = _focus;
+            _focus = value;
 
-        set { _focus = value; }
+            if ((_focus != oldFocus) && (_focus))
+            {
+                ForceFocus();
+            }
+        }
     }
 
     #endregion
@@ -1692,7 +1861,7 @@ public abstract partial class BitControl : MonoBehaviour
 
     public static BitControl Clone(BitControl control)
     {
-        return control != null ? (BitControl)Instantiate(control) : null;
+        return control != null ? (BitControl)UnityEngine.Object.Instantiate(control) : null;
     }
 
     public BitControl Clone()
@@ -1817,7 +1986,7 @@ public abstract partial class BitControl : MonoBehaviour
         }
         else
         {
-            Destroy(control.gameObject);
+            UnityEngine.Object.Destroy(control.gameObject);
         }
     }
 
@@ -1860,34 +2029,24 @@ public abstract partial class BitControl : MonoBehaviour
             Debug.LogError("BitGUI Error: Control name is empty.");
             return null;
         }
+        if (this is T && controlName.Equals(name))
+            return (T)this;
 
-        T[] controls = InternalFindAllControls<T>();
-        if (controls == null)
+        Transform transform1 = transform;
+        for (int i = transform1.childCount; --i >= 0; )
         {
-            Debug.LogWarning("BitGUI Warning: control [" + typeof(T).Name + "] " + controlName + " not found inside " + name + " or inside its children.");
-            return null;
-        }
-
-        foreach (T control in controls)
-        {
-            if (controlName.Equals(control.name))
+            BitControl c = transform1.GetChild(i).GetComponent<BitControl>();
+            if (c != null)
             {
-                return control;
+                c = c.InternalFindControlInChildren<T>(controlName);
+                if (c != null)
+                {
+                    return (T)c;
+                }
             }
         }
-        Debug.LogWarning("BitGUI Warning: control [" + typeof(T).Name + "] " + controlName + " not found inside " + name + " or inside its children.");
-        return null;
-    }
 
-    /// <summary>
-    /// Finds all controls of _type <see cref="T"/>.
-    /// Searches in all its children.
-    /// </summary>
-    /// <typeparam name="T">The Control's _type to search.</typeparam>
-    /// <returns>All controls of given _type or null with there is no one.</returns>
-    protected T[] InternalFindAllControls<T>() where T : BitControl
-    {
-        return GetComponentsInChildren<T>();
+        return null;
     }
 
     #endregion
@@ -1895,38 +2054,40 @@ public abstract partial class BitControl : MonoBehaviour
 
     #region Layout
 
+    [HideInInspector]
     [SerializeField]
-    private Size _maxSize = new Size(float.MaxValue, float.MaxValue);
+    private Rect _maxSize = new Rect(0, 0, float.MaxValue, float.MaxValue);
 
     /// <summary>
     /// Gets or sets the maximum size of the Control. Default is float.MinValue.
     /// </summary>
     public Size MaxSize
     {
-        get { return _maxSize; }
+        get { return new Size(_maxSize.width, _maxSize.height); }
         set
         {
-            _maxSize = value;
-            if (Size > MaxSize)
+            _maxSize = new Rect(0, 0, value.Width, value.Height);
+            if ((Size.Width > MinSize.Width) || (Size.Height > MinSize.Height))
             {
                 Size = MaxSize;
             }
         }
     }
 
+    [HideInInspector]
     [SerializeField]
-    private Size _minSize;
+    private Rect _minSize;
 
     /// <summary>
     /// Gets or sets the minimum size of the Control. Default is 0.
     /// </summary>
     public Size MinSize
     {
-        get { return _minSize; }
+        get { return new Size(_minSize.width, _minSize.height); }
         set
         {
-            _minSize = value;
-            if (Size < MinSize)
+            _minSize = new Rect(0, 0, value.Width, value.Height);
+            if ((Size.Width < MinSize.Width) || (Size.Height < MinSize.Height))
             {
                 Size = MinSize;
             }
@@ -2177,8 +2338,8 @@ public abstract partial class BitControl : MonoBehaviour
 
     protected void SecureChangeSize(Size value)
     {
-        _position.height = Mathf.Clamp(value.Height, _minSize.Height, _maxSize.Height);
-        _position.width = Mathf.Clamp(value.Width, _minSize.Width, _maxSize.Width);
+        _position.height = Mathf.Clamp(value.Height, _minSize.height, _maxSize.height);
+        _position.width = Mathf.Clamp(value.Width, _minSize.width, _maxSize.width);
     }
 
     /// <summary>
@@ -2194,7 +2355,7 @@ public abstract partial class BitControl : MonoBehaviour
     /// </summary>
     public void PerformLayoutChildren()
     {
-        _dirty = true;
+        _dirtyList = true;
     }
 
     /// <summary>
@@ -2208,23 +2369,39 @@ public abstract partial class BitControl : MonoBehaviour
             RaiseInvalidated();
             _invalidated = false;
         }
-        if (_dirty)
+        if (_dirtyList)
         {
             LayoutChildren();
-            _dirty = false;
+            _dirtyList = false;
         }
     }
 
     private void DoCentralizeIfPossible()
     {
         float x = Position.x, y = Position.y;
+
+
         if (CenterHorizontal && (Anchor & AnchorStyles.Left) != AnchorStyles.Left && (Anchor & AnchorStyles.Right) != AnchorStyles.Right)
         {
-            x = (int)(Parent.Position.width / 2) - (Position.width / 2);
+            if (this is BitWindow)
+            {
+                x = (int)Screen.width / 2 - (Position.width / 2);
+            }
+            else
+            {
+                x = (int)(Parent.Position.width / 2) - (Position.width / 2);
+            }
         }
         if (CenterVertical && (Anchor & AnchorStyles.Top) != AnchorStyles.Top && (Anchor & AnchorStyles.Bottom) != AnchorStyles.Bottom)
         {
-            y = (int)(Parent.Position.height / 2) - (Position.height / 2);
+            if (this is BitWindow)
+            {
+                y = (int)Screen.height / 2 - (Position.height / 2);
+            }
+            else
+            {
+                y = (int)(Parent.Position.height / 2) - (Position.height / 2);
+            }
         }
         UnsafeChangePosition((int)x, (int)y);
     }
@@ -2405,33 +2582,22 @@ public abstract partial class BitControl : MonoBehaviour
         return ret;
     }
 
-
-    public bool noClipAndVerticalResize = false;
-
     //TODO Optimize the atuto size calling (it must be called only when the content changes
     protected virtual void DoAutoSize()
     {
         GUIStyle style = Style ?? DefaultStyle;
 
         float width, height;
-        if (noClipAndVerticalResize)
+        if (!style.wordWrap)
         {
-            width = Parent.Position.width;
-            height = style.CalcHeight(Content, Position.width);
+            Vector2 size = style.CalcSize(Content);
+            width = size.x;
+            height = size.y;
         }
         else
         {
-            if (!style.wordWrap)
-            {
-                Vector2 size = style.CalcSize(Content);
-                width = size.x;
-                height = size.y;
-            }
-            else
-            {
-                width = _position.width;
-                height = style.CalcHeight(Content, Position.width);
-            }
+            width = _position.width;
+            height = style.CalcHeight(Content, Position.width);
         }
 
         if (_position.height == height && _position.width == width)
@@ -2484,8 +2650,13 @@ public abstract partial class BitControl : MonoBehaviour
 
     public virtual void Awake()
     {
-        if (string.IsNullOrEmpty(_idToString))
+        try
         {
+            _id = new Guid(_idToString);
+        }
+        catch
+        {
+            _id = Guid.NewGuid();
             _idToString = _id.ToString();
         }
 
@@ -2591,6 +2762,8 @@ public abstract partial class BitControl : MonoBehaviour
     [SerializeField]
     private bool _centerVertical;
 
+    protected Animation controlAnimation;
+
     public bool CenterVertical
     {
         get { return _centerVertical; }
@@ -2611,6 +2784,7 @@ public abstract partial class BitControl : MonoBehaviour
             //}
         }
     }
+
 
     public virtual void BringToFront()
     {
@@ -2661,5 +2835,4 @@ public abstract partial class BitControl : MonoBehaviour
         }
     }
     #endregion
-
 }

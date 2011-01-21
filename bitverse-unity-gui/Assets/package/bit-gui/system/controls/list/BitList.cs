@@ -47,7 +47,7 @@ public class BitList : AbstractBitList<IListModel, IPopulator>
                                                      contentHeight,
                                                      itemPositionTemplate.width,
                                                      itemPositionTemplate.height);
-                    if (listRenderer.Position.y > (ScrollPosition.y + ScrollRect.height) || (listRenderer.Position.y+listRenderer.Position.height) < ScrollPosition.y)
+                    if (listRenderer.Position.y > (ScrollPosition.y + ScrollRect.height) || (listRenderer.Position.y + listRenderer.Position.height) < ScrollPosition.y)
                         listRenderer.SupressNextDraw = true;
                     listRenderer.Draw();
 
@@ -62,7 +62,7 @@ public class BitList : AbstractBitList<IListModel, IPopulator>
         if (AutoSize)
         {
             ShowScroll = false;
-            SecureChangeSize(new Size(Position.width,ScrollView.height));
+            SecureChangeSize(new Size(Position.width, ScrollView.height));
         }
         else
         {
@@ -91,52 +91,61 @@ public class BitList : AbstractBitList<IListModel, IPopulator>
     #region Editor
 
     protected override void DrawInEditMode()
-	{
-		if (Renderer == null)
-		{
-			return;
-		}
+    {
+        if (Renderer == null)
+        {
+            return;
+        }
 
-		GUIStyle ss = Skin.scrollView;
-		GUIStyle rs = Renderer.Style ?? Renderer.DefaultStyle;
-		Renderer.Size = new Size(ScrollView.width - rs.margin.horizontal, Renderer.Size.Height);
-		Renderer.Location = new Point(rs.margin.left + ss.padding.left, rs.margin.top);
+        GUIStyle ss = Skin.scrollView;
+        GUIStyle rs = Renderer.Style ?? Renderer.DefaultStyle;
+        Renderer.Size = new Size(ScrollView.width - rs.margin.horizontal, Renderer.Size.Height);
+        Renderer.Location = new Point(rs.margin.left + ss.padding.left, rs.margin.top);
+        if (Event.current.type == EventType.Repaint)
+            rs.Draw(new Rect(rs.margin.left + ss.padding.left, rs.margin.top, ScrollView.width - rs.margin.horizontal, Renderer.Size.Height), Renderer.Content, false, true, false,
+                    false);
+        //ScrollRenderer.Draw();
+    }
 
-		if (Event.current.type == EventType.repaint)
-			rs.Draw(new Rect(rs.margin.left + ss.padding.left, rs.margin.top, ScrollView.width - rs.margin.horizontal, Renderer.Size.Height), Renderer.Content, false, true, false,
-		        false);
-		//ScrollRenderer.Draw();
-	}
-
-	#endregion
-
-
-	#region MonoBehaviour
-
-	//public override void Awake()
-	//{
-	//    base.Awake();
-	//    Populator = new DefaultBitListPopulator();
-	//    Model = new DefaultBitListModel();
-	//}
-
-	#endregion
+    #endregion
 
 
+    #region MonoBehaviour
+
+    //public override void Awake()
+    //{
+    //    base.Awake();
+    //    Populator = new DefaultBitListPopulator();
+    //    Model = new DefaultBitListModel();
+    //}
+
+    #endregion
+
+
+    public int GetObjectIndexAt(Vector2 mousePosition)
+    {
+        if (Renderer == null || _model == null)
+        {
+            return -1;
+        }
+
+        GUIStyle rendererStyle = Renderer.Style ?? Renderer.DefaultStyle;
+        GUIStyle scrollStyle = Skin.scrollView;
+
+        float stepy = Renderer.Position.height + rendererStyle.margin.vertical;
+
+        int row = (int)Mathf.Floor((mousePosition.y - scrollStyle.padding.top + ScrollPosition.y) / stepy);
+        return row;
+    }
 	
 	public override object GetObjectDataAt(Vector2 mousePosition)
 	{
-		if (Renderer == null || _model == null)
+	    int row = GetObjectIndexAt(mousePosition);
+	    if (row == -1)
 		{
 			return null;
 		}
 
-		GUIStyle rendererStyle = Renderer.Style ?? Renderer.DefaultStyle;
-		GUIStyle scrollStyle = Skin.scrollView;
-
-		float stepy = Renderer.Position.height + rendererStyle.margin.vertical;
-
-		int row = (int) Mathf.Floor((mousePosition.y - scrollStyle.padding.top + ScrollPosition.y) / stepy);
-		return _model[row];
-	}
+        return _model[row];
+    }
 }

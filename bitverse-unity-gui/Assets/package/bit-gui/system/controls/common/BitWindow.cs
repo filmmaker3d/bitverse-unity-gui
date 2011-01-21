@@ -9,6 +9,9 @@ public class BitWindow : BitContainer
     private bool _destroyMe;
     public Action<int> _destroyCallback;
 
+    public delegate void GainedFocusHandler();
+    public event GainedFocusHandler WindowGainedFocus;
+
     public bool DestroyMe
     {
         get { return _destroyMe; }
@@ -25,17 +28,28 @@ public class BitWindow : BitContainer
             bool changed = base.Visible != value;
             base.Visible = value;
 
-            if ((changed) && (value))
+            if (!changed)
+            {
+                return;
+            }
+
+            if (value)
             {
                 BringToFront();
             }
+            else if (TooltipManager != null)
+            {
+                TooltipManager.HideTooltip();
+            }
         }
     }
+    public bool IsTextFieldFocused;
 
     public void QueueDestroy(Action<int> callback)
     {
         _destroyMe = true;
         _destroyCallback = callback;
+        Stage.FocusedWindowChanged -= RaiseWindowGainedFocus;
         RunBitAnimations(BitAnimationTrigger.OnClose);
     }
 
@@ -142,7 +156,8 @@ public class BitWindow : BitContainer
         {
             GUIStyle s = (Style ?? DefaultStyle);
             if (s != null)
-                s.Draw(Position, Content, IsHover, IsActive, IsFocused, Focus);
+                if (Event.current.type == EventType.Repaint)
+                    s.Draw(Position, Content, IsHover, IsActive, IsFocused, Focus);
         }
 
         Matrix4x4 m = GUI.matrix;
@@ -164,41 +179,54 @@ public class BitWindow : BitContainer
     {
         if (Event.current.type != EventType.Repaint && IsFocused)// && Event.current.type != EventType.Repaint)
         {
-            AbstractBitTextField[] TextFieldsArray = FindAllControls<AbstractBitTextField>();
-            List<AbstractBitTextField> TextFields = new List<AbstractBitTextField>(TextFieldsArray);
-
+            if (_textFields == null)
+            {
+                _textFields = new List<AbstractBitTextField>();
+            }
+            
+            _textFields.Clear();
+            FindAllControls(_textFields);
+       
             // TODO Only use TabIndex but for now keep position check when TabIndex are equal
-            TextFields.Sort(new Comparison<AbstractBitTextField>(delegate(AbstractBitTextField a, AbstractBitTextField b)
-                                                                     {
-                                                                         int r = a.TabIndex - b.TabIndex;
-
-                                                                         if (r == 0)
-                                                                         {
-                                                                             bool beforeA = (a.AbsolutePosition.y + a.AbsolutePosition.height < b.AbsolutePosition.y);
-                                                                             bool beforeB = (b.AbsolutePosition.y + b.AbsolutePosition.height < a.AbsolutePosition.y);
-                                                                             return beforeA ? -1 : (beforeB ? 1 : (int)(a.AbsolutePosition.x - b.AbsolutePosition.x));
-                                                                         }
-                                                                         return r;
-                                                                     }));
-            foreach (AbstractBitTextField textField in TextFields)
+            if(_comparison == null)
+            {
+                _comparison = new Comparison<AbstractBitTextField>(CompDelegate);
+            }
+            _textFields.Sort(_comparison);
+            foreach (AbstractBitTextField textField in _textFields)
             {
                 textField.ControlID = GUIUtility.GetControlID(textField.UniqueControlID, textField.GetFocusType());
+                IsTextFieldFocused = textField.Focus;
                 if (StartFocusedField == textField)
                 {
                     textField.ForceFocus();
+                    IsTextFieldFocused = true;
+
                     StartFocusedField = null;
                 }
-
-                if (textField.ControlID == GUIUtility.keyboardControl)
-                    ThereIsAFocusedControl = true;
-
                 //Debug.Log("TextField " + textField.name + " ControlID " + textField.ControlID + " with event " + Event.current.type);
             }
         }
 
-        GUIClipPush(_viewPosition);
+        bool needClip = NeedClip();
+        if (needClip)
+            GUIClipPush(_viewPosition);
         DrawChildren();
-        GUIClipPop();
+        if (needClip)
+            GUIClipPop();
+    }
+
+    private static int CompDelegate(AbstractBitTextField a, AbstractBitTextField b)
+    {
+        int r = a.TabIndex - b.TabIndex;
+
+        if (r == 0)
+        {
+            bool beforeA = (a.AbsolutePosition.y + a.AbsolutePosition.height < b.AbsolutePosition.y);
+            bool beforeB = (b.AbsolutePosition.y + b.AbsolutePosition.height < a.AbsolutePosition.y);
+            return beforeA ? -1 : (beforeB ? 1 : (int)(a.AbsolutePosition.x - b.AbsolutePosition.x));
+        }
+        return r;
     }
 
     #endregion
@@ -228,6 +256,10 @@ public class BitWindow : BitContainer
 
     [SerializeField]
     private float _hideTolerance = 0.3f;
+
+    private List<AbstractBitTextField> _textFields;
+    private static Comparison<AbstractBitTextField> _comparison;
+
     public float HideTolerance
     {
         get { return Mathf.Clamp01(_hideTolerance); }
@@ -350,6 +382,19 @@ public class BitWindow : BitContainer
         _windowID = ++WindowsCount;
     }
 
+    public override void Start()
+    {
+        base.Start();
+        Stage.FocusedWindowChanged += RaiseWindowGainedFocus;
+    }
+
+    private void RaiseWindowGainedFocus(int controlID)
+    {
+        if(controlID != ControlID)
+            return;
+        if(WindowGainedFocus != null)
+            WindowGainedFocus();        
+    }
 
     #endregion
 }

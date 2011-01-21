@@ -25,8 +25,10 @@ public class BitModelViewer : BitBox
         _renderTarget = new RenderTexture((int) _width, (int) _height, 24);
         camera.targetTexture = _renderTarget;
         camera.clearFlags = CameraClearFlags.SolidColor;
-        camera.cullingMask = 1 << LayerMask.NameToLayer("ModelViewer");
+        camera.cullingMask = 1 << LayerHelper.GetLayers(LayerHelper.LayerContext.ModelViewer);
+        //Debug.LogWarning("BitModelViewer old aspect: " + camera.aspect, this);
         camera.aspect = _width / _height;
+        //Debug.LogWarning("BitModelViewer new aspect: " + camera.aspect, this);
         Content = new GUIContent(camera.targetTexture);
         //TODO: replace this with a shader that create a discrete alpha mask with the z buffer channel
         /*if (GetComponent<BlendColor>() == null)
@@ -34,6 +36,24 @@ public class BitModelViewer : BitBox
             BlendColor bc = gameObject.AddComponent<BlendColor>();
             bc.blendColor = new Color(0,0,0,1);
         }*/
+
+        if(!camera.gameObject.GetComponent<BloomEffect>())
+        {
+            camera.gameObject.AddComponent<BloomEffect>();
+        }
+        if (!camera.gameObject.GetComponent<GlowThresholdEffect>())
+        {
+            camera.gameObject.AddComponent<GlowThresholdEffect>();
+        }
+        
+    }
+    public void CorrectAspect()
+    {
+        _width = Position.width;
+        _height = Position.height;
+        //Debug.LogWarning("BitModelViewer old aspect: " + camera.aspect, this);
+        camera.aspect = _width / _height;
+        //Debug.LogWarning("BitModelViewer new aspect: " + camera.aspect, this);
     }
 
     private void setTarget(GameObject theTarget)
@@ -47,7 +67,7 @@ public class BitModelViewer : BitBox
 
         _targetSize = 0;
         _targetCenter = new Vector3();
-        //Vector3 objectPosition = theTarget.transform.root.position;
+        Vector3 objectPosition = theTarget.transform.root.position;
         Bounds newBounds = new Bounds();
 
         foreach (Renderer meshRenderer in renderers)
@@ -60,10 +80,11 @@ public class BitModelViewer : BitBox
 
         gameObject.camera.farClipPlane = Mathf.Max(0.5f, _targetSize * 3.0f);
         gameObject.camera.transform.position = theTarget.transform.position + _targetCenter + (camera.transform.forward * -_targetSize) * 1.5f;
+        //Debug.LogWarning("Positioned at " + gameObject.camera.transform.position);
 
         Transform[] childs = theTarget.GetComponentsInChildren<Transform>(true);
 
-        int monitorlayer = LayerMask.NameToLayer("ModelViewer");
+        int monitorlayer = LayerHelper.GetLayers(LayerHelper.LayerContext.ModelViewer);
         if(monitorlayer != 0)
             theTarget.layer = monitorlayer;
 
@@ -74,21 +95,55 @@ public class BitModelViewer : BitBox
 
     }
 
+    public override bool Visible
+    {
+        get
+        {
+            return base.Visible;
+        }
+        set
+        {
+            base.Visible = value;
+            if(ModelViewerLight != null) //AgentAddon changes this in runtime, so we gotta use here also :( ..
+            {
+                ModelViewerLight.cullingMask = 1 << LayerHelper.GetLayers(LayerHelper.LayerContext.ModelViewer);
+            }
+        }
+    }
+
+    public GameObject LightGameObject;
+    public Light ModelViewerLight;
     public override void Start()
     {
-        setRTandCamera();
-
-        if (target != null)
+        if (target != null && ShouldMove)
         {
             setTarget(target);
         }
 
+        //Create Light
+        if (LightGameObject == null)
+        {
+            LightGameObject = new GameObject("Model Viewer Light");
+            LightGameObject.transform.parent = transform.parent; //To get the addon transform
+            LightGameObject.transform.Rotate(90, 0, 0);//Quaternion.identity;
+            // Add the light component
+            ModelViewerLight = LightGameObject.AddComponent<Light>();
+            ModelViewerLight.type = LightType.Directional;
+            ModelViewerLight.intensity = 0.3f;
+            ModelViewerLight.cullingMask = 1 << LayerHelper.GetLayers(LayerHelper.LayerContext.ModelViewer);
+        }
+        
         //ATTN: this should be set from the outside and not here, its only a test
         CameraHandler += onPositionCamera;
-    }
 
+        setRTandCamera();
+     }
+
+    public bool ShouldMove = true;
     public event PositionCameraHandler CameraHandler;
 
+    private float _lastLog;
+    private float _logTimeInterval = 5;
     public void Update()
     {
         if (target == null || !TopWindow.Visible)
@@ -97,21 +152,42 @@ public class BitModelViewer : BitBox
                 camera.enabled = false;
             return;
         }
+        
+        if (_width != Position.width || _height != Position.height)
+        {
+            //Debug.LogWarning("BitModelViewer Width: " + _width + "BitModelViewer Height: " + _height, this);
+            setRTandCamera();
+        }
+
+        float targetAspect = _width / _height;
+        if (camera && targetAspect != camera.aspect)
+        {
+            //Debug.LogWarning("Camera Aspect is not the same as target aspect, changing it..", this);
+            CorrectAspect();
+        }
+
+        if (CameraHandler != null && ShouldMove)
+            CameraHandler(this, gameObject.camera);
+        
+        //if(CameraHandler == null && Time.time > _logTimeInterval + _lastLog)
+        //{
+        //    _lastLog = Time.time;
+        //    Logger.Warn("Camera Handler is null!", this);
+        //}
         if (camera && !camera.enabled)
             camera.enabled = true;
-        if (_width != Position.width || _height != Position.height)
-            setRTandCamera();
-
-        if (CameraHandler != null)
-            CameraHandler(this, gameObject.camera);
     }
 
     //ATTN: This function is only for testing purposes. This should be replaced by an outside callback
     public void onPositionCamera(object sender, Camera theCamera)
     {
+        //Debug.LogWarning("onPositionCamera!!!", this);
         float orbitalDist = _targetSize * 2.0f;
         float angle = Time.time * 45.0f;
         Vector3 orbitalPosition = new Vector3(-Mathf.Sin(angle * Mathf.Deg2Rad) * orbitalDist, 0.0f, -Mathf.Cos(angle * Mathf.Deg2Rad) * orbitalDist);
+
+        //Let's see if resetting the rotation we manage to fix the camera translatio
+        theCamera.transform.rotation = Quaternion.identity;
 
         theCamera.transform.localPosition = target.transform.position + _targetCenter + (orbitalPosition.x * target.transform.right) + (orbitalPosition.z * target.transform.forward);
         theCamera.transform.LookAt(target.transform.position, target.transform.up);

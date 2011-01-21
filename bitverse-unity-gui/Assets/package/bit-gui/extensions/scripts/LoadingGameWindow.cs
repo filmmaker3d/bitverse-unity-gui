@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
 [RequireComponent(typeof(BitStage))]
 public class LoadingGameWindow : MonoBehaviour
@@ -19,7 +20,7 @@ public class LoadingGameWindow : MonoBehaviour
 
     private void DestroyAll(int x)
     {
-        Destroy(this);
+        UnityEngine.Object.Destroy(this);
     }
 
 }

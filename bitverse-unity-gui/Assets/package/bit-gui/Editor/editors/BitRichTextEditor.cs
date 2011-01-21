@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Collections.Generic;
 using Bitverse.Unity.Gui;
 using UnityEditor;
@@ -13,3 +13,4 @@ public class BitRichTextEditor : BitControlEditor
         control.Size = new Size(200, 100);
     }
 } 
+*/

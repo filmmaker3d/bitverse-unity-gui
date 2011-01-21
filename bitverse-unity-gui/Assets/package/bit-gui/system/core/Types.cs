@@ -50,7 +50,8 @@ namespace Bitverse.Unity.Gui
         Popup,
         Loading,
         Messages,
-        Background
+        Background,
+        Eventual
 	}
 
 
@@ -144,7 +145,7 @@ namespace Bitverse.Unity.Gui
 		}
 	}
 
-
+    // NOTE UNITY DOES NOT SERIALIZE STRUCTS, PERSIST USING ANOTHER VARIABLE
 	[Serializable]
 	public struct Size
 	{

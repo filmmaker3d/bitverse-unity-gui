@@ -1,10 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
 
 
 public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
 {
-    private readonly SortedList<int, object> _data = new SortedList<int, object>();
+    private readonly SortedList _data = new SortedList();
+
+    //MANERA: We won't use the generic version of SortedList because we need to access 
+    //it's values and keys in a bunch of times, and that causes the overhead of creating 
+    //"SortedList<TKey, TValue>.Keys" and "SortedList<TKey, TValue>.Values" each time.
+    //private readonly SortedList<int, object> _data = new SortedList<int, object>();
 
     private bool VerifyIndex(int index)
     {
@@ -18,7 +22,7 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
         {
             if (VerifyIndex(index))
             {
-                _data.Values[index] = value;
+                _data[_data.GetKey(index)] = value;
             }
         }
     }
@@ -39,7 +43,7 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
         {
             return;
         }
-        if (!_data.Keys.Contains(slot))
+        if (!_data.ContainsKey(slot))
         {
             _data.Add(slot, item);
         }
@@ -89,7 +93,7 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
         int lastKey = GetLastSlot();
         for (int i = 0; i < lastKey; i++)
         {
-            if (!_data.Keys.Contains(i))
+            if (!_data.ContainsKey(i))
             {
                 return i;
             }
@@ -102,9 +106,9 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
     {
         if (Filter == null)
         {
-            return _data.Values[index];
+            return _data[_data.GetKey(index)];
         }
-        return VerifyIndex(index) && IsFilteredValidItem(_data.Values[index]) ? _data.Values[index] : null;
+        return VerifyIndex(index) && IsFilteredValidItem(_data[_data.GetKey(index)]) ? _data[_data.GetKey(index)] : null;
     }
 
     public object GetDataAtSlot(int slot)
@@ -116,7 +120,7 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
     {
         if (item != null && _data.ContainsValue(item))
         {
-            return _data.Keys[_data.IndexOfValue(item)];
+            return (int) _data.GetKey(_data.IndexOfValue(item));
         }
         return -1;
     }
@@ -125,7 +129,7 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
     {
         if (VerifyIndex(index))
         {
-            return _data.Keys[index];
+            return (int) _data.GetKey(index);
         }
         return -1;
     }
@@ -151,7 +155,7 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
 
     public int GetLastSlot()
     {
-        return _data.Count > 0 ? _data.Keys[_data.Count - 1] : -1;
+        return (int) (_data.Count > 0 ? _data.GetKey(_data.Count - 1) : -1);
     }
 
     public bool ContainsSlot(int slot)
@@ -174,7 +178,7 @@ public class SlotListModel : ISlotListModel, IFilteredListModel, IEnumerable
 
     public object GetDataIgnoringFilter(int index)
     {
-        return VerifyIndex(index) ? _data.Values[index] : null;
+        return VerifyIndex(index) ? _data[_data.GetKey(index)] : null;
     }
 
 

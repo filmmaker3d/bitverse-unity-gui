@@ -18,7 +18,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_3_0_0;UNITY_3_0;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_WIN;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_3_1_0;UNITY_3_1;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_WIN;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -35,16 +35,16 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
 	<Reference Include="Boo.Lang">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityScript">
-	  <HintPath>C:/Program Files/Unity/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -94,6 +94,7 @@
      <Compile Include="Assets\package\bit-gui\Editor\ResizeHandler.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\SelectHandler.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\Shortcut.cs" />
+     <Compile Include="Assets\package\bit-gui\Editor\TranslationGenerator.cs" />
      <Compile Include="Assets\package\bit-gui\Editor\VirtualMenu.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\audio\BitControlAudio.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\controls\list\BitSlotList.cs" />
@@ -102,8 +103,14 @@
      <Compile Include="Assets\package\bit-gui\extensions\controls\progress\BitVerticalSegmentedProgressBar.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\controls\resize\BitResizeHandler.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\controls\text\BitTipTextField.cs" />
-     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitEnhancedControlEditors.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\Editor\BitEnhancedControlEditorToolbox.cs" />
+     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitHorizontalSegmentedProgressBarEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitHorizontalStackListEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitResizeHandlerEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitSlotListEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitTipTextFieldEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitVerticalSegmentedProgressBarEditor.cs" />
+     <Compile Include="Assets\package\bit-gui\extensions\Editor\BitVerticalStackListEditor.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\models\ISlotListModel.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\models\SlotListModel.cs" />
      <Compile Include="Assets\package\bit-gui\extensions\scripts\BitTextFilter.cs" />
@@ -178,8 +185,25 @@
      <Compile Include="Assets\package\bit-gui\system\models\IFilteredListModel.cs" />
      <Compile Include="Assets\package\bit-gui\system\models\IListModel.cs" />
      <Compile Include="Assets\package\bit-gui\system\models\IPopulator.cs" />
+     <Compile Include="Assets\package\bit-gui\system\tooltip\ITooltipData.cs" />
      <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipManager.cs" />
      <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipProvider.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\BlendColor.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\BloomEffect.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\ColorCorrectionEffect.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\GlowEffect.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\GlowThresholdEffect.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\ImageEffectBase.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\ImageEffectsArt.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\IPPShaderInterface.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\MotionBlur.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\NoiseEffect.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\PostProcessingFXManager.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\RadialBlur.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\RadialBlurOLD.cs" />
+     <Compile Include="Assets\package\dependencies\ImageBasedFX\VolumetricParticleRenderer.cs" />
+     <Compile Include="Assets\package\dependencies\InvokeUtils.cs" />
+     <Compile Include="Assets\package\dependencies\LayerHelper.cs" />
      <Compile Include="Assets\samples\projects\calculator\CalculatorDemo.cs" />
      <Compile Include="Assets\samples\test\ListAndGridTest.cs" />
      <Compile Include="Assets\samples\test\PopupTest.cs" />

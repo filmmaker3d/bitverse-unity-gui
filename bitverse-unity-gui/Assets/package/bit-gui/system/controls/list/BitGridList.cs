@@ -5,7 +5,15 @@ using UnityEngine;
 
 public class BitGridList : AbstractBitList<IListModel, IPopulator>
 {
+    #region Data
+
+    public bool NotSelectableItems;
+
+    #endregion
+
     #region Draw
+
+    public float minCellWidth;
 
     //TODO optime this!
     protected override void PopulateAndDraw(BitControl listRenderer, IListModel model, IPopulator populator)
@@ -14,6 +22,16 @@ public class BitGridList : AbstractBitList<IListModel, IPopulator>
         GUIStyle scrollStyle = Skin.scrollView ?? DefaultStyle;
 
         Rect rendererPosition = Renderer.Position;
+
+        float offset = scrollStyle.fixedWidth + scrollStyle.border.horizontal + scrollStyle.margin.horizontal + 20;
+        if (minCellWidth > 0)
+        {
+            float cellWidth = (minCellWidth + (float)rendererStyle.margin.horizontal);
+            float width = ScrollRect.width - offset;
+            int numberOfCells = Mathf.FloorToInt(width / cellWidth);
+            listRenderer.Size = new Size(Mathf.Max(minCellWidth, Mathf.FloorToInt((width / (float)numberOfCells))), listRenderer.Size.Height);
+        }
+
         float xpos = scrollStyle.padding.left;
         float ypos = scrollStyle.padding.top;
         int lineCount = 0;
@@ -63,7 +81,7 @@ public class BitGridList : AbstractBitList<IListModel, IPopulator>
                 {
                     listRenderer.Location = new Point(itemPosition.x, itemPosition.y);
                     //bool selected = CheckSelection(data, itemPosition);
-                    bool selected = IsSelected(data);
+                    bool selected = NotSelectableItems ? false : IsSelected(data);
                     populator.Populate(listRenderer, data, i, selected);
                     if (!listRenderer.Visible)
                     {

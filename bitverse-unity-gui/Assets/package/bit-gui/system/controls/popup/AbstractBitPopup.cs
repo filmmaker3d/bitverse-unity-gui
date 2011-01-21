@@ -34,51 +34,51 @@ public class AbstractBitPopup : BitWindow, IPopup
 
     private bool _visibility;
 
-	private bool _invisibility;
+    private bool _invisibility;
 
-	public override bool Visible
-	{
-		set
-		{
-			base.Visible = value;
-			if (value)
-			{
-				_visibility = true;
-				_invisibility = false;
-			}
-			else
-			{
-				_visibility = false;
-				_invisibility = true;
-			}
-		}
-	}
+    public override bool Visible
+    {
+        set
+        {
+            base.Visible = value;
+            if (value)
+            {
+                _visibility = true;
+                _invisibility = false;
+            }
+            else
+            {
+                _visibility = false;
+                _invisibility = true;
+            }
+        }
+    }
 
-	[SerializeField]
-	private bool _alwaysInsideScreen;
+    [SerializeField]
+    private bool _alwaysInsideScreen;
 
-	public bool AlwaysInsideScreen
-	{
-		get { return _alwaysInsideScreen; }
-		set { _alwaysInsideScreen = value; }
-	}
+    public bool AlwaysInsideScreen
+    {
+        get { return _alwaysInsideScreen; }
+        set { _alwaysInsideScreen = value; }
+    }
 
-	public void Show(Point position, GUISkin skin)
-	{
-        if(Skin == null)
-		    Skin = skin;
-	    Style = Skin.FindStyle(StyleName) ?? DefaultStyle;
-		Show(position);
-	}
+    public void Show(Point position, GUISkin skin)
+    {
+        if (Skin == null)
+            Skin = skin;
+        Style = Skin.FindStyle(StyleName) ?? DefaultStyle;
+        Show(position);
+    }
 
-	public void Show(Vector2 position, GUISkin skin)
-	{
-		Show(new Point(position.x, position.y), skin);
-	}
+    public void Show(Vector2 position, GUISkin skin)
+    {
+        Show(new Point(position.x, position.y), skin);
+    }
 
-	public void Show(Point position)
-	{
-		Rect p = new Rect(position.X, position.Y, Position.width, Position.height);
+    public virtual void Show(Point position)
+    {
+        Rect p = new Rect(position.X, position.Y, Position.width, Position.height);
 
         if (p.x + p.width > Screen.width)
         {
@@ -89,90 +89,90 @@ public class AbstractBitPopup : BitWindow, IPopup
         if (p.y + p.height > Screen.height)
             p.y = p.y - p.height;
 
-	    Location = new Point(p.x, p.y);
-		Visible = true;
-	    FormMode = FormModes.Popup;
-	}
+        Location = new Point(p.x, p.y);
+        Visible = true;
+        FormMode = FormModes.Popup;
+    }
 
-	public void Show(Vector2 position)
-	{
-		Show(new Point(position.x, position.y));
-	}
+    public void Show(Vector2 position)
+    {
+        Show(new Point(position.x, position.y));
+    }
 
-	public void Hide()
-	{
-		Visible = false;
-	}
+    public void Hide()
+    {
+        Visible = false;
+    }
 
-	#endregion
+    #endregion
 
 
-	#region Draw
+    #region Draw
 
-	protected override void DoDraw()
-	{
-		base.DoDraw();
-		if (_visibility)
-		{
-			_visibility = false;
+    protected override void DoDraw()
+    {
+        base.DoDraw();
+        if (_visibility)
+        {
+            _visibility = false;
             BitStage.BeforeOnGUI += TestFocusLost;
-		}
+        }
 
-		if (_invisibility)
-		{
-			_invisibility = false;
+        if (_invisibility)
+        {
+            _invisibility = false;
             BitStage.BeforeOnGUI -= TestFocusLost;
-		}
-	}
+        }
+    }
 
-	#endregion
+    #endregion
 
-	#region Events
+    #region Events
 
     private void TestFocusLost()
-	{
-		if (Input.GetMouseButtonDown(MouseButtons.Left) || Input.GetMouseButtonDown(MouseButtons.Right) || Input.GetMouseButtonDown(MouseButtons.Middle))
-		{
-			Vector2 mp = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
-			if (!AbsolutePosition.Contains(mp))
-			{
-				Visible = false;
-			}
-		}
-	}
+    {
+        if (Input.GetMouseButtonDown(MouseButtons.Left) || Input.GetMouseButtonDown(MouseButtons.Right) || Input.GetMouseButtonDown(MouseButtons.Middle))
+        {
+            Vector2 mp = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+            if (!AbsolutePosition.Contains(mp))
+            {
+                Visible = false;
+            }
+        }
+    }
 
-	#endregion
+    #endregion
 
 
-	#region MonoBehaviour
+    #region MonoBehaviour
 
-	public override void Awake()
-	{
-		base.Awake();
-		CanShowContextMenu = false;
-		Draggable = false;
+    public override void Awake()
+    {
+        base.Awake();
+        CanShowContextMenu = false;
+        Draggable = false;
         Hide();
-	    FormMode = FormModes.Popup;
-	}
+        FormMode = FormModes.Popup;
+    }
 
-	#endregion
-    
-	private BitContextMenuItem _parentMenuItem;
+    #endregion
 
-	public BitContextMenuItem ParentMenuItem
-	{
-		get { return _parentMenuItem; }
-		set { _parentMenuItem = value; }
-	}
+    private BitContextMenuItem _parentMenuItem;
 
-	public void Show(Point position, BitContextMenuItem parentItem)
-	{
-		_parentMenuItem = parentItem;
-	    Skin = _parentMenuItem.ParentContextMenu.Skin;
-	    Style = Skin.FindStyle(StyleName);
+    public BitContextMenuItem ParentMenuItem
+    {
+        get { return _parentMenuItem; }
+        set { _parentMenuItem = value; }
+    }
+
+    public void Show(Point position, BitContextMenuItem parentItem)
+    {
+        _parentMenuItem = parentItem;
+        Skin = _parentMenuItem.ParentContextMenu.Skin;
+        Style = Skin.FindStyle(StyleName);
 
         Show(position);
-	}
+    }
 
     public void PreDelete()
     {

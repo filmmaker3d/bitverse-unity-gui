@@ -14,6 +14,11 @@ public abstract class TooltipProvider : MonoBehaviour
 
     public static object GetUserProperty(BitControl control, string name)
     {
+        if ((control == null) || (control.UserProperties == null))
+        {
+            return null;
+        }
+
         return control.UserProperties.ContainsKey(name) ? control.UserProperties[name] : null;
     }
 

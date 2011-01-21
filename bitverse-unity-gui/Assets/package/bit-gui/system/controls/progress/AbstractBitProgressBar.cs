@@ -168,8 +168,8 @@ public abstract class AbstractBitProgressBar : BitControl
 
 		GUIStyle style = Style ?? DefaultStyle;
 
-        if (Event.current.type == EventType.repaint) 
-            style.Draw(Position, IsHover, IsActive, IsOn, false);
+        if (Event.current.type == EventType.Repaint)
+            style.Draw(Position, IsHover, IsActive, IsOn | ForceOnState, false);
 
 		if (_ratio > 0)
 		{

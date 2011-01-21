@@ -1,4 +1,5 @@
-﻿using Bitverse.Unity.Gui;
+﻿
+using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
@@ -22,6 +23,12 @@ public class BitDragHandler : IBitDragHandler
         StopDrag(null);
     }
 
+    public void Dispose()
+    {
+        _containerControl.MouseUp -= DisableDrag;
+        _containerControl.Stage.MouseUp -= StageMouseUpCallback;
+        _containerControl.Stage.MouseMove -= StageMouseMoveCallback; 
+    }
 
     private IBitDragProxy _dragProxy;
 
@@ -80,6 +87,9 @@ public class BitDragHandler : IBitDragHandler
 
     private void StageMouseUpCallback(object sender, MouseEventArgs e)
     {
+        if (e.MouseButton != MouseButtons.Left)
+            return;
+
         IBitDragHandlerAcessor sourceAcessor = _dragManager.CurrentAcessor;
         if (!_dragManager.IsDragging)
         {
@@ -92,7 +102,6 @@ public class BitDragHandler : IBitDragHandler
             _count = _maxCount;
 
             IBitDragHandlerAcessor targetAcessor = _acessor;
-
             if (sourceAcessor.DragHandler.DragProxy != null)
                 if (sourceAcessor.DragHandler.DragProxy.Visible)
                 {
@@ -117,7 +126,7 @@ public class BitDragHandler : IBitDragHandler
         }
     }
 
-    private void StageMouseMoveCallback(object sender, MouseMoveEventArgs e)
+    private void StageMouseMoveCallback(object sender, Vector2 mousePosition)
     {
         if (_dragProxy == null || !_dragProxy.Visible)
         {
@@ -125,7 +134,7 @@ public class BitDragHandler : IBitDragHandler
         }
         if (_dragManager != null)
         {
-            _dragManager.OnDrag(e.MousePosition);
+            _dragManager.OnDrag(mousePosition);
         }
     }
 }

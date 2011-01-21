@@ -70,6 +70,18 @@ public class BitHorizontalSlider : BitControl
 		}
 	}
 
+    /// <summary>
+    /// Sets the value without raising an event.
+    /// </summary>
+    public float SetValue
+    {
+        get { return _value; }
+        set
+        {
+            _value = value;
+        }
+    }
+
 	#endregion
 
 

@@ -1,9 +1,11 @@
-﻿using Bitverse.Unity.Gui;
+﻿
+using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
 public class BitDragManager
 {
+
 	private static Rect _dragWindowRect = new Rect(-100, -100, 0, 0);
 
 	private BitStage _stage;
@@ -36,11 +38,10 @@ public class BitDragManager
 	public BitDragManager(BitStage stage)
 	{
 		_stage = stage;
-
 		_draggedWindow = stage.FindControlInChildren<BitWindow>("_DragHelperWindow");
 		if (_draggedWindow == null)
 		{
-		    Debug.Log("Instantiating _DragHelperWindow");
+            Debug.Log("Instantiating _DragHelperWindow");
 			_draggedWindow = _stage.AddControl<BitWindow>("_DragHelperWindow");
 			_draggedWindow.Draggable = false;
 			_draggedWindow.Visible = false;
@@ -48,10 +49,8 @@ public class BitDragManager
 		}
 		_draggedWindow.Position = _dragWindowRect;
 		_draggedWindow.Visible = false;
-		//_draggedWindow.HideFlags = HideFlags.HideInHierarchy | HideFlags.HideInInspector | HideFlags.NotEditable | HideFlags.DontSave;
 		_draggedWindow.Unselectable = true;
 	    _draggedWindow.FormMode = FormModes.Popup;
-		//Debug.Log(_draggedWindow.hideFlags);
 	}
 
 	public void StartDrag(IBitDragHandlerAcessor acessor)
@@ -65,9 +64,6 @@ public class BitDragManager
 
 		_currentDraggedControl.Location = new Point(0, 0);
 		_draggedWindow.Visible = true;
-
-        // Consume event to prevents drag event in another window.
-        Event.current.Use();
 	}
 
 	public void StopDrag()

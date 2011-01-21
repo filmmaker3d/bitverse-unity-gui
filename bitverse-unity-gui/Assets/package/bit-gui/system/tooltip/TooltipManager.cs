@@ -7,11 +7,9 @@ using UnityEngine;
 
 public class TooltipManager : MonoBehaviour
 {
-    public string TextTooltipProviderName = "text_tooltip";
+    public string DefaultTooltipProviderName;
 
-    public double ShowTooltipDelay = 1000.0;
-
-    public double HideTooltipDelay = 10000.0;
+    public double ShowTooltipDelay = 300.0;
 
     public readonly List<TooltipProvider> Providers = new List<TooltipProvider>();
 
@@ -19,22 +17,24 @@ public class TooltipManager : MonoBehaviour
 
     private Timer _showTooltipTimer;
 
-    private Timer _hideTooltipTimer;
-
     private int _currentTooltipPathHash;
 
     private TooltipProvider _currentTooltipProvider;
 
+    private object _currentTooltipData;
+
 
     public void Start()
+    {
+        InvokeUtils.SafeCall(this, SafeStart);
+    }
+
+
+    private void SafeStart()
     {
         _showTooltipTimer = new Timer(ShowTooltipDelay);
         _showTooltipTimer.Elapsed += OnShowTimer;
         _showTooltipTimer.Enabled = false;
-
-        _hideTooltipTimer = new Timer(HideTooltipDelay);
-        _hideTooltipTimer.Elapsed += OnHideTimer;
-        _hideTooltipTimer.Enabled = false;
     }
 
 
@@ -47,11 +47,6 @@ public class TooltipManager : MonoBehaviour
     public bool ShowTooltip(BitControl control, Point position)
     {
         bool showSuccessful = _currentTooltipProvider != null && _currentTooltipProvider.ShowTooltip(control, position);
-
-        if (showSuccessful)
-        {
-            _hideTooltipTimer.Start();
-        }
 
         return showSuccessful;
     }
@@ -72,7 +67,8 @@ public class TooltipManager : MonoBehaviour
     {
         if ((_currentTooltipProvider != null) && (_currentTooltipProvider.HideTooltip(control)))
         {
-            _hideTooltipTimer.Stop();
+            ClearControl();
+
             return true;
         }
 
@@ -82,11 +78,17 @@ public class TooltipManager : MonoBehaviour
 
     public void BeginHover(BitControl control)
     {
+        //XXX Do not consider this BeginHover if the control is the same (for lists where this control is not the renderer).
+        if ((BitGuiContext.Current.Data != null)
+            && (control != null) && (!(control.Parent is AbstractBitList<IListModel, IPopulator>))
+            && (_currentTooltipControl == control))
+        {
+            return;
+        }
+
         EndHover(_currentTooltipControl);
 
-        _currentTooltipControl = control;
-        _currentTooltipPathHash = BitGuiContext.Current.PathHash;
-        _currentTooltipProvider = GetProvider(control);
+        SetControl(control);
 
         _showTooltipTimer.Start();
     }
@@ -94,14 +96,10 @@ public class TooltipManager : MonoBehaviour
 
     public void EndHover(BitControl control)
     {
-        if ((_currentTooltipControl != control) || (_currentTooltipPathHash != BitGuiContext.Current.PathHash))
+        if (((control != null) && (_currentTooltipControl != control))
+            || (_currentTooltipPathHash != BitGuiContext.Current.PathHash))
         {
             return;
-        }
-
-        if (_currentTooltipControl != null)
-        {
-            _currentTooltipControl = null;
         }
 
         if (_showTooltipTimer != null)
@@ -113,6 +111,8 @@ public class TooltipManager : MonoBehaviour
         {
             HideTooltip(control);
         }
+
+        ClearControl();
     }
 
 
@@ -123,14 +123,8 @@ public class TooltipManager : MonoBehaviour
         if (_currentTooltipControl != null)
         {
             _currentTooltipControl.ShowTooltip = true;
+            _currentTooltipControl.TooltipData = _currentTooltipData;
         }
-    }
-
-
-    private void OnHideTimer(object sender, ElapsedEventArgs e)
-    {
-        _hideTooltipTimer.Stop();
-        HideTooltip(_currentTooltipControl);
     }
 
 
@@ -145,10 +139,10 @@ public class TooltipManager : MonoBehaviour
 
         if (string.IsNullOrEmpty(providerName))
         {
-            if (!string.IsNullOrEmpty(control.Content.tooltip))
+            if ((!string.IsNullOrEmpty(control.Content.tooltip)) && (!string.IsNullOrEmpty(DefaultTooltipProviderName)))
             {
-                // Try to get the simple text tooltip.
-                providerName = TextTooltipProviderName;
+                // Try to get the default tooltip provider (simple text tooltip, for instance).
+                providerName = DefaultTooltipProviderName;
             }
             else
             {
@@ -165,5 +159,28 @@ public class TooltipManager : MonoBehaviour
         }
 
         return null;
+    }
+
+
+    private void SetControl(BitControl control)
+    {
+        _currentTooltipControl = control;
+        _currentTooltipPathHash = BitGuiContext.Current.PathHash;
+        _currentTooltipData = BitGuiContext.Current.Data;
+        _currentTooltipProvider = GetProvider(control);
+    }
+
+
+    private void ClearControl()
+    {
+        if (_currentTooltipControl != null)
+        {
+            _currentTooltipControl.TooltipData = null;
+        }
+
+        _currentTooltipControl = null;
+        _currentTooltipPathHash = 0;
+        _currentTooltipData = null;
+        _currentTooltipProvider = null;
     }
 }

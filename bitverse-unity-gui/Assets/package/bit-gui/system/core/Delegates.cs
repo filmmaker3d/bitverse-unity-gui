@@ -13,34 +13,42 @@ namespace Bitverse.Unity.Gui
     }
 
 
-    public delegate void BeforeTooltipEventHandler(object sender, BeforeTooltipEventArgs e);
+    public delegate void BeforeTooltipEventHandler(object sender, Vector2 mousePosition);
+    //public delegate void BeforeTooltipEventHandler(object sender, BeforeTooltipEventArgs e);
 
 
-    public class BeforeTooltipEventArgs : EventArgs
-    {
-        public readonly Vector2 MousePosition;
+    //If we need this again, we should consider use it as Struct
+    //public class BeforeTooltipEventArgs : EventArgs
+    //{
+    //    public readonly Vector2 MousePosition;
 
-        public BeforeTooltipEventArgs(Vector2 mousePosition)
-        {
-            MousePosition = mousePosition;
-        }
-    }
+    //    public BeforeTooltipEventArgs(Vector2 mousePosition)
+    //    {
+    //        MousePosition = mousePosition;
+    //    }
+    //}
 
 
     public delegate void MouseClickEventHandler(object sender, MouseEventArgs e);
 
 
-    public class MouseEventArgs : EventArgs
+    public struct MouseEventArgs
     {
-        public readonly int MouseButton;
-        public readonly Vector2 MousePosition;
-
-        public MouseEventArgs(int mouseButton, Vector2 mousePosition)
-        {
-            MouseButton = mouseButton;
-            MousePosition = mousePosition;
-        }
+        public int MouseButton;
+        public Vector2 MousePosition;
     }
+
+    //public class MouseEventArgs : EventArgs
+    //{
+    //    public readonly int MouseButton;
+    //    public readonly Vector2 MousePosition;
+
+    //    public MouseEventArgs(int mouseButton, Vector2 mousePosition)
+    //    {
+    //        MouseButton = mouseButton;
+    //        MousePosition = mousePosition;
+    //    }
+    //}
 
     public delegate void MouseDoubleClickEventHandler(object sender, MouseEventArgs e);
 
@@ -72,7 +80,8 @@ namespace Bitverse.Unity.Gui
         }
     }
 
-    public delegate void MouseEnterEventHandler(object sender, MouseMoveEventArgs e);
+    public delegate void MouseEnterEventHandler(object sender, Vector2 mousePosition);
+    //public delegate void MouseEnterEventHandler(object sender, MouseMoveEventArgs e);
 
 
     /*
@@ -82,28 +91,31 @@ public class MouseEnterEventArgs : EventArgs
 */
 
 
-    public delegate void MouseExitEventHandler(object sender, MouseMoveEventArgs e);
+    public delegate void MouseExitEventHandler(object sender, Vector2 mousePosition);
+    //public delegate void MouseExitEventHandler(object sender, MouseMoveEventArgs e);
 
 
 /*
         public class MouseExitEventArgs : EventArgs
         {
         }*/
-    
 
 
-    public delegate void MouseMoveEventHandler(object sender, MouseMoveEventArgs e);
+
+    public delegate void MouseMoveEventHandler(object sender, Vector2 mousePosition);
+    //public delegate void MouseMoveEventHandler(object sender, MouseMoveEventArgs e);
 
 
-    public class MouseMoveEventArgs : EventArgs
-    {
-        public readonly Vector2 MousePosition;
+    //If we need this again, we should consider use it as Struct
+    //public class MouseMoveEventArgs : EventArgs
+    //{
+    //    public readonly Vector2 MousePosition;
 
-        public MouseMoveEventArgs(Vector2 mousePosition)
-        {
-            MousePosition = mousePosition;
-        }
-    }
+    //    public MouseMoveEventArgs(Vector2 mousePosition)
+    //    {
+    //        MousePosition = mousePosition;
+    //    }
+    //}
 
 
     public delegate void ValueChangedEventHandler(object sender, ValueChangedEventArgs e);
@@ -128,7 +140,6 @@ public class MouseEnterEventArgs : EventArgs
 
     public delegate void SelectionChangedEventHandler<T>(object sender, SelectionChangedEventArgs<T> e);
 
-
     public class SelectionChangedEventArgs<T> : EventArgs
     {
         public readonly T[] Selection;
@@ -144,6 +155,8 @@ public class MouseEnterEventArgs : EventArgs
             Selection[0] = selection;
         }
     }
+
+    public delegate void UnselectEventHandler<T>(object sender);
 
 	public delegate void KeyPressedEventHandler(object sender, KeyPressedEventArgs e);
 
