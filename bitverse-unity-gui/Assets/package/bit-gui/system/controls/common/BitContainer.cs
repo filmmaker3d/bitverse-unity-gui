@@ -90,36 +90,6 @@ public abstract class
         }
     }
 
-    protected bool NeedClip()
-    {
-        Rect children = ChildrenRect();
-        if ((Position.xMin <= children.xMin) && (Position.xMax >= children.xMax) && (Position.yMin <= children.yMin) && (Position.yMax >= children.yMax))
-        {
-            return false;
-        }
-        return true;
-    }
-
-    protected virtual Rect ChildrenRect()
-    {
-        float xmin = float.MaxValue, xmax = 0, ymin = float.MaxValue, ymax = 0;
-        float count = InternalControlCount;
-
-        for (int i = 0; i < count; i++)
-        {
-            BitControl c = InternalGetControlWithoutIndexCheck(i);
-            if (c != null)
-            {
-                xmin = Math.Min(xmin, c.Position.xMin);
-                ymin = Math.Min(ymin, c.Position.yMin);
-                xmax = Math.Max(xmax, c.Position.xMax);
-                ymax = Math.Max(ymax, c.Position.yMax);
-            }
-        }
-        return new Rect(xmin, ymin, xmax - xmin, ymax - ymin);
-    }
-
-
     #endregion
 
 

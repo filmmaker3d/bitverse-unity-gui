@@ -60,12 +60,9 @@ public class BitTab : BitGroup
         {
             (Style ?? DefaultStyle).Draw(Position, IsHover, IsActive, IsOn | ForceOnState, false);
         }
-        bool needClip = NeedClip();
-        if (needClip)
-            GUIClipPush(Position);
+        GUIClipPush(Position);
         DrawChildren();
-        if (needClip)
-            GUIClipPop();
+        GUIClipPop();
     }
 
 

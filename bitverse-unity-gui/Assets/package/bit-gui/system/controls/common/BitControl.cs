@@ -429,7 +429,7 @@ public abstract partial class BitControl : MonoBehaviour
                 }
                 return _parent;
             }
-            catch (Exception e) { Debug.Log("no transform for: " + this.GetType().Name); return null; }
+            catch (Exception e) { BitStage.LogError("no transform for: " + this.GetType().Name); return null; }
         }
         set
         {
@@ -488,7 +488,7 @@ public abstract partial class BitControl : MonoBehaviour
                 }
                 if (BitStage.Current != null)
                     return BitStage.Current;
-                Debug.Log(GetType().Name);
+                BitStage.LogError(GetType().Name);
                 throw new Exception("cant find Stage without a window");
             }
             return _stage = TopWindow.transform.parent.GetComponent<BitStage>();
@@ -958,7 +958,8 @@ public abstract partial class BitControl : MonoBehaviour
         if (!Enabled)
         {
             GUI.color = Stage.ModalColor;
-        }else
+        }
+        else
         {
             GUI.color = Color;
         }
@@ -1796,7 +1797,7 @@ public abstract partial class BitControl : MonoBehaviour
         }
         catch (Exception e)
         {
-            Debug.LogError("An event exception occurred: " + e.Message);
+            BitStage.LogError("An event exception occurred: " + e.Message);
             Event.current.Use();
         }
     }
@@ -1861,7 +1862,7 @@ public abstract partial class BitControl : MonoBehaviour
 
     public static BitControl Clone(BitControl control)
     {
-        return control != null ? (BitControl)UnityEngine.Object.Instantiate(control) : null;
+        return control != null ? (BitControl)BitStage.InstantiateAsset(control) : null;
     }
 
     public BitControl Clone()
@@ -1986,7 +1987,7 @@ public abstract partial class BitControl : MonoBehaviour
         }
         else
         {
-            UnityEngine.Object.Destroy(control.gameObject);
+            BitStage.DestroyAsset(control.gameObject);
         }
     }
 
@@ -2000,7 +2001,7 @@ public abstract partial class BitControl : MonoBehaviour
     {
         if (string.IsNullOrEmpty(controlName))
         {
-            Debug.LogError("BitGUI Error: Control name is empty.");
+            BitStage.LogError("BitGUI Error: Control name is empty.");
             return null;
         }
         for (int i = 0, count = transform.childCount; i < count; i++)
@@ -2012,7 +2013,7 @@ public abstract partial class BitControl : MonoBehaviour
             }
             return (T)c;
         }
-        Debug.LogWarning("BitGUI Warning: control [" + typeof(T).Name + "] " + controlName + " not found inside " + name + ".");
+        BitStage.LogWarning("BitGUI Warning: control [" + typeof(T).Name + "] " + controlName + " not found inside " + name + ".");
         return null;
     }
 
@@ -2026,7 +2027,7 @@ public abstract partial class BitControl : MonoBehaviour
     {
         if (string.IsNullOrEmpty(controlName))
         {
-            Debug.LogError("BitGUI Error: Control name is empty.");
+            BitStage.LogWarning("BitGUI Error: Control name is empty.");
             return null;
         }
         if (this is T && controlName.Equals(name))
@@ -2327,7 +2328,8 @@ public abstract partial class BitControl : MonoBehaviour
     [ContextMenu("Do Something")]
     private void DoSomething()
     {
-        Debug.Log("Perform operation");
+       // if (Log.IsDebugEnabled)
+       //     Log.Debug("Perform operation");
     }
 
     //public DockStyles Dock
@@ -2674,7 +2676,14 @@ public abstract partial class BitControl : MonoBehaviour
         transform.hideFlags = HideFlags.HideInInspector | HideFlags.NotEditable;
     }
 
+    [HideInInspector]
+    public bool SelectedInEditor = false;
     public virtual void OnDrawGizmos()
+    {
+        OnDrawGizmos(SelectedInEditor ? Color.yellow : Color.gray);
+    }
+
+    public virtual void OnDrawGizmos(Color color)
     {
         Rect abs = AbsolutePosition;
         if (Unselectable)
@@ -2682,7 +2691,7 @@ public abstract partial class BitControl : MonoBehaviour
             DrawRect(new Color(1f, 0f, 0f, 0.1f), abs);
             return;
         }
-        DrawRect(Color.white, abs);
+        DrawRect(color, abs);
         GUIStyle s = Style ?? DefaultStyle;
         DrawRect(new Color(1f, 1f, 1f, 0.1f), new Rect(abs.x + s.padding.left, abs.y + s.padding.top, abs.width - s.padding.left - s.padding.right - 2,
                                                        abs.height - s.padding.top - s.padding.bottom - 2));

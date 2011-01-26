@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Bitverse.Unity.Gui;
 using UnityEditor;
 using UnityEngine;
@@ -52,8 +53,6 @@ public partial class BitControlEditor
         MakeSizeEditorMaxSize(control);
         EditorGUI.indentLevel = 0;
         control.Anchor = MakeAnchorEditor("Anchor", control.Anchor, ref AnchorFlags);
-        if (control.GetType().IsAssignableFrom(typeof(BitResizeHandler)))
-            ((BitResizeHandler)control).ResizeAnchor = MakeAnchorEditor("ResizeAnchor", ((BitResizeHandler)control).ResizeAnchor, ref ResizeAnchorFlags);
         EditorGUI.indentLevel = 0;
         MakeSpecificEditors(control);
         //MakeAudioEditor(control);
@@ -255,6 +254,8 @@ public partial class BitControlEditor
 
             float x = EditorGUILayout.IntField("x", (int)control.Position.x);
             float y = EditorGUILayout.IntField("y", (int)control.Position.y);
+
+
             float width = EditorGUILayout.IntField("Width", (int)control.Size.Width);
             float height = EditorGUILayout.IntField("Height", (int)control.Size.Height);
 
@@ -360,9 +361,30 @@ public partial class BitControlEditor
         return anchorstyles;
     }
 
-
     protected virtual void MakeSpecificEditors(BitControl control)
     {
+        if (control.GetType().IsAssignableFrom(typeof(BitVerticalGroup)))
+        {
+            bool invert = EditorGUILayout.BeginToggleGroup("Invert", ((BitVerticalGroup)control).Invert);
+            if (GUI.changed)
+            {
+                ((AbstractBitLayoutGroup)control).Invert = invert;
+                _displayChanges = true;
+            }
+        }
+        if (control.GetType().IsAssignableFrom(typeof(BitHorizontalGroup)))
+        {
+            bool invert = EditorGUILayout.BeginToggleGroup("Invert", ((BitHorizontalGroup)control).Invert);
+            if (GUI.changed)
+            {
+                ((AbstractBitLayoutGroup)control).Invert = invert;
+                _displayChanges = true;
+            }
+        }
+        if (control.GetType().IsAssignableFrom(typeof(BitResizeHandler)))
+        {
+            ((BitResizeHandler)control).ResizeAnchor = MakeAnchorEditor("ResizeAnchor", ((BitResizeHandler)control).ResizeAnchor, ref ResizeAnchorFlags);
+        }
     }
 
     /*protected virtual void MakeAudioEditor(BitControl control)

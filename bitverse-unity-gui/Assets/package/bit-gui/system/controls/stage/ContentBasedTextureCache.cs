@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using UnityEngine;
 
 [ExecuteInEditMode]
@@ -77,7 +76,7 @@ public class ContentBasedTextureCache:MonoBehaviour
             }
             else
             {
-                UnityEngine.Object.Destroy(texture);
+                BitStage.DestroyAsset(texture);
             }
     }
 

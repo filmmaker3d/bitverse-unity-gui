@@ -54,4 +54,9 @@ public class BitPicture : BitControl
 	}
 
 	#endregion
+
+    public override void OnDrawGizmos()
+    {
+        OnDrawGizmos(SelectedInEditor ? Color.yellow : Color.blue);
+    }
 }

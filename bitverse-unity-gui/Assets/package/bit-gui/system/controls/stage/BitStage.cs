@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-
 using Bitverse.Unity.Gui;
 using UnityEngine;
 
@@ -18,6 +17,9 @@ public class BitStage : BitContainer
     public delegate void BeforeOnGUIEventHandler();
     public delegate void FocusedWindowChangedHandler(int controlID);
 
+    public delegate void OnPreRenderDelegate();
+    public event OnPreRenderDelegate OnPreRender;
+
     public static event BeforeOnGUIEventHandler BeforeOnGUI;
     public event FocusedWindowChangedHandler FocusedWindowChanged;
     private Dictionary<BitWindow, WindowReg> _windowDic = new Dictionary<BitWindow, WindowReg>();
@@ -25,8 +27,6 @@ public class BitStage : BitContainer
     private bool _reversed;
     private BitWindow _hoverWindow;
     private BitWindow _focusedWindow;
-
-    public int LabelYOffset = 2; //humm... unity 3 changed it...
 
     private static int _focusedComponentId;
 
@@ -83,7 +83,8 @@ public class BitStage : BitContainer
     #region MonoBehaviour
 
     private InvokeUtils.VoidCall awakeCall;
-    public override void Awake()
+    public override void Awake() { if (awakeCall == null) awakeCall = SafeAwake; InvokeUtils.SafeCall(this, awakeCall); }
+    private void SafeAwake()
     {
         _lastCursorTime = Time.time;
         if (_windowDicValues == null && _windowDic != null)
@@ -187,7 +188,7 @@ public class BitStage : BitContainer
                             c.Parent = null;
                             c.transform.parent = null;
                             win._destroyCallback(0);
-                            UnityEngine.Object.Destroy(c.gameObject);
+                            BitStage.DestroyAsset(c.gameObject);
                         }
                         else
                             RegWindow(win);
@@ -198,7 +199,7 @@ public class BitStage : BitContainer
                         if (_errorCountDrawNonWindow > 500)
                         {
                             _errorCountDrawNonWindow = 0;
-                            Debug.LogError(string.Format("Wrong usage, added something other than a window to a bit stage. Parent = {0}, Name = {1}", transform.GetChild(i).name, (c == null) ? "[non BitControl]" : c.name));
+                            BitStage.LogError(string.Format("Wrong usage, added something other than a window to a bit stage. Parent = {0}, Name = {1}", transform.GetChild(i).name, (c == null) ? "[non BitControl]" : c.name));
                         }
                     }
                 }
@@ -299,6 +300,18 @@ public class BitStage : BitContainer
                 GUIUtility.keyboardControl = 0;
             }
 
+            if (OnPreRender != null)
+            {
+                try
+                {
+                    OnPreRender();
+                }
+                catch (Exception e)
+                {
+                    BitStage.LogError(e.Message);
+                }
+            }
+
             _focusedComponentId = GUIUtility.keyboardControl;
             bool focusedTextField = false;
             foreach (WindowReg reg in _windows)
@@ -317,9 +330,15 @@ public class BitStage : BitContainer
                         reg.Window.Enabled = false;
                         reg.Window.IsTextFieldFocused = false;
                     }
-
+                    string key = null;
+                    if (MemoryMethodSampler.Enabled)
+                    {
+                        key = string.Format("WINDOW {0}", reg.WindowName);
+                        MemoryMethodSampler.Begin(key);
+                    }
                     reg.Window.Draw();
-
+                    if (MemoryMethodSampler.Enabled)
+                        MemoryMethodSampler.End(key);
                     reg.Window.Enabled = lastEnabled;
 
                     if (reg.Window.IsTextFieldFocused && reg.Window.Visible)
@@ -334,8 +353,8 @@ public class BitStage : BitContainer
                 }
                 catch (Exception ex)
                 {
-                    Debug.LogError("Errors found during BitStage Draw: WindowName=" + reg.WindowName);
-                    Debug.LogError(ex);
+                    BitStage.LogError("Errors found during BitStage Draw: WindowName=" + reg.WindowName);
+                    BitStage.LogError(ex);
                 }
             }
             _isAnyControlFocused = focusedTextField;
@@ -352,10 +371,39 @@ public class BitStage : BitContainer
         }
         catch (Exception ex)
         {
-            Debug.Log("Exception on OnGUI! -> TextureCache cleanup");
-            Debug.Log(ex);
+            BitStage.LogError("Exception on OnGUI! -> TextureCache cleanup");
+            BitStage.LogError(ex);
         }
 
+        if (IsDevelopmentVersion)
+        {
+            GUILayout.Label("Development Version", _errorStyle);
+            GUIStyle curstyle;
+            if (((int)Time.time) % 2 == 0)
+            {
+                curstyle = _errorStyleSmall;
+            }
+            else
+            {
+                curstyle = _errorStyleSmall2;
+            }
+            /*List<BitGuiLogger.ErrorLine> currentErrors = Log.PopErrorLines();
+            if (currentErrors != null)
+            {
+                for (int t = 0; t < currentErrors.Count; t++)
+                {
+                    errors.Add(currentErrors[t].message);
+                }
+            }*/
+            PopulateScreenErrors(errors);
+
+            GUILayout.BeginArea(new Rect(50, 50, Screen.width - 25, Screen.height - 25));
+            _errorScrollpos = GUILayout.BeginScrollView(_errorScrollpos);
+            for (int t = 0; t < errors.Count; t++)
+                GUILayout.Label(errors[t], curstyle);
+            GUILayout.EndScrollView();
+            GUILayout.EndArea();
+        }
     }
 
     public bool IsDevelopmentVersion;
@@ -659,4 +707,74 @@ public class BitStage : BitContainer
     }
 
     #endregion
+
+    private static BitCustomAssetLoader _customAssetLoader = null;
+
+    public static BitCustomAssetLoader CustomAssetLoader
+    {
+        get { return _customAssetLoader; }
+        set { _customAssetLoader = value; }
+    }
+
+    public static void DestroyAsset(UnityEngine.Object obj)
+    {
+        if (_customAssetLoader == null)
+        {
+            UnityEngine.Object.Destroy(obj);
+        }
+        else
+        {
+            _customAssetLoader.DestroyAsset(obj);
+        }
+    }
+
+    public static UnityEngine.Object InstantiateAsset(UnityEngine.Object obj)
+    {
+        if (_customAssetLoader == null)
+        {
+            return UnityEngine.Object.Instantiate(obj);
+        }
+        return _customAssetLoader.InstantiateAsset(obj);
+    }
+
+    public static void LogWarning(System.Object obj)
+    {
+        if (_customAssetLoader == null)
+        {
+            Debug.LogWarning(obj);
+        }
+        else
+        {
+            _customAssetLoader.LogWarning(obj);
+        }
+    }
+
+    public static void LogError(System.Object obj)
+    {
+        if (_customAssetLoader == null)
+        {
+            Debug.LogError(obj);
+        }
+        else
+        {
+            _customAssetLoader.LogError(obj);
+        }
+    }
+
+    public static void PopulateScreenErrors(List<string> errors)
+    {
+        if (_customAssetLoader != null)
+        {
+            _customAssetLoader.PopulateScreenErrors(errors);
+        }
+    }
+
+    public interface BitCustomAssetLoader
+    {
+        void DestroyAsset(UnityEngine.Object obj);
+        UnityEngine.Object InstantiateAsset(UnityEngine.Object obj);
+        void LogError(System.Object obj);
+        void LogWarning(System.Object obj);
+        void PopulateScreenErrors(List<string> errors);
+    }
 }

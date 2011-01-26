@@ -1,5 +1,4 @@
-﻿
-using Bitverse.Unity.Gui;
+﻿using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
@@ -41,7 +40,6 @@ public class BitDragManager
 		_draggedWindow = stage.FindControlInChildren<BitWindow>("_DragHelperWindow");
 		if (_draggedWindow == null)
 		{
-            Debug.Log("Instantiating _DragHelperWindow");
 			_draggedWindow = _stage.AddControl<BitWindow>("_DragHelperWindow");
 			_draggedWindow.Draggable = false;
 			_draggedWindow.Visible = false;

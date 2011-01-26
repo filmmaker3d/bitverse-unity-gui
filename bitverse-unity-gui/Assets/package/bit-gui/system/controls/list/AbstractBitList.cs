@@ -233,11 +233,16 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
         }
 
         string key = name;
-
-        key = string.Format("Populator: {0}", key);
-
+        if (MemoryMethodSampler.Enabled)
+        {
+            key = string.Format("Populator: {0}", key);
+            MemoryMethodSampler.Begin(key);
+        }
+        
         PopulateAndDraw(listRenderer, model, populator);
 
+        if (MemoryMethodSampler.Enabled)
+            MemoryMethodSampler.End(key);
     }
 
     /// <summary>
@@ -359,7 +364,7 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
             }
             else
             {
-                UnityEngine.Object.Destroy(Renderer.gameObject);
+                BitStage.DestroyAsset(Renderer.gameObject);
             }
             _renderer.transform.parent = null;
             _renderer = null;
@@ -379,7 +384,7 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
             }
             else
             {
-                UnityEngine.Object.Destroy(Renderer.gameObject);
+                BitStage.DestroyAsset(Renderer.gameObject);
             }
         }
         BitControl control = base.InternalAddControl(controlType, controlName);

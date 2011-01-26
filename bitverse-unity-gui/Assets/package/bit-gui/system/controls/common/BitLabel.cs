@@ -20,10 +20,14 @@ public class BitLabel : BitControl
         if (Event.current.type == EventType.Repaint)
         {
             Rect source = Position;
-            Rect offsetPosition = new Rect(source.x, source.y + Stage.LabelYOffset, source.width, source.height);
-            (Style ?? DefaultStyle).Draw(offsetPosition, Content, IsHover, IsActive, IsOn | ForceOnState, false);
+            (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
         }
     }
 
     #endregion
+
+    public override void OnDrawGizmos()
+    {
+        OnDrawGizmos(SelectedInEditor ? Color.yellow : Color.magenta);
+    }
 }

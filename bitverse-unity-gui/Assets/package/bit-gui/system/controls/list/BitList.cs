@@ -148,4 +148,9 @@ public class BitList : AbstractBitList<IListModel, IPopulator>
 
         return _model[row];
     }
+
+    public override void OnDrawGizmos()
+    {
+        OnDrawGizmos(SelectedInEditor ? Color.yellow : Color.black);
+    }
 }

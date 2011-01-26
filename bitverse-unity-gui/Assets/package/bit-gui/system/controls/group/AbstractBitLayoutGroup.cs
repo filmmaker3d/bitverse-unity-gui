@@ -5,6 +5,21 @@ using UnityEngine;
 
 public abstract class AbstractBitLayoutGroup : BitContainer
 {
+
+    [HideInInspector]
+    [SerializeField]
+    private bool _invert = false;
+
+    public bool Invert
+    {
+        get { return _invert; }
+        set
+        {
+            _invert = value;
+            SecureAutoSizeMe();
+        }
+    }
+
     #region MonoBehaviour
 
     public override void Awake()
@@ -57,12 +72,10 @@ public abstract class AbstractBitLayoutGroup : BitContainer
         if (Event.current.type == EventType.Repaint)
             (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
         SecureAutoSizeMe();
-        bool needClip = NeedClip();
-        if (needClip)
-            GUIClipPush(Position);
+
+        GUIClipPush(Position);
         DrawChildren();
-        if (needClip)
-            GUIClipPop();
+        GUIClipPop();
     }
 
     public abstract void FitContent();

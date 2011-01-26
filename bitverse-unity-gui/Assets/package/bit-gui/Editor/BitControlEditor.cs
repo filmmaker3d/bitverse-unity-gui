@@ -139,7 +139,7 @@ public partial class BitControlEditor : Editor
 
 
                 // Move from top-left
-                capColor = Color.blue;
+                capColor = Color.yellow;
                 pos = new Vector3(abs.xMin, 0, abs.yMin);
                 npos = Handles.FreeMoveHandle(pos, Quaternion.identity, 1, new Vector3(1, 1, 1), DrawCornerCap);
                 if (npos != pos)

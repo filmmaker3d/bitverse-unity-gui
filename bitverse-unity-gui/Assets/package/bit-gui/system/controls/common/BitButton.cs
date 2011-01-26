@@ -3,21 +3,21 @@ using UnityEngine;
 
 public class BitButton : BitControl
 {
-	#region Appearance
+    #region Appearance
 
-	public override GUIStyle DefaultStyle
-	{
-		get { return GUI.skin.button; }
-	}
+    public override GUIStyle DefaultStyle
+    {
+        get { return GUI.skin.button; }
+    }
 
-	#endregion
+    #endregion
 
 
     #region Event
-    
+
     protected override bool ConsumeEvent(EventType type)
-	{
-		return true;
+    {
+        return true;
     }
 
     #endregion
@@ -28,7 +28,14 @@ public class BitButton : BitControl
     {
         if (Event.current.type == EventType.Repaint)
             (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, Focus);
-	}
+    }
 
-	#endregion
+    #endregion
+
+
+    public override void OnDrawGizmos()
+    {
+         OnDrawGizmos(SelectedInEditor ? Color.yellow : Color.green);
+    }
+
 }

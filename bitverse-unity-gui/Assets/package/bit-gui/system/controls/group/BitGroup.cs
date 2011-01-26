@@ -11,11 +11,8 @@ public class BitGroup : BitContainer
 		{
             (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
 		}
-        bool needClip = NeedClip();
-        if (needClip)
 		GUIClipPush(Position);
 		DrawChildren();
-        if (needClip)
 		GUIClipPop();
 	}
 

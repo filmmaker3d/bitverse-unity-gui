@@ -208,12 +208,9 @@ public class BitWindow : BitContainer
             }
         }
 
-        bool needClip = NeedClip();
-        if (needClip)
-            GUIClipPush(_viewPosition);
+        GUIClipPush(_viewPosition);
         DrawChildren();
-        if (needClip)
-            GUIClipPop();
+        GUIClipPop();
     }
 
     private static int CompDelegate(AbstractBitTextField a, AbstractBitTextField b)
