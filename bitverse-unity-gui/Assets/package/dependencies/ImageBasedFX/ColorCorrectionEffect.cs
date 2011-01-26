@@ -26,7 +26,7 @@ public class ColorCorrectionEffect : ImageEffectBase
         }
     }
 
-    private bool _shouldDisable;
+    protected bool _shouldDisable = false;
     void Start()
 	{
 

@@ -11,11 +11,11 @@ public class RadialBlur : ImageEffectBase, IPPShaderInterface
 		set { queueOrder = value; }
 	}
 
-	private string name = "RadialBlur";
+	private string _name = "RadialBlur";
 	public string Name
 	{
-		get { return name; }
-		set { name = value; }
+		get { return _name; }
+		set { _name = value; }
 	}
 
 	public bool Enabled

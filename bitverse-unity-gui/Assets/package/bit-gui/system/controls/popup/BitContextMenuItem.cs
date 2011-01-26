@@ -31,7 +31,9 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
 
     public bool HasSubMenu
     {
+#pragma warning disable 612
         get { return ContextMenu != null; }
+#pragma warning restore 612
     }
 
 
@@ -89,8 +91,8 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
         BitContextMenu menu = ParentContextMenu;
         GUIStyle menuStyle = menu.Style ?? menu.DefaultStyle;
         GUIStyle style = Style ?? menu.DefaultMenuItemStyle ?? DefaultStyle;
-        GUIStyle arrowStyle = menu.SubmenuIndicatorStyle ?? DefaultStyle;
-        float arrowWidth = (HasSubMenu && arrowStyle != null) ? arrowStyle.fixedWidth : 0.0f;
+        //GUIStyle arrowStyle = menu.SubmenuIndicatorStyle ?? DefaultStyle;
+        //float arrowWidth = (HasSubMenu && arrowStyle != null) ? arrowStyle.fixedWidth : 0.0f;
 
         Position = new Rect(0,
                             Position.y,
@@ -99,6 +101,8 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
 
         return base.UserEventsBeforeDraw();
     }
+#pragma warning disable 618
+#pragma warning disable 612
 
     protected override void DoDraw()
     {
@@ -146,6 +150,8 @@ public class BitContextMenuItem : BitButton, IBitContextMenuItem
             }
         }
     }
+#pragma warning restore 618
+#pragma warning restore 612
 
     #endregion
 
