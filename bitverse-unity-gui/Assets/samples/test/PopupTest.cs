@@ -16,7 +16,6 @@ public class PopupTest : MonoBehaviour
 	}
 
 
-	private BitPopup p;
 	//BitButton b;
 
 	private void Start()

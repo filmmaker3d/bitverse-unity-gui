@@ -56,8 +56,6 @@ public class BitTipTextField : AbstractBitTextField
     [SerializeField]
     private string _tipText = "Tip Text...";
 
-    private bool _initialized;
-
     public string TipText
     {
         get { return _tipText; }

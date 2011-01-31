@@ -611,7 +611,7 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
 
     #endregion
 
-    [Obsolete("Use BitGuiContext.Current.Data instead")]
+    //    [Obsolete("Use BitGuiContext.Current.Data instead")]
     public abstract object GetObjectDataAt(Vector2 position);
 
     protected override bool ConsumeEvent(EventType type)
