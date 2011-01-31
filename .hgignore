@@ -1,0 +1,8 @@
+glob:bitverse-unity-gui/Obj/*
+glob:bitverse-unity-gui/Temp/*
+glob:bitverse-unity-gui/Library/*
+glob:*.bak
+glob:*.suo
+glob:*.user
+relre:_ReSharper
+glob:bitverse-unity-gui/obj/*

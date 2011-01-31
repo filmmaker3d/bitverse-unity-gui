@@ -1,0 +1,222 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Irrelevant</RootNamespace>
+    <AssemblyName>Irrelvant</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITY_3_1_0;UNITY_3_1;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_WIN;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Temp\bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="UnityEngine">
+      <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="Boo.Lang">
+      <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityScript">
+      <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitBoxEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitButtonEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitContextMenuEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitContextMenuItemEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitContextMenuOptionsEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitDropDownEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitEditorStageEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitFilteredTextFieldEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitGridListEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitGroupEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitHorizontalProgressBarEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitHorizontalScrollbarEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitHorizontalSliderEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitLabelEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitListEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitModelViewerEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitPasswordFieldEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitPictureEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitPopupEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitRepeatButtonEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitRichTextEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitScrollViewEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitSpriteEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitTabbedPaneEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitTabEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitTextAreaEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitTextFieldEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitToggleEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalProgressBarEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalScrollbarEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitVerticalSliderEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\editors\BitWindowEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\AbstractHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\BitControlEditor.cs" />
+    <None Include="Assets\package\bit-gui\Editor\BitControlEditor_old.txt" />
+    <Compile Include="Assets\package\bit-gui\Editor\BitControlInspectorEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\BitGuiEditorToolbox.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\GuiAcessorGenerator.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\GuiEditorUtils.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\GUISkinInspector.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\ModeHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\MoveHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\ResetBitButtons.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\ResizeHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\SelectHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\Shortcut.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\TranslationGenerator.cs" />
+    <Compile Include="Assets\package\bit-gui\Editor\VirtualMenu.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\audio\BitControlAudio.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\controls\list\BitSlotList.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\controls\progress\AbstractBitSegmentedProgressBar.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\controls\progress\BitHorizontalSegmentedProgressBar.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\controls\progress\BitVerticalSegmentedProgressBar.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\controls\resize\BitResizeHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\controls\text\BitTipTextField.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitEnhancedControlEditorToolbox.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitHorizontalSegmentedProgressBarEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitHorizontalStackListEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitResizeHandlerEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitSlotListEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitTipTextFieldEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitVerticalSegmentedProgressBarEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\Editor\BitVerticalStackListEditor.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\models\ISlotListModel.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\models\SlotListModel.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\panels\StationController.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\scripts\BitTextFilter.cs" />
+    <Compile Include="Assets\package\bit-gui\extensions\scripts\LoadingGameWindow.cs" />
+    <Compile Include="Assets\package\bit-gui\helpers\GridListTestPopulator.cs" />
+    <Compile Include="Assets\package\bit-gui\helpers\ListTestPopulator.cs" />
+    <Compile Include="Assets\package\bit-gui\helpers\SlotListTestPopulator.cs" />
+    <Compile Include="Assets\package\bit-gui\helpers\ToggleWindow.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitBox.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitButton.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitContainer.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitControl.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitDropDown.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitLabel.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitPicture.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitRepeatButton.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitRichText.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitSprite.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitToggle.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\common\BitWindow.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\group\AbstractBitLayoutGroup.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\group\BitGroup.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\group\BitHorizontalGroup.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\group\BitVerticalGroup.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\list\AbstractBitList.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\list\BitGridList.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\list\BitList.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\modelviewer\BitModelViewer.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\popup\AbstractBitPopup.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\popup\BitContextMenu.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\popup\BitContextMenuItem.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\popup\BitContextMenuItemData.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\popup\BitContextMenuOptions.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\popup\BitPopup.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\popup\IBitContextMenuItem.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\progress\AbstractBitProgressBar.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\progress\BitHorizontalProgressBar.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\progress\BitVerticalProgressBar.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\scroll\BitHorizontalScrollbar.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\scroll\BitScrollView.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\scroll\BitVerticalScrollbar.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\slider\BitHorizontalSlider.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\slider\BitVerticalSlider.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\stage\BitEditorStage.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\stage\BitStage.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\stage\ContentBasedTextureCache.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\tab\BitTab.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\tab\BitTabbedPane.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\text\AbstractBitTextField.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\text\BitFilteredTextField.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\text\BitPasswordField.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\text\BitTextArea.cs" />
+    <Compile Include="Assets\package\bit-gui\system\controls\text\BitTextField.cs" />
+    <Compile Include="Assets\package\bit-gui\system\core\BitFormsManager.cs" />
+    <Compile Include="Assets\package\bit-gui\system\core\BitGUIDebug.cs" />
+    <Compile Include="Assets\package\bit-gui\system\core\Delegates.cs" />
+    <Compile Include="Assets\package\bit-gui\system\core\Types.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\AbstractBitDragHandlerAcessor.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\BitDragHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\BitDragManager.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\BitDragTransferable.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\BitItemDragProxy.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\IBitDragHandler.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\IBitDragHandlerAcessor.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\IBitDragProxy.cs" />
+    <Compile Include="Assets\package\bit-gui\system\dnd\IBitDragTransferable.cs" />
+    <Compile Include="Assets\package\bit-gui\system\intf\IPopup.cs" />
+    <Compile Include="Assets\package\bit-gui\system\intf\ISelectableControl.cs" />
+    <Compile Include="Assets\package\bit-gui\system\models\BitGuiContext.cs" />
+    <Compile Include="Assets\package\bit-gui\system\models\DefaultBitListModel.cs" />
+    <Compile Include="Assets\package\bit-gui\system\models\DefaultBitListPopulator.cs" />
+    <Compile Include="Assets\package\bit-gui\system\models\IFilteredListModel.cs" />
+    <Compile Include="Assets\package\bit-gui\system\models\IListModel.cs" />
+    <Compile Include="Assets\package\bit-gui\system\models\IPopulator.cs" />
+    <Compile Include="Assets\package\bit-gui\system\tooltip\ITooltipData.cs" />
+    <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipManager.cs" />
+    <Compile Include="Assets\package\bit-gui\system\tooltip\TooltipProvider.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\BlendColor.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\BloomEffect.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\ColorCorrectionEffect.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\GlowEffect.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\GlowThresholdEffect.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\ImageEffectBase.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\ImageEffectsArt.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\IPPShaderInterface.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\MotionBlur.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\NoiseEffect.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\PostProcessingFXManager.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\RadialBlur.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\RadialBlurOLD.cs" />
+    <Compile Include="Assets\package\dependencies\ImageBasedFX\VolumetricParticleRenderer.cs" />
+    <Compile Include="Assets\package\dependencies\GUIHelper.cs" />
+    <Compile Include="Assets\package\dependencies\InvokeUtils.cs" />
+    <Compile Include="Assets\package\dependencies\LayerHelper.cs" />
+    <Compile Include="Assets\package\dependencies\MemoryMethodSampler.cs" />
+    <Compile Include="Assets\samples\projects\calculator\CalculatorDemo.cs" />
+    <Compile Include="Assets\samples\test\ListAndGridTest.cs" />
+    <Compile Include="Assets\samples\test\PopupTest.cs" />
+    <Compile Include="Assets\samples\test\SkinTest.cs" />
+    <Compile Include="Assets\samples\test\TestMain.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+	   Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
