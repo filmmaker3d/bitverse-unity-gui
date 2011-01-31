@@ -19,7 +19,7 @@ public class BitLabel : BitControl
     {
         if (Event.current.type == EventType.Repaint)
         {
-            Rect source = Position;
+            //Rect source = Position;
             (Style ?? DefaultStyle).Draw(Position, Content, IsHover, IsActive, IsOn | ForceOnState, false);
         }
     }

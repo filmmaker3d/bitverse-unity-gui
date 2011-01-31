@@ -388,7 +388,7 @@ public abstract partial class BitControl : MonoBehaviour
         set
         {
             _mouseEnabled = value;
-            foreach (KeyValuePair<string, object> o in UserProperties)
+//            foreach (KeyValuePair<string, object> o in UserProperties)
             {
 
             }
@@ -429,7 +429,7 @@ public abstract partial class BitControl : MonoBehaviour
                 }
                 return _parent;
             }
-            catch (Exception e) { BitStage.LogError("no transform for: " + this.GetType().Name); return null; }
+            catch (Exception) { BitStage.LogError("no transform for: " + this.GetType().Name); return null; }
         }
         set
         {

@@ -67,7 +67,7 @@ public class BitModelViewer : BitBox
 
         _targetSize = 0;
         _targetCenter = new Vector3();
-        Vector3 objectPosition = theTarget.transform.root.position;
+        //Vector3 objectPosition = theTarget.transform.root.position;
         Bounds newBounds = new Bounds();
 
         foreach (Renderer meshRenderer in renderers)
@@ -143,7 +143,7 @@ public class BitModelViewer : BitBox
     public event PositionCameraHandler CameraHandler;
 
     private float _lastLog;
-    private float _logTimeInterval = 5;
+    //private float _logTimeInterval = 5;
     public void Update()
     {
         if (target == null || !TopWindow.Visible)

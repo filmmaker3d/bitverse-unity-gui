@@ -11,7 +11,7 @@ public class MotionBlur : ImageEffectBase
 	public float blurAmount = 0.8f;
 	public bool extraBlur = false;
 
-	public new void Start()
+	public void Start()
 	{
 		Debug.LogWarning("LOG Constructor!");
 		shader = (Shader)Resources.Load("MotionBlur");//Shader.Find("MotionBlur");

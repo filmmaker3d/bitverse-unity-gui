@@ -20,11 +20,11 @@ public class BloomEffect : MonoBehaviour, IPPShaderInterface
 		set { queueOrder = value; }
 	}
 
-	private string name = "Bloom";
+	private string _name = "Bloom";
 	public string Name
 	{
-		get { return name; }
-		set { name = value; }
+		get { return _name; }
+		set { _name = value; }
 	}
 
 	public bool Enabled
@@ -180,7 +180,7 @@ public class BloomEffect : MonoBehaviour, IPPShaderInterface
         enabled = false;
         return;
         //************************
-
+        /*
 		downsampleShader = (Shader)Resources.Load("GlowEffectThresholdDownsample");
 
 		// Disable if we don't support image effects
@@ -225,7 +225,7 @@ public class BloomEffect : MonoBehaviour, IPPShaderInterface
 
         
         Debug.LogWarning("Current Quality: " + QualitySettings.currentLevel);
-
+	   */
 	}
 
 	// Performs one blur iteration.
