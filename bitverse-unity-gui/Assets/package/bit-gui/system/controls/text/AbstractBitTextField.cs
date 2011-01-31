@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using Bitverse.Unity.Gui;
 using UnityEngine;
@@ -48,6 +49,13 @@ public abstract class AbstractBitTextField : BitControl
         }
     }
 
+    private Boolean ScheduleTextEnd;
+
+    public void MoveCursorToEnd()
+    {
+        ScheduleTextEnd = true;
+    }
+
     /// <summary>
     /// Sets the content text without raising value changed event.
     /// </summary>
@@ -73,19 +81,10 @@ public abstract class AbstractBitTextField : BitControl
         // hAcK
         // Windows are processed from front to back window for mouse events and from back to front window for repaint events
         // This causes confusions with ControlID
-       if (TopWindow.IsFocused)
+        if (TopWindow.IsFocused)
         {
-            // It will only use DoTextField if we are editing the its text (To improve click area by texture background)
-            if (ControlID == GUIUtility.keyboardControl)
-            {
-                DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, Style ?? DefaultStyle);
-                Text = AcceptOnlyNumbers ? Regex.Match(TempContent.text, @"\d+").Value : TempContent.text;
-            }
-            else
-            {
-                if (Event.current.type == EventType.Repaint)
-                    (Style ?? DefaultStyle).Draw(Position, TempContent, IsHover, IsActive, IsOn | ForceOnState, false);
-            }
+            DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, Style ?? DefaultStyle, ref ScheduleTextEnd);
+            Text = AcceptOnlyNumbers ? Regex.Match(TempContent.text, @"\d+").Value : TempContent.text;
         }
         else
         {
@@ -94,8 +93,13 @@ public abstract class AbstractBitTextField : BitControl
         }
     }
 
+    public void DoTextField(Rect position, int id, GUIContent content, bool multiline, int maxLength, GUIStyle style)
+    {
+        DoTextField(position, id, content, multiline, maxLength, style, ref ScheduleTextEnd);
+    }
+
     //TODO Please check if commented code is needed
-    public static void DoTextField(Rect position, int id, GUIContent content, bool multiline, int maxLength, GUIStyle style)
+    private static void DoTextField(Rect position, int id, GUIContent content, bool multiline, int maxLength, GUIStyle style, ref Boolean scheduleEnd)
     {
         if ((maxLength >= 0) && (content.text.Length > maxLength))
         {
@@ -112,6 +116,13 @@ public abstract class AbstractBitTextField : BitControl
         stateObject.ClampPos();
         Event current = Event.current;
         bool flag = false;
+
+        if (scheduleEnd)
+        {
+            scheduleEnd = false;
+            stateObject.MoveLineEnd();
+        }
+
         switch (current.type)
         {
             case EventType.MouseDown:

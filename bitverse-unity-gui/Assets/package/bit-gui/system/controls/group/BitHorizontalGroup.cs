@@ -139,59 +139,158 @@ public class BitHorizontalGroup : AbstractBitLayoutGroup
 
     protected override void DoAutoSize()
     {
-        GUIStyle currStyle = Style ?? DefaultStyle;
-        float minx = float.MaxValue;
-        float miny = float.MaxValue;
-        float maxx = float.MinValue;
-        float maxy = float.MinValue;
-
-        float minFixY = float.MaxValue;
-        float maxFixY = float.MinValue;
-
-        for (int i = 0; i < ControlCount; i++)
+        if (AutoSizeMode == AutoSizeModeEnum.all)
         {
-            BitControl c = InternalGetControlAt(i);
-            if (!c.Visible)
+            GUIStyle currStyle = Style ?? DefaultStyle;
+            float minx = float.MaxValue;
+            float miny = float.MaxValue;
+            float maxx = float.MinValue;
+            float maxy = float.MinValue;
+
+            float minFixY = float.MaxValue;
+            float maxFixY = float.MinValue;
+
+            for (int i = 0; i < ControlCount; i++)
             {
-                continue;
+                BitControl c = InternalGetControlAt(i);
+                if (!c.Visible)
+                {
+                    continue;
+                }
+
+                minx = Math.Min(c.Position.x, minx);
+                miny = Math.Min(c.Position.y, miny);
+
+                maxx = Math.Max(c.Position.x + c.Position.width, maxx);
+                maxy = Math.Max(c.Position.y + c.Position.height, maxy);
+
+                if (!c.FixedHeight)
+                {
+                    continue;
+                }
+                minFixY = Math.Min(c.Position.y, minFixY);
+                maxFixY = Math.Max(c.Position.y + c.Position.height, maxFixY);
             }
 
-            minx = Math.Min(c.Position.x, minx);
-            miny = Math.Min(c.Position.y, miny);
+            miny = (minFixY != float.MaxValue) ? minFixY : miny;
+            maxy = (maxFixY != float.MinValue) ? maxFixY : maxy;
 
-            maxx = Math.Max(c.Position.x + c.Position.width, maxx);
-            maxy = Math.Max(c.Position.y + c.Position.height, maxy);
+            //If nothing changed or no children, dont change the size of the window
+            if (minx == float.MaxValue || maxx == float.MinValue)
+                return;
 
-            if (!c.FixedHeight)
+            //Move all children
+            for (int i = 0; i < ControlCount; i++)
             {
-                continue;
+                BitControl c = InternalGetControlAt(i);
+                if (c.Visible)
+                {
+                    c.Position = new Rect(c.Position.x - minx + currStyle.border.left, c.Position.y - miny
+                                                                                       + currStyle.border.top, c.Position.width,
+                                          c.Position.height);
+                }
             }
-            minFixY = Math.Min(c.Position.y, minFixY);
-            maxFixY = Math.Max(c.Position.y + c.Position.height, maxFixY);
+
+            //Pack
+            Position = new Rect(Position.x, Position.y, maxx - minx + currStyle.border.left + currStyle.border.right,
+                                maxy - miny + currStyle.border.top + currStyle.border.bottom);
         }
-
-        miny = (minFixY != float.MaxValue) ? minFixY : miny;
-        maxy = (maxFixY != float.MinValue) ? maxFixY : maxy;
-
-        //If nothing changed or no children, dont change the size of the window
-        if (minx == float.MaxValue || maxx == float.MinValue)
-            return;
-
-        //Move all children
-        for (int i = 0; i < ControlCount; i++)
+        else if (AutoSizeMode == AutoSizeModeEnum.vertical)
         {
-            BitControl c = InternalGetControlAt(i);
-            if (c.Visible)
-            {
-                c.Position = new Rect(c.Position.x - minx + currStyle.border.left /* + currStyle.padding.left*/, c.Position.y - miny
-                                                                                                                 + currStyle.border.top /* + currStyle.padding.top*/, c.Position.width,
-                                      c.Position.height);
-            }
-        }
+            GUIStyle currStyle = Style ?? DefaultStyle;
+            float miny = float.MaxValue;
+            float maxy = float.MinValue;
 
-        //Pack
-        Position = new Rect(Position.x, Position.y, maxx - minx + currStyle.border.left + currStyle.border.right /* + currStyle.padding.left + currStyle.padding.right*/,
-                            maxy - miny + currStyle.border.top + currStyle.border.bottom /* + currStyle.padding.top + currStyle.padding.bottom*/);
+            float minFixY = float.MaxValue;
+            float maxFixY = float.MinValue;
+
+            for (int i = 0; i < ControlCount; i++)
+            {
+                BitControl c = InternalGetControlAt(i);
+                if (!c.Visible)
+                {
+                    continue;
+                }
+
+                miny = Math.Min(c.Position.y, miny);
+
+                maxy = Math.Max(c.Position.y + c.Position.height, maxy);
+
+                if (!c.FixedHeight)
+                {
+                    continue;
+                }
+                minFixY = Math.Min(c.Position.y, minFixY);
+                maxFixY = Math.Max(c.Position.y + c.Position.height, maxFixY);
+            }
+
+            miny = (minFixY != float.MaxValue) ? minFixY : miny;
+            maxy = (maxFixY != float.MinValue) ? maxFixY : maxy;
+
+            //If nothing changed or no children, dont change the size of the window
+            //if (minx == float.MaxValue || maxx == float.MinValue)
+            //    return;
+
+            //Move all children
+            for (int i = 0; i < ControlCount; i++)
+            {
+                BitControl c = InternalGetControlAt(i);
+                if (c.Visible)
+                {
+                    c.Position = new Rect(c.Position.x, c.Position.y - miny
+                                                                                       + currStyle.border.top, c.Position.width,
+                                          c.Position.height);
+                }
+            }
+
+            //Pack
+            Position = new Rect(Position.x, Position.y, Position.width,
+                                maxy - miny + currStyle.border.top + currStyle.border.bottom);
+        }else if (AutoSizeMode == AutoSizeModeEnum.horizontal)
+        {
+            GUIStyle currStyle = Style ?? DefaultStyle;
+            float minx = float.MaxValue;
+            float maxx = float.MinValue;
+
+            for (int i = 0; i < ControlCount; i++)
+            {
+                BitControl c = InternalGetControlAt(i);
+                if (!c.Visible)
+                {
+                    continue;
+                }
+
+                minx = Math.Min(c.Position.x, minx);
+
+                maxx = Math.Max(c.Position.x + c.Position.width, maxx);
+
+                if (!c.FixedHeight)
+                {
+                    continue;
+                }
+            }
+
+            //If nothing changed or no children, dont change the size of the window
+            if (minx == float.MaxValue || maxx == float.MinValue)
+                return;
+
+            //Move all children
+            for (int i = 0; i < ControlCount; i++)
+            {
+                BitControl c = InternalGetControlAt(i);
+                if (c.Visible)
+                {
+                    c.Position = new Rect(c.Position.x - minx + currStyle.border.left, c.Position.y, c.Position.width,
+                                          c.Position.height);
+                }
+            }
+
+            //Pack
+            Position = new Rect(Position.x, Position.y, maxx - minx + currStyle.border.left + currStyle.border.right,
+                                Position.height);
+        }
+   
+
     }
 
     #endregion

@@ -125,7 +125,7 @@ public class BitTipTextField : AbstractBitTextField
                 // Focused
                 TempContent.text = Content.text;
                 DrawStyle = Style ?? DefaultStyle;
-                AbstractBitTextField.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
+                DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
                 Text = TempContent.text;
             }
             else

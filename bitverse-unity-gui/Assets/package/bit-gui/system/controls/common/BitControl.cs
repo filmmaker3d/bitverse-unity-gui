@@ -768,10 +768,26 @@ public abstract partial class BitControl : MonoBehaviour
     [SerializeField]
     private bool _autoSize;
 
+    [SerializeField]
+    private AutoSizeModeEnum _autoSizeMode=AutoSizeModeEnum.all;
+
+    public enum AutoSizeModeEnum
+    {
+        all=0,
+        vertical,
+        horizontal
+    }
+
     public bool AutoSize
     {
         get { return _autoSize; }
         set { _autoSize = value; }
+    }
+
+    public AutoSizeModeEnum AutoSizeMode
+    {
+        get { return _autoSizeMode; }
+        set { _autoSizeMode = value; }
     }
 
     public virtual FocusType FocusType
@@ -2602,15 +2618,29 @@ public abstract partial class BitControl : MonoBehaviour
             height = style.CalcHeight(Content, Position.width);
         }
 
-        if (_position.height == height && _position.width == width)
+        if ((_autoSizeMode == AutoSizeModeEnum.all)&&(_position.height == height && _position.width == width))
         {
             return;
         }
 
-        Location = new Point(
-            ((_anchor & AnchorStyles.Right) == AnchorStyles.Right) ? _position.x - (width - _position.width) : _position.x,
-            ((_anchor & AnchorStyles.Bottom) == AnchorStyles.Bottom) ? _position.y - (height - _position.height) : _position.y);
-        Size = new Size(width, height);
+        if (_autoSizeMode == AutoSizeModeEnum.all)
+        {
+            Location = new Point(
+                ((_anchor & AnchorStyles.Right) == AnchorStyles.Right) ? _position.x - (width - _position.width) : _position.x,
+                ((_anchor & AnchorStyles.Bottom) == AnchorStyles.Bottom) ? _position.y - (height - _position.height) : _position.y);
+            Size = new Size(width, height);
+        }else if (_autoSizeMode == AutoSizeModeEnum.vertical)
+        {
+            Location = new Point(_position.x,
+                 ((_anchor & AnchorStyles.Bottom) == AnchorStyles.Bottom) ? _position.y - (height - _position.height) : _position.y);
+            Size = new Size(Size.Width, height);
+        }
+        else if (_autoSizeMode == AutoSizeModeEnum.horizontal)
+        {
+            Location = new Point(
+                ((_anchor & AnchorStyles.Right) == AnchorStyles.Right) ? _position.x - (width - _position.width) : _position.x, _position.y);
+            Size = new Size(width, _position.height);
+        }
     }
 
     public bool SecureAutoSize()

@@ -97,9 +97,19 @@ public abstract class AbstractBitLayoutGroup : BitContainer
             {
                 continue;
             }
-            c.FixedWidth = true;
-            c.FixedHeight = true;
-
+            if (AutoSizeMode == AutoSizeModeEnum.all)
+            {
+                c.FixedWidth = true;
+                c.FixedHeight = true;
+            }
+            else if (AutoSizeMode == AutoSizeModeEnum.vertical)
+            {
+                c.FixedHeight = true;
+            }
+            else if (AutoSizeMode == AutoSizeModeEnum.horizontal)
+            {
+                c.FixedWidth = true;
+            }
             c.SecureAutoSize();
         }
     }

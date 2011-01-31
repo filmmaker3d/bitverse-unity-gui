@@ -32,8 +32,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.XML" />
-    <Reference Include="System.Core" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
     </Reference>
@@ -203,6 +201,7 @@
     <Compile Include="Assets\package\dependencies\ImageBasedFX\RadialBlur.cs" />
     <Compile Include="Assets\package\dependencies\ImageBasedFX\RadialBlurOLD.cs" />
     <Compile Include="Assets\package\dependencies\ImageBasedFX\VolumetricParticleRenderer.cs" />
+    <Compile Include="Assets\package\dependencies\GUIHelper.cs" />
     <Compile Include="Assets\package\dependencies\InvokeUtils.cs" />
     <Compile Include="Assets\package\dependencies\LayerHelper.cs" />
     <Compile Include="Assets\package\dependencies\MemoryMethodSampler.cs" />
@@ -211,12 +210,6 @@
     <Compile Include="Assets\samples\test\PopupTest.cs" />
     <Compile Include="Assets\samples\test\SkinTest.cs" />
     <Compile Include="Assets\samples\test\TestMain.cs" />
-    <Reference Include="System.Drawing">
-      <HintPath>Assets\lib\System.Drawing.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Drawing.Html">
-      <HintPath>Assets\lib\System.Drawing.Html.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

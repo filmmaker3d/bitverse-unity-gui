@@ -338,44 +338,138 @@ public abstract class
     //It also involves moving the components so that the minimum x,y become 0,0
     protected override void DoAutoSize()
     {
-        GUIStyle currStyle = Style ?? DefaultStyle;
-        float minx = float.MaxValue;
-        float miny = float.MaxValue;
-        float maxx = float.MinValue;
-        float maxy = float.MinValue;
-
-        for (int i = 0, count = transform.childCount; i < count; i++)
+        if (AutoSizeMode == AutoSizeModeEnum.all)
         {
-            BitControl c = transform.GetChild(i).GetComponent<BitControl>();
-            if (c.Visible)
+            GUIStyle currStyle = Style ?? DefaultStyle;
+            float minx = float.MaxValue;
+            float miny = float.MaxValue;
+            float maxx = float.MinValue;
+            float maxy = float.MinValue;
+
+            for (int i = 0, count = transform.childCount; i < count; i++)
             {
-                minx = Math.Min(c.Position.x, minx);
-                miny = Math.Min(c.Position.y, miny);
+                BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+                if (c.Visible)
+                {
+                    minx = Math.Min(c.Position.x, minx);
+                    miny = Math.Min(c.Position.y, miny);
 
-                maxx = Math.Max(c.Position.x + c.Position.width, maxx);
-                maxy = Math.Max(c.Position.y + c.Position.height, maxy);
+                    maxx = Math.Max(c.Position.x + c.Position.width, maxx);
+                    maxy = Math.Max(c.Position.y + c.Position.height, maxy);
+
+
+                }
             }
+
+            //If nothing changed or no children, dont change the size of the window
+            //if (minx == float.MaxValue || maxx == float.MinValue)
+            //    return;
+
+            //Move all children
+            for (int i = 0, count = transform.childCount; i < count; i++)
+            {
+                BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+
+                //TODO: BitGroup etc should behave like BitWindow
+                if (this is BitWindow)
+                {
+                    c.Position = new Rect(c.Position.x - minx, c.Position.y - miny, c.Position.width, c.Position.height);
+                }
+                else
+                {
+                    c.Position = new Rect(c.Position.x - minx + currStyle.padding.left, c.Position.y - miny + currStyle.padding.top, c.Position.width, c.Position.height);
+                }
+            }
+
+            //Pack
+            Position = new Rect(Position.x, Position.y, maxx - minx + currStyle.padding.left + currStyle.padding.right,
+                                maxy - miny + currStyle.padding.top + currStyle.padding.bottom);
         }
-
-        //If nothing changed or no children, dont change the size of the window
-        if (minx == float.MaxValue || maxx == float.MinValue)
-            return;
-
-        //Move all children
-        for (int i = 0, count = transform.childCount; i < count; i++)
+        else if (AutoSizeMode == AutoSizeModeEnum.vertical)
         {
-            BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+            GUIStyle currStyle = Style ?? DefaultStyle;
+            float miny = float.MaxValue;
+            float maxy = float.MinValue;
 
-            //TODO: BitGroup etc should behave like BitWindow
-            if (this is BitWindow)
-                c.Position = new Rect(c.Position.x - minx, c.Position.y - miny, c.Position.width, c.Position.height);
-            else
-                c.Position = new Rect(c.Position.x - minx + currStyle.padding.left, c.Position.y - miny + currStyle.padding.top, c.Position.width, c.Position.height);
+            for (int i = 0, count = transform.childCount; i < count; i++)
+            {
+                BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+                if (c.Visible)
+                {
+                    miny = Math.Min(c.Position.y, miny);
+
+                    maxy = Math.Max(c.Position.y + c.Position.height, maxy);
+
+
+                }
+            }
+
+            //If nothing changed or no children, dont change the size of the window
+            //if (minx == float.MaxValue || maxx == float.MinValue)
+            //    return;
+
+            //Move all children
+            for (int i = 0, count = transform.childCount; i < count; i++)
+            {
+                BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+
+                //TODO: BitGroup etc should behave like BitWindow
+                if (this is BitWindow)
+                {
+                    c.Position = new Rect(c.Position.x, c.Position.y - miny, c.Position.width, c.Position.height);
+                }
+                else
+                {
+                    c.Position = new Rect(c.Position.x + currStyle.padding.left, c.Position.y - miny + currStyle.padding.top, c.Position.width, c.Position.height);
+                }
+            }
+
+            //Pack
+            Position = new Rect(Position.x, Position.y, Position.width,
+                                maxy - miny + currStyle.padding.top + currStyle.padding.bottom);
         }
+        else if (AutoSizeMode == AutoSizeModeEnum.horizontal)
+        {
+            GUIStyle currStyle = Style ?? DefaultStyle;
+            float minx = float.MaxValue;
+            float maxx = float.MinValue;
 
-        //Pack
-        Position = new Rect(Position.x, Position.y, maxx - minx + currStyle.padding.left + currStyle.padding.right,
-                            maxy - miny + currStyle.padding.top + currStyle.padding.bottom);
+            for (int i = 0, count = transform.childCount; i < count; i++)
+            {
+                BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+                if (c.Visible)
+                {
+                    minx = Math.Min(c.Position.x, minx);
+
+                    maxx = Math.Max(c.Position.x + c.Position.width, maxx);
+
+                }
+            }
+
+            //If nothing changed or no children, dont change the size of the window
+            //if (minx == float.MaxValue || maxx == float.MinValue)
+            //    return;
+
+            //Move all children
+            for (int i = 0, count = transform.childCount; i < count; i++)
+            {
+                BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+
+                //TODO: BitGroup etc should behave like BitWindow
+                if (this is BitWindow)
+                {
+                    c.Position = new Rect(c.Position.x - minx, c.Position.y, c.Position.width, c.Position.height);
+                }
+                else
+                {
+                    c.Position = new Rect(c.Position.x - minx + currStyle.padding.left, c.Position.y + currStyle.padding.top, c.Position.width, c.Position.height);
+                }
+            }
+
+            //Pack
+            Position = new Rect(Position.x, Position.y, maxx - minx + currStyle.padding.left + currStyle.padding.right,
+                                Position.height);
+        }
     }
 
     #endregion
