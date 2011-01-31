@@ -39,7 +39,7 @@ public class GuiAcessorGenerator
     {
         Object[] selection = Selection.gameObjects;//.GetFiltered(typeof(Object), SelectionMode.TopLevel);
 
-        bool hasTranslation = false;
+        //bool hasTranslation = false;
 
         StringBuilder builder = new StringBuilder();
         StringBuilder builderEnd = new StringBuilder();

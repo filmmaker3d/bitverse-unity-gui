@@ -19,11 +19,11 @@ public class GlowThresholdEffect : MonoBehaviour, IPPShaderInterface
 		get { return queueOrder; }
 		set { queueOrder = value; }
 	}
-	private string name = "Glow";
+	private string _name = "Glow";
 	public string Name
 	{
-		get { return name; }
-		set { name = value; }
+		get { return _name; }
+		set { _name = value; }
 	}
 
 	public bool Enabled
