@@ -59,8 +59,6 @@ public class VolumetricParticleRenderer : MonoBehaviour
 	        Fallback off
         }");
 
-    private RenderTexture targetRenderTexture;
-
     void Awake()
     {
         //camera.depthTextureMode = DepthTextureMode.Depth;
