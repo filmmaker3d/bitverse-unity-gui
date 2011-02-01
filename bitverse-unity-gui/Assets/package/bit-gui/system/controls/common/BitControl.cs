@@ -642,7 +642,16 @@ public abstract partial class BitControl : MonoBehaviour
     public virtual string Text
     {
         get { return _content.text; }
-        set { _content.text = value; }
+        set
+        {
+            if (value == null)
+            {
+                //Log.Error("Invalid value for text: null.");
+                _content.text = "[NULL]";
+                return;
+            }
+            _content.text = value;
+        }
     }
 
     public virtual string TextVisibleIfNotNullOrEmpty
@@ -1679,7 +1688,6 @@ public abstract partial class BitControl : MonoBehaviour
         MouseStatus ms = GetMouseStatus();
 
         // Draw Control attributes
-        
         IsActive = controlHover && IsAnyButtonDown(ms);
 
         if (!ms.IsHover && controlHover)
