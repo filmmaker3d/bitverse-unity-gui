@@ -12,10 +12,8 @@ public partial class BitControlEditor
     private static bool _displayChanges;
 
     private static bool _groupFoldout;
-    private static bool _fixPositionFoldout;
 
     private static bool _positionFoldout;
-    private static bool _audioFoldout;
     private static bool _anchorFoldout;
     private static bool[] AnchorFlags = new bool[4];
     private static bool[] ResizeAnchorFlags = new bool[4];

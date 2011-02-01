@@ -622,7 +622,6 @@ public class BitStage : BitContainer
     public Vector2 processingOffset;
     public Texture2D[] combatCursor;
     public Vector2 combatOffset;
-    private Texture2D _currentCursor;
     private Texture2D[] _currentCursorArray;
     private Vector2 _currentOffset;
     public CursorState currentCursorState;

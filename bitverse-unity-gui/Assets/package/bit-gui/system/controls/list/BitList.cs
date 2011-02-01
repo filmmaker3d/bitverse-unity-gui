@@ -137,7 +137,7 @@ public class BitList : AbstractBitList<IListModel, IPopulator>
         int row = (int)Mathf.Floor((mousePosition.y - scrollStyle.padding.top + ScrollPosition.y) / stepy);
         return row;
     }
-	
+
 	public override object GetObjectDataAt(Vector2 mousePosition)
 	{
 	    int row = GetObjectIndexAt(mousePosition);
