@@ -2086,7 +2086,7 @@ public abstract partial class BitControl : MonoBehaviour
         set
         {
             _maxSize = new Rect(0, 0, value.Width, value.Height);
-            if ((Size.Width > MinSize.Width) || (Size.Height > MinSize.Height))
+            if ((Size.Width > MaxSize.Width) || (Size.Height > MaxSize.Height))
             {
                 Size = MaxSize;
             }
