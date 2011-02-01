@@ -1629,7 +1629,7 @@ public abstract partial class BitControl : MonoBehaviour
 
         if (UseTextureAreaHit)
         {
-            if (!TextureAreaHit.Contains(new Vector2(x, y)))
+            if (!TextureAreaHit.Contains(new Vector2(mousePosition.x - Position.x, mousePosition.y - Position.y)))
                 return false;
 
             if (MinAlphaHit <= 0.0f)
@@ -1659,6 +1659,8 @@ public abstract partial class BitControl : MonoBehaviour
 
         _controlHover = controlHover;
 
+        _lastFrameWasHover = IsHover = controlHover;
+
         if (controlHover && Event.current.type == EventType.Layout && Stage.HoverWindow == null)
         {
             Stage.HoverWindow = TopWindow;
@@ -1677,7 +1679,7 @@ public abstract partial class BitControl : MonoBehaviour
         MouseStatus ms = GetMouseStatus();
 
         // Draw Control attributes
-        _lastFrameWasHover = IsHover = controlHover;
+        
         IsActive = controlHover && IsAnyButtonDown(ms);
 
         if (!ms.IsHover && controlHover)
