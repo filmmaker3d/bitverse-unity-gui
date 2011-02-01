@@ -119,8 +119,8 @@ public abstract class AbstractBitProgressBar : BitControl
 
 	public virtual float Value
 	{
-		get { return _value; }
-		set { _value = Mathf.Clamp(value, _minValue, _maxValue); }
+        get { return Mathf.Clamp(_value, _minValue, _maxValue); }
+		set { _value = value; }
 	}
 
 	[SerializeField]
