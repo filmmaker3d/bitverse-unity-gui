@@ -1651,6 +1651,7 @@ public abstract partial class BitControl : MonoBehaviour
         bool controlHover = HoverTest(Event.current.mousePosition);
 
         _controlHover = controlHover;
+        _lastFrameWasHover = IsHover = controlHover;
 
         if (controlHover && Event.current.type == EventType.Layout && Stage.HoverWindow == null)
         {
@@ -1670,7 +1671,6 @@ public abstract partial class BitControl : MonoBehaviour
         MouseStatus ms = GetMouseStatus();
 
         // Draw Control attributes
-        _lastFrameWasHover = IsHover = controlHover;
         IsActive = controlHover && IsAnyButtonDown(ms);
 
         if (!ms.IsHover && controlHover)
