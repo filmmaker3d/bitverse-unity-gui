@@ -56,8 +56,6 @@ public class BitTipTextField : AbstractBitTextField
     [SerializeField]
     private string _tipText = "Tip Text...";
 
-    private bool _initialized;
-
     public string TipText
     {
         get { return _tipText; }
@@ -125,7 +123,7 @@ public class BitTipTextField : AbstractBitTextField
                 // Focused
                 TempContent.text = Content.text;
                 DrawStyle = Style ?? DefaultStyle;
-                AbstractBitTextField.DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
+                DoTextField(Position, ControlID, TempContent, IsMultiline(), MaxLenght, DrawStyle);
                 Text = TempContent.text;
             }
             else

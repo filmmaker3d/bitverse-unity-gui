@@ -142,7 +142,6 @@ public class BitModelViewer : BitBox
     public bool ShouldMove = true;
     public event PositionCameraHandler CameraHandler;
 
-    private float _lastLog;
     //private float _logTimeInterval = 5;
     public void Update()
     {

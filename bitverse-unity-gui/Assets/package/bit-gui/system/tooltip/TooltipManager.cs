@@ -9,7 +9,7 @@ public class TooltipManager : MonoBehaviour
 {
     public string DefaultTooltipProviderName;
 
-    public double ShowTooltipDelay = 300.0;
+    public double ShowTooltipDelay = 500.0;
 
     public readonly List<TooltipProvider> Providers = new List<TooltipProvider>();
 

@@ -6,6 +6,15 @@ using UnityEngine;
 
 public class BitWindow : BitContainer
 {
+    [SerializeField]
+    public BitControl[] linkSource = new BitControl[0];
+    [SerializeField]
+    public BitControl[] linkTarget = new BitControl[0];
+    [SerializeField]
+    public BitScrollView[] linkScrollView = new BitScrollView[0];
+    [SerializeField]
+    public Color[] LinkColor = new Color[0];
+
     private bool _destroyMe;
     public Action<int> _destroyCallback;
 
@@ -168,10 +177,46 @@ public class BitWindow : BitContainer
         {
             GUI.color = Color;
             DoWindow();
+            DrawLinks();
         }
         finally
         {
             GUI.matrix = m;
+        }
+    }
+
+    private void DrawLinks()
+    {
+        if ((linkSource != null) && (linkSource.Length > 0))
+        {
+            for (int t = 0; t < linkSource.Length; t++)
+            {
+                BitScrollView parentScrollView = linkScrollView[t];
+                if (parentScrollView == null)
+                    continue;
+                Rect abs = parentScrollView.AbsolutePosition;
+                Rect target = linkTarget[t].AbsolutePosition;
+                Rect source = linkSource[t].AbsolutePosition;
+                GUIStyle sourceStyle = linkSource[t].Style ?? DefaultStyle;
+                GUIStyle targetStyle = linkTarget[t].Style ?? DefaultStyle;
+                Rect abs2 = new Rect(abs.x - Position.x , abs.y - Position.y , abs.width, abs.height);
+
+                source = new Rect(source.x - sourceStyle.margin.left - abs.x - parentScrollView.ScrollPosition.x, source.y - sourceStyle.margin.top - abs.y - parentScrollView.ScrollPosition.y, source.width, source.height);
+                target = new Rect(target.x - targetStyle.margin.left - abs.x - parentScrollView.ScrollPosition.x, target.y - targetStyle.margin.top - abs.y - parentScrollView.ScrollPosition.y, target.width, target.height);
+
+                GUIHelper.BeginGroup(abs2);
+                //TODO OPTIMIZE...
+                Vector2 sp = new Vector2(source.x + source.width / 2, source.y + source.height / 2);
+                Vector2 tp = new Vector2(target.x + target.width / 2, target.y + target.height / 2);
+
+                GUIHelper.IntersectStruct responseS = GUIHelper.IntersectRectangle(sp, tp, source);
+                GUIHelper.IntersectStruct responseT = GUIHelper.IntersectRectangle(sp, tp, target);
+
+                GUIHelper.DrawLine(responseS.Point, responseT.Point, LinkColor[t]);
+                //GUIHelper.DrawRect(source, UnityEngine.Color.green);
+                //GUIHelper.DrawRect(target, UnityEngine.Color.magenta);
+                GUIHelper.EndGroup();
+            }
         }
     }
 
