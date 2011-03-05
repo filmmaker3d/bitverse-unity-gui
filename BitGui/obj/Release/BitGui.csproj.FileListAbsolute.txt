@@ -1,0 +1,7 @@
+C:\devel\work\leveling\Client\bit-gui\BitGui\obj\Release\ResolveAssemblyReference.cache
+C:\devel\work\leveling\Client\bit-gui\BitGui\bin\Release\Bitverse.Unity.Gui.dll
+C:\devel\work\leveling\Client\bit-gui\BitGui\bin\Release\Bitverse.Unity.Gui.pdb
+C:\devel\work\leveling\Client\bit-gui\BitGui\obj\Release\Bitverse.Unity.Gui.dll
+C:\devel\work\leveling\Client\bit-gui\BitGui\obj\Release\Bitverse.Unity.Gui.pdb
+C:\devel\work\leveling\Client\bit-gui\bitverse-unity-gui\Assets\Plugins\Bitverse.Unity.Gui.dll
+C:\devel\work\leveling\Client\bit-gui\bitverse-unity-gui\Assets\Plugins\Bitverse.Unity.Gui.pdb
