@@ -1,4 +1,9 @@
+glob:BitGui/obj/*
+glob:BitGui/bin/*
+glob:BitGuiEditor/obj/*
+glob:BitGuiEditor/obin/*
 glob:bitverse-unity-gui/Obj/*
+glob:bitverse-unity-gui/bin/*
 glob:bitverse-unity-gui/Temp/*
 glob:bitverse-unity-gui/Library/*
 glob:*.bak
