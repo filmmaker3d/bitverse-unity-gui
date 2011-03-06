@@ -56,16 +56,10 @@
      <Compile Include="Assets\samples\test\SkinTest.cs" />
      <Compile Include="Assets\samples\test\TestMain.cs" />
  <Reference Include="Bitverse.Unity.Gui.Editor">
- <HintPath>Assets\Editor\Plugins\Bitverse.Unity.Gui.Editor.dll</HintPath>
- </Reference>
- <Reference Include="DLLCopyEditor">
- <HintPath>Assets\Editor\Plugins\DLLCopyEditor.dll</HintPath>
+ <HintPath>Assets\Editor\bit-gui\Plugins\Bitverse.Unity.Gui.Editor.dll</HintPath>
  </Reference>
  <Reference Include="Bitverse.Unity.Gui">
  <HintPath>Assets\Plugins\Bitverse.Unity.Gui.dll</HintPath>
- </Reference>
- <Reference Include="DLLCopy">
- <HintPath>Assets\Plugins\DLLCopy.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
