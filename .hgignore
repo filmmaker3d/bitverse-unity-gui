@@ -1,7 +1,7 @@
-glob:BitGui/obj/*
-glob:BitGui/bin/*
-glob:BitGuiEditor/obj/*
-glob:BitGuiEditor/obin/*
+glob:bit-gui/obj/*
+glob:bit-gui/bin/*
+glob:bit-gui-editor/obj/*
+glob:bit-gui-editor/bin/*
 glob:bitverse-unity-gui/Obj/*
 glob:bitverse-unity-gui/bin/*
 glob:bitverse-unity-gui/Temp/*
