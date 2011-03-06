@@ -1,0 +1,16 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:common</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:group</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:list</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:modelviewer</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:popup</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:progress</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:scroll</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:slider</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:stage</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:tab</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system/d:controls/d:text</SkipFolder>
+    <SkipFolder>2F8DB198-0716-43D4-BACB-E4AF255C9F5D/d:system</SkipFolder>
+  </NamespaceFolders>
+</Configuration>
