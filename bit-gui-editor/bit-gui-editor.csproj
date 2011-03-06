@@ -116,9 +116,9 @@
     <None Include="Editor\BitControlEditor_old.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\BitGui\BitGui.csproj">
+    <ProjectReference Include="..\bit-gui\bit-gui.csproj">
       <Project>{2F8DB198-0716-43D4-BACB-E4AF255C9F5D}</Project>
-      <Name>BitGui</Name>
+      <Name>bit-gui %28Client\bit-gui\bit-gui%29</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>

@@ -1,0 +1,35 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bit-gui", "bit-gui\bit-gui.csproj", "{2F8DB198-0716-43D4-BACB-E4AF255C9F5D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bit-gui-editor", "bit-gui-editor\bit-gui-editor.csproj", "{0130E190-30BE-48D3-B0C0-5FAF855097D4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bitverse-unity-gui", "bitverse-unity-gui\bitverse-unity-gui.csproj", "{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0130E190-30BE-48D3-B0C0-5FAF855097D4} = {0130E190-30BE-48D3-B0C0-5FAF855097D4}
+		{2F8DB198-0716-43D4-BACB-E4AF255C9F5D} = {2F8DB198-0716-43D4-BACB-E4AF255C9F5D}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2F8DB198-0716-43D4-BACB-E4AF255C9F5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F8DB198-0716-43D4-BACB-E4AF255C9F5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F8DB198-0716-43D4-BACB-E4AF255C9F5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F8DB198-0716-43D4-BACB-E4AF255C9F5D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0130E190-30BE-48D3-B0C0-5FAF855097D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0130E190-30BE-48D3-B0C0-5FAF855097D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0130E190-30BE-48D3-B0C0-5FAF855097D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0130E190-30BE-48D3-B0C0-5FAF855097D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D5CCBED-46A6-AF5C-37DF-8D0BACD21251}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
