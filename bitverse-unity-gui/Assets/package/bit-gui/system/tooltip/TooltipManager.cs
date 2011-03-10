@@ -161,6 +161,13 @@ public class TooltipManager : MonoBehaviour
         return null;
     }
 
+    public void PreloadTooltip(BitControl control)
+    {
+        TooltipProvider provider = GetProvider(control);
+        if (provider != null)
+            provider.PreloadTooltip(control);
+    }
+
 
     private void SetControl(BitControl control)
     {

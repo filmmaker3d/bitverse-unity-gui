@@ -7,6 +7,8 @@ public abstract class TooltipProvider : MonoBehaviour
 {
     public abstract string ProviderName();
 
+    public abstract void PreloadTooltip(BitControl control);
+
     public abstract bool ShowTooltip(BitControl control, Point position);
 
     public abstract bool HideTooltip(BitControl control);

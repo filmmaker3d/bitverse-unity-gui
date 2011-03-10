@@ -6,14 +6,30 @@ using UnityEngine;
 
 public class BitWindow : BitContainer
 {
-    [SerializeField]
-    public BitControl[] linkSource = new BitControl[0];
-    [SerializeField]
-    public BitControl[] linkTarget = new BitControl[0];
-    [SerializeField]
-    public BitScrollView[] linkScrollView = new BitScrollView[0];
-    [SerializeField]
-    public Color[] LinkColor = new Color[0];
+    public class Link
+    {
+        public BitControl Source;
+        public BitControl Target;
+        public BitContainer View;
+        public Color Color;
+        public int Offset;
+
+        public Link(BitControl source, BitControl target, BitContainer view, Color color, int offset)
+        {
+            Source = source;
+            Target = target;
+            View = view;
+            Color = color;
+            Offset = offset;
+        }
+
+        public bool IsValid()
+        {
+            return (Source != null) && (Target != null) && (View != null);
+        }
+    }
+
+    public List<Link> Links = new List<Link>();
 
     private bool _destroyMe;
     public Action<int> _destroyCallback;
@@ -187,22 +203,40 @@ public class BitWindow : BitContainer
 
     private void DrawLinks()
     {
-        if ((linkSource != null) && (linkSource.Length > 0))
+        if (Event.current.type != EventType.Repaint)
+            return;
+        if ((Links != null) && (Links.Count > 0))
         {
-            for (int t = 0; t < linkSource.Length; t++)
+            for (int t = 0; t < Links.Count; t++)
             {
-                BitScrollView parentScrollView = linkScrollView[t];
-                if (parentScrollView == null)
+
+                BitContainer parentScrollView = Links[t].View;
+                if ((parentScrollView == null) || (parentScrollView.transform == null))
+                    continue;
+                if ((Links[t].Source == null) || (Links[t].Source.transform == null))
+                    continue;
+                if ((Links[t].Target == null) || (Links[t].Target.transform == null))
                     continue;
                 Rect abs = parentScrollView.AbsolutePosition;
-                Rect target = linkTarget[t].AbsolutePosition;
-                Rect source = linkSource[t].AbsolutePosition;
-                GUIStyle sourceStyle = linkSource[t].Style ?? DefaultStyle;
-                GUIStyle targetStyle = linkTarget[t].Style ?? DefaultStyle;
-                Rect abs2 = new Rect(abs.x - Position.x , abs.y - Position.y , abs.width, abs.height);
+                Rect target = Links[t].Target.AbsolutePosition;
+                Rect source = Links[t].Source.AbsolutePosition;
+                GUIStyle sourceStyle = Links[t].Source.Style ?? DefaultStyle;
+                GUIStyle targetStyle = Links[t].Target.Style ?? DefaultStyle;
+                Rect abs2 = new Rect(abs.x - Position.x, abs.y - Position.y, abs.width, abs.height);
 
-                source = new Rect(source.x - sourceStyle.margin.left - abs.x - parentScrollView.ScrollPosition.x, source.y - sourceStyle.margin.top - abs.y - parentScrollView.ScrollPosition.y, source.width, source.height);
-                target = new Rect(target.x - targetStyle.margin.left - abs.x - parentScrollView.ScrollPosition.x, target.y - targetStyle.margin.top - abs.y - parentScrollView.ScrollPosition.y, target.width, target.height);
+                if (parentScrollView is BitScrollView)
+                {
+                    source = new Rect(source.x - sourceStyle.margin.left - abs.x - ((BitScrollView)parentScrollView).ScrollPosition.x, source.y - sourceStyle.margin.top - abs.y - ((BitScrollView)parentScrollView).ScrollPosition.y, source.width, source.height);
+                    target = new Rect(target.x - targetStyle.margin.left - abs.x - ((BitScrollView)parentScrollView).ScrollPosition.x, target.y - targetStyle.margin.top - abs.y - ((BitScrollView)parentScrollView).ScrollPosition.y, target.width, target.height);
+                }
+                else
+                {
+                    source = new Rect(source.x - sourceStyle.margin.left - abs.x, source.y - sourceStyle.margin.top - abs.y, source.width, source.height);
+                    target = new Rect(target.x - targetStyle.margin.left - abs.x, target.y - targetStyle.margin.top - abs.y, target.width, target.height);
+                }
+
+                source = new Rect(source.x + Links[t].Offset, source.y + Links[t].Offset, source.width - (+Links[t].Offset * 2), source.height - (+Links[t].Offset * 2));
+                target = new Rect(target.x + Links[t].Offset, target.y + Links[t].Offset, target.width - (+Links[t].Offset * 2), target.height - (+Links[t].Offset * 2));
 
                 GUIHelper.BeginGroup(abs2);
                 //TODO OPTIMIZE...
@@ -212,7 +246,7 @@ public class BitWindow : BitContainer
                 GUIHelper.IntersectStruct responseS = GUIHelper.IntersectRectangle(sp, tp, source);
                 GUIHelper.IntersectStruct responseT = GUIHelper.IntersectRectangle(sp, tp, target);
 
-                GUIHelper.DrawLine(responseS.Point, responseT.Point, LinkColor[t]);
+                GUIHelper.DrawLine(responseS.Point, responseT.Point, Links[t].Color);
                 //GUIHelper.DrawRect(source, UnityEngine.Color.green);
                 //GUIHelper.DrawRect(target, UnityEngine.Color.magenta);
                 GUIHelper.EndGroup();
@@ -228,12 +262,12 @@ public class BitWindow : BitContainer
             {
                 _textFields = new List<AbstractBitTextField>();
             }
-            
+
             _textFields.Clear();
             FindAllControls(_textFields);
-       
+
             // TODO Only use TabIndex but for now keep position check when TabIndex are equal
-            if(_comparison == null)
+            if (_comparison == null)
             {
                 _comparison = new Comparison<AbstractBitTextField>(CompDelegate);
             }
@@ -432,10 +466,10 @@ public class BitWindow : BitContainer
 
     private void RaiseWindowGainedFocus(int controlID)
     {
-        if(controlID != ControlID)
+        if (controlID != ControlID)
             return;
-        if(WindowGainedFocus != null)
-            WindowGainedFocus();        
+        if (WindowGainedFocus != null)
+            WindowGainedFocus();
     }
 
     #endregion

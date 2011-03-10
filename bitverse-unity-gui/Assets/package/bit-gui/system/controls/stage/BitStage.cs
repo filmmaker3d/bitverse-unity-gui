@@ -1,18 +1,14 @@
 using System;
 using System.Collections.Generic;
+using Bitverse.Commons;
 using Bitverse.Unity.Gui;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-[RequireComponent(typeof(ContentBasedTextureCache))]
 
 [ExecuteInEditMode]
 public class BitStage : BitContainer
 {
-
-    public ContentBasedTextureCache TextureCache
-    {
-        get { return GetComponent<ContentBasedTextureCache>(); }
-    }
 
     public delegate void BeforeOnGUIEventHandler();
     public delegate void FocusedWindowChangedHandler(int controlID);
@@ -114,6 +110,8 @@ public class BitStage : BitContainer
         _errorStyleSmall2 = new GUIStyle();
         _errorStyleSmall2.fontSize = 10;
         _errorStyleSmall2.normal.textColor = new Color(0, 1f, 0);
+
+        _testInputPerformance = ConfigManager.Instance.BooleanProperty("testInputPerformance", default(bool));
     }
 
     private int _errorCountDrawNonWindow;
@@ -140,6 +138,13 @@ public class BitStage : BitContainer
         }
         if (hideAll)
             return;
+
+        //XXX Remove this someday
+        if (_testInputPerformance)
+        {
+            if (Event.current.type == EventType.keyDown && Event.current.keyCode == KeyCode.P)
+                return;
+        }
 
         OriginalEvent = Event.current.type;
 
@@ -188,7 +193,7 @@ public class BitStage : BitContainer
                             c.Parent = null;
                             c.transform.parent = null;
                             win._destroyCallback(0);
-                            BitStage.DestroyAsset(c.gameObject);
+                            CustomAssetLoader.DestroyAsset(c.gameObject);
                         }
                         else
                             RegWindow(win);
@@ -199,7 +204,7 @@ public class BitStage : BitContainer
                         if (_errorCountDrawNonWindow > 500)
                         {
                             _errorCountDrawNonWindow = 0;
-                            BitStage.LogError(string.Format("Wrong usage, added something other than a window to a bit stage. Parent = {0}, Name = {1}", transform.GetChild(i).name, (c == null) ? "[non BitControl]" : c.name));
+                            CustomAssetLoader.LogError(string.Format("Wrong usage, added something other than a window to a bit stage. Parent = {0}, Name = {1}", transform.GetChild(i).name, (c == null) ? "[non BitControl]" : c.name));
                         }
                     }
                 }
@@ -308,7 +313,7 @@ public class BitStage : BitContainer
                 }
                 catch (Exception e)
                 {
-                    BitStage.LogError(e.Message);
+                    BitStage.CustomAssetLoader.LogError(e);
                 }
             }
 
@@ -344,7 +349,7 @@ public class BitStage : BitContainer
                     if (reg.Window.IsTextFieldFocused && reg.Window.Visible)
                         focusedTextField = true;
                     // Consume Events in modal
-                    if (reg.Window.FormMode == FormModes.Modal && Event.current.type != EventType.Repaint && reg.Visible)
+                    if ((reg.Window.FormMode == FormModes.Modal || reg.Window.FormMode == FormModes.Loading) && Event.current.type != EventType.Repaint && reg.Visible)
                     {
                         if ((Event.current.type == EventType.mouseDown)
                             || (Event.current.type == EventType.mouseUp))
@@ -353,27 +358,14 @@ public class BitStage : BitContainer
                 }
                 catch (Exception ex)
                 {
-                    BitStage.LogError("Errors found during BitStage Draw: WindowName=" + reg.WindowName);
-                    BitStage.LogError(ex);
+                    BitStage.CustomAssetLoader.LogError("Errors found during BitStage Draw: WindowName=" + reg.WindowName);
+                    BitStage.CustomAssetLoader.LogError(ex);
                 }
             }
             _isAnyControlFocused = focusedTextField;
         }
 
         UpdateCursor();
-
-        try
-        {
-            if (TextureCache != null)
-            {
-                TextureCache.Cleanup();
-            }
-        }
-        catch (Exception ex)
-        {
-            BitStage.LogError("Exception on OnGUI! -> TextureCache cleanup");
-            BitStage.LogError(ex);
-        }
 
         if (IsDevelopmentVersion)
         {
@@ -387,15 +379,8 @@ public class BitStage : BitContainer
             {
                 curstyle = _errorStyleSmall2;
             }
-            /*List<BitGuiLogger.ErrorLine> currentErrors = Log.PopErrorLines();
-            if (currentErrors != null)
-            {
-                for (int t = 0; t < currentErrors.Count; t++)
-                {
-                    errors.Add(currentErrors[t].message);
-                }
-            }*/
-            PopulateScreenErrors(errors);
+
+            CustomAssetLoader.PopulateScreenErrors(errors);
 
             GUILayout.BeginArea(new Rect(50, 50, Screen.width - 25, Screen.height - 25));
             _errorScrollpos = GUILayout.BeginScrollView(_errorScrollpos);
@@ -697,7 +682,7 @@ public class BitStage : BitContainer
     private InvokeUtils.VoidCall ondisableCall;
     private Dictionary<BitWindow, WindowReg>.ValueCollection _windowDicValues;
     private bool _dirtyStageList;
-    public Color ModalColor = new Color(0.1f, 0.1f, 0.1f, 0.8f);
+    public Color ModalColor = new Color(0.75f, 0.75f, 0.75f, 1f);
 
     public void OnDisable() { if (ondisableCall == null) ondisableCall = SafeOnDisable; InvokeUtils.SafeCall(this, ondisableCall); }
     void SafeOnDisable()
@@ -707,7 +692,8 @@ public class BitStage : BitContainer
 
     #endregion
 
-    private static BitCustomAssetLoader _customAssetLoader = null;
+    private static BitCustomAssetLoader _customAssetLoader = new DefaultUnityCustomAssetLoader();
+    private bool _testInputPerformance;
 
     public static BitCustomAssetLoader CustomAssetLoader
     {
@@ -715,63 +701,52 @@ public class BitStage : BitContainer
         set { _customAssetLoader = value; }
     }
 
-    public static void DestroyAsset(UnityEngine.Object obj)
+    public class DefaultUnityCustomAssetLoader : BitCustomAssetLoader
     {
-        if (_customAssetLoader == null)
+        public T InstantiateAsset<T>(T obj) where T : Object
         {
-            UnityEngine.Object.Destroy(obj);
+            return (T)Instantiate(obj);
         }
-        else
-        {
-            _customAssetLoader.DestroyAsset(obj);
-        }
-    }
 
-    public static UnityEngine.Object InstantiateAsset(UnityEngine.Object obj)
-    {
-        if (_customAssetLoader == null)
+        public void DestroyAsset<T>(T obj) where T : Object
         {
-            return UnityEngine.Object.Instantiate(obj);
+            Destroy(obj);
         }
-        return _customAssetLoader.InstantiateAsset(obj);
-    }
 
-    public static void LogWarning(System.Object obj)
-    {
-        if (_customAssetLoader == null)
+        public void GetFromAssetPool<T>(object key, PoolCallback<T> callback) where T : Object
         {
-            Debug.LogWarning(obj);
+            throw new NotImplementedException();
         }
-        else
-        {
-            _customAssetLoader.LogWarning(obj);
-        }
-    }
 
-    public static void LogError(System.Object obj)
-    {
-        if (_customAssetLoader == null)
+        public void RemoveToAssetPool<T>(T instance) where T : Object
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogError(object obj)
         {
             Debug.LogError(obj);
         }
-        else
+
+        public void LogWarning(object obj)
         {
-            _customAssetLoader.LogError(obj);
+            Debug.LogWarning(obj);
+        }
+
+        public void PopulateScreenErrors(List<string> errors)
+        {
+            //does nothing
         }
     }
 
-    public static void PopulateScreenErrors(List<string> errors)
-    {
-        if (_customAssetLoader != null)
-        {
-            _customAssetLoader.PopulateScreenErrors(errors);
-        }
-    }
+    public delegate void PoolCallback<T>(T obj) where T : Object;
 
     public interface BitCustomAssetLoader
     {
-        void DestroyAsset(UnityEngine.Object obj);
-        UnityEngine.Object InstantiateAsset(UnityEngine.Object obj);
+        T InstantiateAsset<T>(T obj) where T : Object;
+        void DestroyAsset<T>(T obj) where T : Object;
+        void GetFromAssetPool<T>(object key, PoolCallback<T> callback) where T : Object;
+        void RemoveToAssetPool<T>(T instance) where T : Object;
         void LogError(System.Object obj);
         void LogWarning(System.Object obj);
         void PopulateScreenErrors(List<string> errors);

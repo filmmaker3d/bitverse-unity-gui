@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
 {
+    #region Data
+
+    public bool NotSelectableItems;
+
+    #endregion
+
     #region Appearance
 
     [SerializeField]
@@ -202,7 +208,7 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
             listRenderer.Location = new Point(_rx + _initialPosx + (col * _stepx), _ry + _initialPosx + (row * _stepy));
 
             //bool selected = CheckSelection(data, listRenderer.Position);
-            bool selected = IsSelected(data);
+            bool selected = NotSelectableItems ? false : IsSelected(data);
             IsOn = selected;
 
             using (BitGuiContext.Push(this, listRenderer, data, i, IsOn))

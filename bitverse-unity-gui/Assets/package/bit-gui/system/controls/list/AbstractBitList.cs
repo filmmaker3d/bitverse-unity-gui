@@ -364,7 +364,7 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
             }
             else
             {
-                BitStage.DestroyAsset(Renderer.gameObject);
+                BitStage.CustomAssetLoader.DestroyAsset(Renderer.gameObject);
             }
             _renderer.transform.parent = null;
             _renderer = null;
@@ -384,7 +384,7 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
             }
             else
             {
-                BitStage.DestroyAsset(Renderer.gameObject);
+                BitStage.CustomAssetLoader.DestroyAsset(Renderer.gameObject);
             }
         }
         BitControl control = base.InternalAddControl(controlType, controlName);

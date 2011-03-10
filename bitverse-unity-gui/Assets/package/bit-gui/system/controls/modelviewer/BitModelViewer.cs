@@ -60,20 +60,25 @@ public class BitModelViewer : BitBox
     {
         if (theTarget == null)
             return;
-        Renderer[] renderers;
-        renderers = theTarget.GetComponentsInChildren<Renderer>(true);
-        
-        //Debug.Log("Number of renderers: " + renderers.Length);
-
         _targetSize = 0;
         _targetCenter = new Vector3();
         //Vector3 objectPosition = theTarget.transform.root.position;
+
         Bounds newBounds = new Bounds();
 
+        Renderer[] renderers = theTarget.GetComponentsInChildren<Renderer>(true);
+        //Debug.Log("Number of renderers: " + renderers.Length);
         foreach (Renderer meshRenderer in renderers)
         {
             newBounds.Encapsulate(meshRenderer.bounds);
         }
+
+        //MeshFilter[] meshFilters = theTarget.GetComponentsInChildren<MeshFilter>(true);
+        ////Debug.Log("Number of renderers: " + renderers.Length);
+        //foreach (MeshFilter meshFilter in meshFilters)
+        //{
+        //    newBounds.Encapsulate(meshFilter.mesh.bounds);
+        //}
 
         _targetCenter = newBounds.center;
         _targetSize = newBounds.extents.magnitude;
@@ -180,15 +185,12 @@ public class BitModelViewer : BitBox
     //ATTN: This function is only for testing purposes. This should be replaced by an outside callback
     public void onPositionCamera(object sender, Camera theCamera)
     {
-        //Debug.LogWarning("onPositionCamera!!!", this);
-        float orbitalDist = _targetSize * 2.0f;
-        float angle = Time.time * 45.0f;
-        Vector3 orbitalPosition = new Vector3(-Mathf.Sin(angle * Mathf.Deg2Rad) * orbitalDist, 0.0f, -Mathf.Cos(angle * Mathf.Deg2Rad) * orbitalDist);
+        target.transform.RotateAround(_targetCenter, target.transform.up, 45.0f * Time.deltaTime);
+    }
 
-        //Let's see if resetting the rotation we manage to fix the camera translatio
-        theCamera.transform.rotation = Quaternion.identity;
-
-        theCamera.transform.localPosition = target.transform.position + _targetCenter + (orbitalPosition.x * target.transform.right) + (orbitalPosition.z * target.transform.forward);
-        theCamera.transform.LookAt(target.transform.position, target.transform.up);
+    public void OnDisable()
+    {
+        if(_renderTarget != null)
+            _renderTarget.Release();
     }
 }
