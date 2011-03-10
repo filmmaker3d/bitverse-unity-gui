@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Bitverse.Commons;
 using Bitverse.Unity.Gui;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -111,7 +110,6 @@ public class BitStage : BitContainer
         _errorStyleSmall2.fontSize = 10;
         _errorStyleSmall2.normal.textColor = new Color(0, 1f, 0);
 
-        _testInputPerformance = ConfigManager.Instance.BooleanProperty("testInputPerformance", default(bool));
     }
 
     private int _errorCountDrawNonWindow;

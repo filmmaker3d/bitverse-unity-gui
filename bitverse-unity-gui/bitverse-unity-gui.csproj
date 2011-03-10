@@ -157,7 +157,6 @@
      <Compile Include="Assets\package\bit-gui\system\controls\slider\BitVerticalSlider.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\stage\BitEditorStage.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\stage\BitStage.cs" />
-     <Compile Include="Assets\package\bit-gui\system\controls\stage\ContentBasedTextureCache.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\tab\BitTab.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\tab\BitTabbedPane.cs" />
      <Compile Include="Assets\package\bit-gui\system\controls\text\AbstractBitTextField.cs" />
