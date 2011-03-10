@@ -60,7 +60,7 @@ public class BitHorizontalGroup : AbstractBitLayoutGroup
         float horizontalBorder = containerStyle.border.left + containerStyle.border.right;
 
 
-        float divWidth = (numberOfNonFixedWidths == 0) ? 0 : (Position.width - minWidth - horizontalMargin - horizontalBorder) / numberOfNonFixedWidths;
+        float divWidth = (numberOfNonFixedWidths == 0) ? 0 : (int)(Position.width - minWidth - horizontalMargin - horizontalBorder) / numberOfNonFixedWidths;
         divWidth = divWidth <= 0 ? 0 : divWidth;
 
         // compute final size and location of each item

@@ -54,7 +54,7 @@ public partial class BitControlEditor
         EditorGUI.indentLevel = 0;
         MakeSpecificEditors(control);
         //MakeAudioEditor(control);
-
+        MakeLinkEditor(control);
         if (_displayChanges)
         {
             ForceDisplayChanges();
@@ -144,6 +144,87 @@ public partial class BitControlEditor
 
             EditorGUI.indentLevel -= 2;
         }
+    }
+
+    private bool _linksFoldout;
+    private BitControl _linkSource;
+    private BitControl _linkTarget;
+    private BitContainer _linkView;
+    private Color _linkColor;
+    private int _linkOffset = 0;
+
+    private void MakeLinkEditor(BitControl control)
+    {
+        if (control is BitWindow)
+        {
+            BitWindow window = (BitWindow)control;
+            _linksFoldout = EditorGUILayout.Foldout(_linksFoldout, "Links");
+            if (_linksFoldout)
+            {
+                EditorGUI.indentLevel += 2;
+
+                EditorGUILayout.BeginVertical();
+
+                EditorGUILayout.BeginVertical();
+                List<BitWindow.Link> toremove = new List<BitWindow.Link>();
+                foreach (BitWindow.Link link in window.Links)
+                {
+                    if (!link.IsValid())
+                        continue;
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label(link.Source.name, GUI.skin.box);
+                    GUILayout.Label(link.Target.name, GUI.skin.box);
+                    GUILayout.Label(link.View.name, GUI.skin.box);
+
+                    if (GUILayout.Button("-"))
+                    {
+                        toremove.Add(link);
+                    }
+
+                    GUILayout.EndHorizontal();
+
+                }
+                foreach (BitWindow.Link link in toremove)
+                {
+                    window.Links.Remove(link);
+                }
+                GUILayout.EndVertical();
+
+                EditorGUILayout.BeginVertical();
+                _linkSource = ObjectField<BitControl>("Source", _linkSource);
+                _linkTarget = ObjectField<BitControl>("Target", _linkTarget);
+                _linkView = ObjectField<BitContainer>("View", _linkView);
+                _linkOffset = EditorGUILayout.IntField("Offset", _linkOffset);
+                _linkColor = EditorGUILayout.ColorField(_linkColor);
+
+                if (GUILayout.Button("+"))
+                {
+                    BitWindow.Link link = new BitWindow.Link(_linkSource, _linkTarget, _linkView, _linkColor, _linkOffset);
+                    window.Links.Add(link);
+                    _linkSource = null;
+                    _linkTarget = null;
+                    _linkView = null;
+                    _linkOffset = 0;
+                    _linkColor = Color.black;
+                }
+
+                GUILayout.EndVertical();
+
+                GUILayout.EndVertical();
+
+
+                EditorGUI.indentLevel -= 2;
+            }
+        }
+    }
+
+    private T ObjectField<T>(string name, T obj) where T : UnityEngine.Object
+    {
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Label(name);
+        T value = (T)EditorGUILayout.ObjectField(obj, typeof(T));
+        GUILayout.EndHorizontal();
+        return value;
     }
 
     private Rect RectField(ref bool foldout, string foldoutName, Rect inputRect)

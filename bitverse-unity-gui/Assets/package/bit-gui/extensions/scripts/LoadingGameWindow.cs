@@ -19,7 +19,7 @@ public class LoadingGameWindow : MonoBehaviour
 
     private void DestroyAll(int x)
     {
-        BitStage.DestroyAsset(this);
+        BitStage.CustomAssetLoader.DestroyAsset(this);
     }
 
 }

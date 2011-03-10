@@ -9,6 +9,75 @@ public abstract class
 {
     #region Appearance
 
+    [SerializeField]
+    private BitControl templateControl;
+
+    public BitControl TemplateControl
+    {
+        get { return templateControl; }
+        set
+        {
+            templateControl = value;
+            templateControl.Visible = false;
+        }
+
+    }
+
+    public T CloneFromTemplate<T>() where T : BitControl
+    {
+        return CloneFromTemplate<T>(transform.childCount);
+    }
+
+    public T CloneFromTemplate<T>(int index) where T : BitControl
+    {
+        templateControl.Visible = true;
+        T control = (T)templateControl.Clone();
+        control.Visible = true;
+        control.ID = Guid.NewGuid();
+        control.name = "ClonedFromTemplate_" + templateControl.name + index;
+        control.Parent = this;
+        control.Index = index;
+        templateControl.Visible = false;
+        if (control is BitContainer)
+        {
+            BitContainer container = (BitContainer)(object)control;
+            ArrayList list = new ArrayList();
+            container.FindAllControls(list);
+            for (int t = 0; t < list.Count; t++)
+            {
+                BitControl temp = (BitControl)list[t];
+                temp.ID = Guid.NewGuid();
+            }
+        }
+        return control;
+    }
+
+    private Action<BitControl> _cached;
+
+    public void RemoveAllClonedFromTemplate()
+    {
+        if (_cached == null)
+            _cached = delegate(BitControl control)
+                          {
+                              RemoveControl(control);
+                          };
+        ApplyActionToClonedFromTemplate<BitControl>(_cached);
+    }
+
+    public void ApplyActionToClonedFromTemplate<T>(Action<T> action) where T : BitControl
+    {
+        string name = "ClonedFromTemplate_" + templateControl.name;
+        List<BitControl> toApply = new List<BitControl>();
+        FindAllControls(toApply);
+        foreach (BitControl control in toApply)
+        {
+            if (control.name.StartsWith(name))
+            {
+                action((T)control);
+            }
+        }
+    }
+
     public override Color Color
     {
         set
@@ -473,4 +542,27 @@ public abstract class
     }
 
     #endregion
+
+
+    public BitControl ChildControlUnderPosition(Vector2 pos)
+    {
+        for (int i = 0, count = transform.childCount; i < count; i++)
+        {
+            BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+            if (c.Position.Contains(pos))
+                return c;
+        }
+        return null;
+    }
+
+    public BitControl ChildControlUnderAbsolutePosition(Vector2 pos)
+    {
+        for (int i = 0, count = transform.childCount; i < count; i++)
+        {
+            BitControl c = transform.GetChild(i).GetComponent<BitControl>();
+            if (c.AbsolutePosition.Contains(pos))
+                return c;
+        }
+        return null;
+    }
 }

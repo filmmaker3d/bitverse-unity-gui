@@ -388,10 +388,6 @@ public abstract partial class BitControl : MonoBehaviour
         set
         {
             _mouseEnabled = value;
-//            foreach (KeyValuePair<string, object> o in UserProperties)
-            {
-
-            }
         }
     }
 
@@ -429,7 +425,7 @@ public abstract partial class BitControl : MonoBehaviour
                 }
                 return _parent;
             }
-            catch (Exception) { BitStage.LogError("no transform for: " + this.GetType().Name); return null; }
+            catch (Exception) { BitStage.CustomAssetLoader.LogError("no transform for: " + this.GetType().Name); return null; }
         }
         set
         {
@@ -488,7 +484,7 @@ public abstract partial class BitControl : MonoBehaviour
                 }
                 if (BitStage.Current != null)
                     return BitStage.Current;
-                BitStage.LogError(GetType().Name);
+                BitStage.CustomAssetLoader.LogError(GetType().Name);
                 throw new Exception("cant find Stage without a window");
             }
             return _stage = TopWindow.transform.parent.GetComponent<BitStage>();
@@ -778,11 +774,11 @@ public abstract partial class BitControl : MonoBehaviour
     private bool _autoSize;
 
     [SerializeField]
-    private AutoSizeModeEnum _autoSizeMode=AutoSizeModeEnum.all;
+    private AutoSizeModeEnum _autoSizeMode = AutoSizeModeEnum.all;
 
     public enum AutoSizeModeEnum
     {
-        all=0,
+        all = 0,
         vertical,
         horizontal
     }
@@ -851,7 +847,24 @@ public abstract partial class BitControl : MonoBehaviour
         }
     }
 
+    protected bool IsCurrentlyBeingDrawed = false;
 
+    public void Update()
+    {
+        IsCurrentlyBeingDrawed = RecurseCurrentlyBeingDrawed();
+    }
+
+    protected bool RecurseCurrentlyBeingDrawed()
+    {
+        BitControl parent = Parent;
+        if (parent == null)
+            return false;
+        if (!parent.Visible)
+            return false;
+        if ((parent is BitWindow) && (parent.Visible))
+            return true;
+        return parent.RecurseCurrentlyBeingDrawed();
+    }
 
     /// <summary>
     /// Draws the Control.
@@ -936,6 +949,7 @@ public abstract partial class BitControl : MonoBehaviour
             GainFocusIfForced();
             InternalUserEventsBeforeDraw();
             DoDraw();
+            GUI.enabled = true;
             InternalUserEventsAfterDraw();
         }
 
@@ -990,6 +1004,8 @@ public abstract partial class BitControl : MonoBehaviour
         }
     }
 
+    private bool _doubleClicked = false;
+
     private void InternalUserEventsAfterDraw()
     {
         if (Event.current.type == EventType.Used || !MouseEnabled)
@@ -1019,7 +1035,11 @@ public abstract partial class BitControl : MonoBehaviour
 
                         if (Event.current.clickCount >= 2)
                         {
-                            RaiseMouseDoubleClick(Event.current.button, Event.current.mousePosition);
+                            _doubleClicked = true;
+                        }
+                        else
+                        {
+                            _doubleClicked = false;
                         }
                         consume = true;
                     }
@@ -1046,6 +1066,12 @@ public abstract partial class BitControl : MonoBehaviour
                         if (ms.IsHover)
                         {
                             RaiseMouseClick(Event.current.button, Event.current.mousePosition);
+
+                            if (_doubleClicked)
+                            {
+                                RaiseMouseDoubleClick(Event.current.button, Event.current.mousePosition);
+                                _doubleClicked = false;
+                            }
                         }
                     }
 
@@ -1656,6 +1682,20 @@ public abstract partial class BitControl : MonoBehaviour
         return true;
     }
 
+    [SerializeField]
+    private bool _hoverEnabled = true;
+    public bool HoverEnabled
+    {
+        get
+        {
+            return _hoverEnabled;
+        }
+        set
+        {
+            _hoverEnabled = value;
+        }
+    }
+
     protected void InternalUserEventsBeforeDraw()
     {
         if (!MouseEnabled)
@@ -1664,30 +1704,34 @@ public abstract partial class BitControl : MonoBehaviour
         bool canConsume = UserEventsBeforeDraw();
 
         bool consume = false;
-        bool controlHover = HoverTest(Event.current.mousePosition);
+        bool controlHover = HoverTest(Event.current.mousePosition) && HoverEnabled;
+        Vector2 windowpos = new Vector2(Input.mousePosition.x, Screen.height - Input.mousePosition.y);
+        if (!TopWindow.Position.Contains(windowpos))
+            controlHover = false;
 
-        _controlHover = controlHover;
 
-        _lastFrameWasHover = IsHover = controlHover;
-
-        if (controlHover && Event.current.type == EventType.Layout && Stage.HoverWindow == null)
+        if (controlHover && Stage.HoverWindow == null)
         {
             Stage.HoverWindow = TopWindow;
-        }
-
-        if (Event.current.type != EventType.Repaint)
-        {
-            return;
         }
 
         if (Stage.HoverWindow != TopWindow)
         {
             controlHover = false;
         }
+        _lastFrameWasHover = IsHover = controlHover && HoverEnabled;
+        _controlHover = controlHover;
+
+        if (Event.current.type != EventType.Repaint)
+        {
+            return;
+        }
+
 
         MouseStatus ms = GetMouseStatus();
 
         // Draw Control attributes
+
         IsActive = controlHover && IsAnyButtonDown(ms);
 
         if (!ms.IsHover && controlHover)
@@ -1823,7 +1867,7 @@ public abstract partial class BitControl : MonoBehaviour
         }
         catch (Exception e)
         {
-            BitStage.LogError("An event exception occurred: " + e.Message);
+            BitStage.CustomAssetLoader.LogError("An event exception occurred: " + e.Message);
             Event.current.Use();
         }
     }
@@ -1888,7 +1932,7 @@ public abstract partial class BitControl : MonoBehaviour
 
     public static BitControl Clone(BitControl control)
     {
-        return control != null ? (BitControl)BitStage.InstantiateAsset(control) : null;
+        return control != null ? (BitControl)BitStage.CustomAssetLoader.InstantiateAsset(control) : null;
     }
 
     public BitControl Clone()
@@ -2013,7 +2057,7 @@ public abstract partial class BitControl : MonoBehaviour
         }
         else
         {
-            BitStage.DestroyAsset(control.gameObject);
+            BitStage.CustomAssetLoader.DestroyAsset(control.gameObject);
         }
     }
 
@@ -2027,7 +2071,7 @@ public abstract partial class BitControl : MonoBehaviour
     {
         if (string.IsNullOrEmpty(controlName))
         {
-            BitStage.LogError("BitGUI Error: Control name is empty.");
+            BitStage.CustomAssetLoader.LogError("BitGUI Error: Control name is empty.");
             return null;
         }
         for (int i = 0, count = transform.childCount; i < count; i++)
@@ -2039,7 +2083,7 @@ public abstract partial class BitControl : MonoBehaviour
             }
             return (T)c;
         }
-        BitStage.LogWarning("BitGUI Warning: control [" + typeof(T).Name + "] " + controlName + " not found inside " + name + ".");
+        BitStage.CustomAssetLoader.LogWarning("BitGUI Warning: control [" + typeof(T).Name + "] " + controlName + " not found inside " + name + ".");
         return null;
     }
 
@@ -2053,7 +2097,7 @@ public abstract partial class BitControl : MonoBehaviour
     {
         if (string.IsNullOrEmpty(controlName))
         {
-            BitStage.LogWarning("BitGUI Error: Control name is empty.");
+            BitStage.CustomAssetLoader.LogWarning("BitGUI Error: Control name is empty.");
             return null;
         }
         if (this is T && controlName.Equals(name))
@@ -2094,7 +2138,7 @@ public abstract partial class BitControl : MonoBehaviour
         set
         {
             _maxSize = new Rect(0, 0, value.Width, value.Height);
-            if ((Size.Width > MaxSize.Width) || (Size.Height > MaxSize.Height))
+            if ((Size.Width > _maxSize.width) || (Size.Height > _maxSize.height))
             {
                 Size = MaxSize;
             }
@@ -2354,8 +2398,8 @@ public abstract partial class BitControl : MonoBehaviour
     [ContextMenu("Do Something")]
     private void DoSomething()
     {
-       // if (Log.IsDebugEnabled)
-       //     Log.Debug("Perform operation");
+        // if (Log.IsDebugEnabled)
+        //     Log.Debug("Perform operation");
     }
 
     //public DockStyles Dock
@@ -2628,7 +2672,7 @@ public abstract partial class BitControl : MonoBehaviour
             height = style.CalcHeight(Content, Position.width);
         }
 
-        if ((_autoSizeMode == AutoSizeModeEnum.all)&&(_position.height == height && _position.width == width))
+        if ((_autoSizeMode == AutoSizeModeEnum.all) && (_position.height == height && _position.width == width))
         {
             return;
         }
@@ -2639,7 +2683,8 @@ public abstract partial class BitControl : MonoBehaviour
                 ((_anchor & AnchorStyles.Right) == AnchorStyles.Right) ? _position.x - (width - _position.width) : _position.x,
                 ((_anchor & AnchorStyles.Bottom) == AnchorStyles.Bottom) ? _position.y - (height - _position.height) : _position.y);
             Size = new Size(width, height);
-        }else if (_autoSizeMode == AutoSizeModeEnum.vertical)
+        }
+        else if (_autoSizeMode == AutoSizeModeEnum.vertical)
         {
             Location = new Point(_position.x,
                  ((_anchor & AnchorStyles.Bottom) == AnchorStyles.Bottom) ? _position.y - (height - _position.height) : _position.y);

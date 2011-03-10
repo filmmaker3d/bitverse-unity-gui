@@ -58,7 +58,7 @@ public class BitVerticalGroup : AbstractBitLayoutGroup
         float horizontalBorder = containerStyle.border.left + containerStyle.border.right;
 
 
-        float divHeight = (numberOfNonFixedHeights == 0) ? 0 : (Position.height - minHeight - verticalMargin - verticalBorder) / numberOfNonFixedHeights;
+        float divHeight = (numberOfNonFixedHeights == 0) ? 0 : (int)(Position.height - minHeight - verticalMargin - verticalBorder) / numberOfNonFixedHeights;
         divHeight = divHeight <= 0 ? 0 : divHeight;
 
         // compute final size and location of each item
