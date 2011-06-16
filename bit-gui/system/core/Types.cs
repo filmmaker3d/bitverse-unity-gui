@@ -228,8 +228,7 @@ namespace Bitverse.Unity.Gui
 		Right = 0x08,
 		All = Top | Left | Bottom | Right
 	}
-
-
+    
 	public static class KeyboardModifiers
 	{
 		public const short None = 0x00;
