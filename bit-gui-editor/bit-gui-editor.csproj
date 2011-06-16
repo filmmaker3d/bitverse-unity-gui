@@ -45,13 +45,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEditor, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\UnityEditor.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\Program Files (x86)\Unity3.3\Editor\Data\Managed\UnityEditor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\Program Files (x86)\Unity3.3\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -90,6 +88,7 @@
     <Compile Include="Editor\editors\BitVerticalProgressBarEditor.cs" />
     <Compile Include="Editor\editors\BitVerticalScrollbarEditor.cs" />
     <Compile Include="Editor\editors\BitVerticalSliderEditor.cs" />
+    <Compile Include="Editor\editors\BitWebImageEditor.cs" />
     <Compile Include="Editor\editors\BitWindowEditor.cs" />
     <Compile Include="Editor\GuiAcessorGenerator.cs" />
     <Compile Include="Editor\GuiEditorUtils.cs" />
