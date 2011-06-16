@@ -45,8 +45,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Libs\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\Program Files (x86)\Unity3.3\Editor\Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -96,6 +95,7 @@
     <Compile Include="system\controls\common\BitRichText.cs" />
     <Compile Include="system\controls\common\BitSprite.cs" />
     <Compile Include="system\controls\common\BitToggle.cs" />
+    <Compile Include="system\controls\common\BitWebImage.cs" />
     <Compile Include="system\controls\common\BitWindow.cs" />
     <Compile Include="system\controls\group\AbstractBitLayoutGroup.cs" />
     <Compile Include="system\controls\group\BitGroup.cs" />
