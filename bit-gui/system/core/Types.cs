@@ -216,18 +216,20 @@ namespace Bitverse.Unity.Gui
 		}
 	}
 
-	[Flags]
-	[Serializable]
-	public enum AnchorStyles
-	{
-		Invalid = -1,
-		None = 0x00,
-		Top = 0x01,
-		Left = 0x02,
-		Bottom = 0x04,
-		Right = 0x08,
-		All = Top | Left | Bottom | Right
-	}
+    [Flags]
+    [Serializable]
+    public enum AnchorStyles
+    {
+        Invalid = 0x10,
+        None = 0x00,
+        Top = 0x01,
+        Left = 0x02,
+        Bottom = 0x04,
+        Right = 0x08,
+
+        //Warning! Top | Left | Bottom | Right = -1. Dont use negative values for attributes
+        All = Top | Left | Bottom | Right
+    }
     
 	public static class KeyboardModifiers
 	{
