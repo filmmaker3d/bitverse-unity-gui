@@ -37,16 +37,16 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
 	<Reference Include="Boo.Lang">
-	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityScript">
-	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
@@ -59,26 +59,20 @@
  <Reference Include="Bitverse.Unity.Gui.Editor">
  <HintPath>Assets\bit-gui\Editor\Plugins\Bitverse.Unity.Gui.Editor.dll</HintPath>
  </Reference>
+ <Reference Include="nunit.framework">
+ <HintPath>Assets\bit-gui\Editor\Plugins\nunit.framework.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor">
+ <HintPath>Assets\bit-gui\Editor\Plugins\UnityEditor.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine">
+ <HintPath>Assets\bit-gui\Editor\Plugins\UnityEngine.dll</HintPath>
+ </Reference>
  <Reference Include="Bitverse.Unity.Gui">
  <HintPath>Assets\bit-gui\Plugins\Bitverse.Unity.Gui.dll</HintPath>
  </Reference>
- <Reference Include="Bitverse.Unity.Gui.Editor">
- <HintPath>Assets\Editor\bit-gui\Plugins\Bitverse.Unity.Gui.Editor.dll</HintPath>
- </Reference>
- <Reference Include="nunit.framework">
- <HintPath>Assets\Editor\bit-gui\Plugins\nunit.framework.dll</HintPath>
- </Reference>
- <Reference Include="UnityEditor">
- <HintPath>Assets\Editor\bit-gui\Plugins\UnityEditor.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine">
- <HintPath>Assets\Editor\bit-gui\Plugins\UnityEngine.dll</HintPath>
- </Reference>
- <Reference Include="Bitverse.Unity.Gui">
- <HintPath>Assets\Plugins\Bitverse.Unity.Gui.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine">
- <HintPath>Assets\Plugins\UnityEngine.dll</HintPath>
+ <HintPath>Assets\bit-gui\Plugins\UnityEngine.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
