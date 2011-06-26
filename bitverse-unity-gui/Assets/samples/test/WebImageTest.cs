@@ -55,7 +55,6 @@ public class WebImageTest : MonoBehaviour
                         break;
                 }
             };
-
     }
 
     public void Update()
