@@ -354,6 +354,8 @@ public partial class BitControlEditor
                 anchorstyles = (flags[3])
                                     ? anchorstyles | AnchorStyles.Right
                                     : anchorstyles & ~AnchorStyles.Right;
+
+                anchorstyles &= AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             }
         }
         return anchorstyles;

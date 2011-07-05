@@ -2318,7 +2318,7 @@ public abstract partial class BitControl : MonoBehaviour
 
     [HideInInspector]
     [SerializeField]
-    private AnchorStyles _anchor = AnchorStyles.Invalid;
+    private AnchorStyles _anchor = AnchorStyles.None;
 
     [HideInInspector]
     [SerializeField]
@@ -2704,7 +2704,7 @@ public abstract partial class BitControl : MonoBehaviour
 
         if (Anchor == AnchorStyles.Invalid)
         {
-            Anchor = AnchorStyles.Top | AnchorStyles.Left;
+            Anchor = AnchorStyles.None;
         }
         // TODO fix this in a way that Main partial class BitControl doesn't know about this partial class
         AudioManagerAwake();
