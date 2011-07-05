@@ -1,0 +1,14 @@
+glob:bit-gui/obj/*
+glob:bit-gui/bin/*
+glob:bit-gui-editor/obj/*
+glob:bit-gui-editor/bin/*
+glob:bitverse-unity-gui/Obj/*
+glob:bitverse-unity-gui/bin/*
+glob:bitverse-unity-gui/Temp/*
+glob:bitverse-unity-gui/Library/*
+glob:*.bak
+glob:*.suo
+glob:*.user
+relre:_ReSharper
+glob:bitverse-unity-gui/obj/*
+glob:builds/
