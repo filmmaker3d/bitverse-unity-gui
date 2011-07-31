@@ -2067,7 +2067,22 @@ public abstract partial class BitControl : MonoBehaviour
 
     public static BitControl Clone(BitControl control)
     {
-        return control != null ? (BitControl)BitStage.InstantiateAsset(control) : null;
+        if (control == null)
+            return null;
+        control = (BitControl)Instantiate(control);
+        control.ID = Guid.NewGuid();
+        if (control is BitContainer)
+        {
+            BitContainer container = (BitContainer)control;
+            ArrayList list = new ArrayList();
+            container.FindAllControls(list);
+            for (int t = 0; t < list.Count; t++)
+            {
+                BitControl temp = (BitControl)list[t];
+                temp.ID = Guid.NewGuid();
+            }
+        }
+        return control;
     }
 
     public BitControl Clone()
