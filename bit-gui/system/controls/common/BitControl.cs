@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using bitgui;
 using Bitverse.Unity.Gui;
@@ -235,6 +236,184 @@ public abstract partial class BitControl : MonoBehaviour
                 _isPlaying = true;
             }
         }
+    }
+
+    private bool _animatingColor;
+
+    public bool AnimatingColor
+    {
+        get { return _animatingColor; }
+    }
+
+    private bool _stopAnimateColor;
+
+    /// <summary>
+    /// Animate the control's color.
+    /// </summary>
+    /// <param name="from">Color used to begin the animation.</param>
+    /// <param name="to">Color of the control when the animation ends.</param>
+    /// <param name="interval">Duration of the animation in SECONDS. If interval is negative, the values of from and to are swaped.</param>
+    /// <returns></returns>
+    public IEnumerator AnimateColor(Color from, Color to, float interval)
+    {
+        yield return CoRoutineUtils.StartCoroutine(InnerAnimateColor(from, to, interval, true));
+    }
+
+    private IEnumerator InnerAnimateColor(Color from, Color to, float interval, bool setState)
+    {
+        if (from == to || Mathf.Approximately(interval, 0f))
+            yield break;
+
+        if (_animatingColor && setState)
+        {
+            StopAnimateColor();
+
+            while (_animatingColor)
+                yield return new WaitForEndOfFrame();
+        }
+
+        if (setState)
+            _animatingColor = true;
+
+        if (interval < 0)
+        {
+            Color c = from;
+            from = to;
+            to = c;
+
+            interval *= -1;
+        }
+
+        float elapsed = 0;
+
+        while (elapsed < interval)
+        {
+            if (_stopAnimateColor)
+            {
+                if (setState)
+                {
+                    _stopAnimateColor = false;
+                    _animatingColor = false;
+                }
+
+                yield break;
+            }
+
+            Color = Color.Lerp(from, to, elapsed / interval);
+
+            yield return new WaitForEndOfFrame();
+
+            elapsed = Mathf.Min(elapsed + Time.deltaTime, interval);
+        }
+
+        if (setState)
+        {
+            _animatingColor = false;
+            _stopAnimateColor = false;
+        }
+    }
+
+    /// <summary>
+    /// Animate the control's color alpha channel making it blink.
+    /// </summary>
+    /// <param name="fromAlpha">Alpha used to begin the animation.</param>
+    /// <param name="toAlpha">Alpha used at the end of the animation.</param>
+    /// <param name="blinkInterval">How many SECONDS a single blink takes (from -> to -> from).</param>
+    /// <param name="duration">For how long the control should blink.</param>
+    /// <param name="finalAlpha">After the animation ended (duration ended), the control will animate it's alpha to finalAlpha value. 
+    /// To ignore it, pass a negative number.</param>
+    /// <returns></returns>
+    public IEnumerator AnimateBlink(float fromAlpha, float toAlpha, float blinkInterval, float duration, float finalAlpha)
+    {
+        if (fromAlpha == toAlpha || Mathf.Approximately(duration, 0) || Mathf.Approximately(blinkInterval, 0))
+            yield break;
+
+        if (_animatingColor)
+        {
+            StopAnimateColor();
+
+            while (_animatingColor)
+                yield return new WaitForEndOfFrame();
+        }
+
+        _animatingColor = true;
+
+        Color fromColor = Color;
+        Color toColor = Color;
+
+        fromColor.a = fromAlpha;
+        toColor.a = toAlpha;
+
+        if (duration < 0)
+        {
+            Color c = fromColor;
+            fromColor = toColor;
+            toColor = c;
+
+            duration *= -1;
+        }
+
+        float halfBlink = blinkInterval / 2f;
+
+        float elapsed = 0;
+
+        while (elapsed < duration)
+        {
+            if (_stopAnimateColor)
+            {
+                _stopAnimateColor = false;
+                _animatingColor = false;
+
+                yield break;
+            }
+
+            float before = Time.time;
+            yield return CoRoutineUtils.StartCoroutine(InnerAnimateColor(fromColor, toColor, halfBlink, false));
+
+            if (_stopAnimateColor)
+            {
+                _stopAnimateColor = false;
+                _animatingColor = false;
+
+                yield break;
+            }
+
+            yield return CoRoutineUtils.StartCoroutine(InnerAnimateColor(fromColor, toColor, -halfBlink, false));
+            elapsed = Mathf.Min(elapsed + (Time.time - before), duration);
+
+            if (blinkInterval == duration)
+                break;
+        }
+
+        if (finalAlpha < 0 || Mathf.Approximately(Color.a, finalAlpha))
+        {
+            _animatingColor = false;
+            _stopAnimateColor = false;
+
+            yield break;
+        }
+
+        Color finalColor = Color;
+        finalColor.a = finalAlpha;
+
+        if (_stopAnimateColor)
+        {
+            _stopAnimateColor = false;
+            _animatingColor = false;
+
+            yield break;
+        }
+
+        yield return CoRoutineUtils.StartCoroutine(InnerAnimateColor(Color, finalColor, halfBlink, false));
+
+        _animatingColor = false;
+        _stopAnimateColor = false;
+    }
+
+    public void StopAnimateColor()
+    {
+        if (_animatingColor)
+            _stopAnimateColor = true;
     }
 
     #endregion

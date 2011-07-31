@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 
@@ -186,4 +187,91 @@ public abstract class AbstractBitProgressBar : BitControl
     protected abstract void DrawFill(GUIStyle progressStyle, GUIStyle fillStyle, float ratio);
 
 	#endregion
+
+    #region Animation
+    private bool _animatingProgress;
+    public bool AnimatingProgress
+    {
+        get { return _animatingProgress; }
+    }
+
+    private bool _stopAnimatingProgress = false;
+
+    /// <summary>
+    /// Animate the progressbar filling or unfilling it.
+    /// </summary>
+    /// <param name="from">Value where the animation begins.</param>
+    /// <param name="to">Value that the progress bar will have when the animation ends.</param>
+    /// <param name="interval">Duration of the animation in SECONDS. If interval is negative, the values of from and to are swaped.</param>
+    /// <returns></returns>
+    public IEnumerator AnimateProgress(float from, float to, float interval)
+    {
+        if (from == to || Mathf.Approximately(interval, 0f))
+            yield break;
+
+        if (_animatingProgress)
+        {
+            StopProgressAnimation();
+
+            while (_animatingProgress)
+                yield return new WaitForEndOfFrame();
+        }
+
+        _animatingProgress = true;
+
+        if (from > MaxValue)
+            from = MaxValue;
+        else if (from < MinValue)
+            from = MinValue;
+
+        if (to > MaxValue)
+            to = MaxValue;
+        else if (to < MinValue)
+            to = MinValue;
+
+        if (interval < 0)
+        {
+            float f = from;
+            from = to;
+            to = f;
+
+            interval *= -1;
+        }
+
+        Value = from;
+
+        float max = from < to ? to : from,
+              min = from < to ? from : to,
+              diff = max - min;
+
+        float elapsed = 0;
+
+        while (elapsed < interval)
+        {
+            if (_stopAnimatingProgress)
+            {
+                _stopAnimatingProgress = false;
+                _animatingProgress = false;
+
+                yield break;
+            }
+
+            float factor = (diff * elapsed / interval);
+            Value = (from < to) ? factor + min : max - factor;
+
+            yield return new WaitForEndOfFrame();
+
+            elapsed += Time.deltaTime;
+        }
+
+        _animatingProgress = false;
+    }
+
+    public void StopProgressAnimation()
+    {
+        if (_animatingProgress)
+            _stopAnimatingProgress = true;
+    }
+
+    #endregion
 }
