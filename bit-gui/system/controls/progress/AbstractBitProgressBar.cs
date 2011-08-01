@@ -202,11 +202,11 @@ public abstract class AbstractBitProgressBar : BitControl
     /// </summary>
     /// <param name="from">Value where the animation begins.</param>
     /// <param name="to">Value that the progress bar will have when the animation ends.</param>
-    /// <param name="interval">Duration of the animation in SECONDS. If interval is negative, the values of from and to are swaped.</param>
+    /// <param name="intervalInSec">Duration of the animation in SECONDS. If interval is negative, the values of from and to are swaped.</param>
     /// <returns></returns>
-    public IEnumerator AnimateProgress(float from, float to, float interval)
+    public IEnumerator AnimateProgress(float from, float to, float intervalInSec)
     {
-        if (from == to || Mathf.Approximately(interval, 0f))
+        if (from == to || Mathf.Approximately(intervalInSec, 0f))
             yield break;
 
         if (_animatingProgress)
@@ -229,13 +229,13 @@ public abstract class AbstractBitProgressBar : BitControl
         else if (to < MinValue)
             to = MinValue;
 
-        if (interval < 0)
+        if (intervalInSec < 0)
         {
             float f = from;
             from = to;
             to = f;
 
-            interval *= -1;
+            intervalInSec *= -1;
         }
 
         Value = from;
@@ -246,7 +246,7 @@ public abstract class AbstractBitProgressBar : BitControl
 
         float elapsed = 0;
 
-        while (elapsed < interval)
+        while (elapsed < intervalInSec)
         {
             if (_stopAnimatingProgress)
             {
@@ -256,7 +256,7 @@ public abstract class AbstractBitProgressBar : BitControl
                 yield break;
             }
 
-            float factor = (diff * elapsed / interval);
+            float factor = (diff * elapsed / intervalInSec);
             Value = (from < to) ? factor + min : max - factor;
 
             yield return new WaitForEndOfFrame();

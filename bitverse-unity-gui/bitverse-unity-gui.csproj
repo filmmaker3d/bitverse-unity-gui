@@ -37,25 +37,26 @@
     <Reference Include="System.XML" />
 	<Reference Include="System.Core" />
 	<Reference Include="UnityEngine">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Managed/UnityEngine.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityEditor">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Managed/UnityEditor.dll</HintPath>
 	</Reference>
 	<Reference Include="Boo.Lang">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Mono/lib/mono/unity/Boo.Lang.dll</HintPath>
 	</Reference>
 	<Reference Include="UnityScript">
-	  <HintPath>C:/Program Files (x86)/Unity/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
+	  <HintPath>C:/Program Files (x86)/Unity3.3/Editor/Data/Mono/lib/mono/unity/UnityScript.dll</HintPath>
 	</Reference>
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\samples\projects\calculator\CalculatorDemo.cs" />
+     <Compile Include="Assets\samples\test\color_animator\ColorAnimatorTest.cs" />
+     <Compile Include="Assets\samples\test\web_image\WebImageTest.cs" />
      <Compile Include="Assets\samples\test\ListAndGridTest.cs" />
      <Compile Include="Assets\samples\test\PopupTest.cs" />
      <Compile Include="Assets\samples\test\SkinTest.cs" />
      <Compile Include="Assets\samples\test\TestMain.cs" />
-     <Compile Include="Assets\samples\test\WebImageTest.cs" />
  <Reference Include="Bitverse.Unity.Gui.Editor">
  <HintPath>Assets\bit-gui\Editor\Plugins\Bitverse.Unity.Gui.Editor.dll</HintPath>
  </Reference>
