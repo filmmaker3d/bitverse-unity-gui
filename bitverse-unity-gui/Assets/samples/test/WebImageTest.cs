@@ -64,6 +64,11 @@ public class WebImageTest : MonoBehaviour
             float progress = pictureWebimage.GetProgress();
             pictureHorizontalprogressbar.Value = progress * 100;
         }
+        else
+        {
+            if (pictureHorizontalprogressbar.Value < 100 && pictureWebimage.Image != null)
+                pictureHorizontalprogressbar.Value = 100;
+        }
     }
 
 }
