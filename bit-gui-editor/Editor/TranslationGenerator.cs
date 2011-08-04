@@ -38,7 +38,7 @@ public class GuiTranslationGenerator
 
         //Make "hej_hopp" etc into HejHopp
 
-        string classname = PrettifyandCorrect(go.name) + "_" + ClassSuffix;
+        string classname = PrettifyandCorrect(go.name); // +"_" + ClassSuffix;
         Debug.Log("Class name: " + classname);
 
         StringBuilder main = new StringBuilder();
@@ -67,7 +67,6 @@ public class GuiTranslationGenerator
         StringBuilder intro = new StringBuilder();
 
         intro.AppendLine("using System;");
-        intro.AppendLine("using tkd.i18n");
         intro.AppendLine();
 
         intro.AppendLine("// Auto generated translation file, use GUI tool to generate");
