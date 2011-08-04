@@ -130,6 +130,7 @@
     <Compile Include="system\controls\text\BitPasswordField.cs" />
     <Compile Include="system\controls\text\BitTextArea.cs" />
     <Compile Include="system\controls\text\BitTextField.cs" />
+    <Compile Include="system\core\AnimationFun.cs" />
     <Compile Include="system\core\BitFormsManager.cs" />
     <Compile Include="system\core\BitGUIDebug.cs" />
     <Compile Include="system\core\CoRoutineUtils.cs" />
