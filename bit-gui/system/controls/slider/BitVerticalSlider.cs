@@ -81,7 +81,7 @@ public class BitVerticalSlider : BitControl
 		            	? GUI.VerticalSlider(Position, (int) Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.verticalSliderThumb)
 		            	: GUI.VerticalSlider(Position, Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.verticalSliderThumb);
 
-		if (val != Value)
+        if (MouseEnabled && val != Value)
 		{
 			Value = val;
 		}
