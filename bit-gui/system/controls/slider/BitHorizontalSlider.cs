@@ -93,7 +93,7 @@ public class BitHorizontalSlider : BitControl
 		            	? GUI.HorizontalSlider(Position, (int) Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.horizontalSliderThumb)
 		            	: GUI.HorizontalSlider(Position, Value, Min, Max, Style ?? DefaultStyle, _thumbStyle ?? GUI.skin.horizontalSliderThumb);
 
-		if (val != Value)
+		if (MouseEnabled && val != Value)
 		{
 			Value = val;
 		}
