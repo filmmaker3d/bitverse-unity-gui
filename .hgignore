@@ -6,6 +6,9 @@ glob:bitverse-unity-gui/Obj/*
 glob:bitverse-unity-gui/bin/*
 glob:bitverse-unity-gui/Temp/*
 glob:bitverse-unity-gui/Library/*
+glob:bitverse-unity-gui/Assembly-CSharp.csproj
+glob:bitverse-unity-gui/Assembly-CSharp-vs.csproj
+glob:bitverse-unity-gui/bitverse-unity-gui-csharp.sln
 glob:*.bak
 glob:*.suo
 glob:*.user
