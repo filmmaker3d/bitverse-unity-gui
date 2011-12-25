@@ -9,7 +9,7 @@ public enum TextKind
 {
     NONE,
     STATIC_TEXT,
-    DINAMIC_TEXT,
+    DYNAMIC_TEXT,
     IGNORE,
     FLOAT,
     INT

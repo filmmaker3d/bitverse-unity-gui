@@ -382,7 +382,7 @@ public partial class BitControlEditor : Editor
                 control.textKind = TextKind.STATIC_TEXT;
             else
                 if (control.textKind == TextKind.NONE && !defaultIsStatic)
-                    control.textKind = TextKind.DINAMIC_TEXT;
+                    control.textKind = TextKind.DYNAMIC_TEXT;
 
         if (control.textKind != TextKind.STATIC_TEXT && control.textKind != TextKind.NONE)
         {
