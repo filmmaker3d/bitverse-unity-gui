@@ -365,7 +365,14 @@ public partial class BitControlEditor
     {
         if (control.GetType().IsAssignableFrom(typeof(BitVerticalGroup)))
         {
-            bool invert = EditorGUILayout.BeginToggleGroup("Invert", ((BitVerticalGroup)control).Invert);
+
+            bool oldValue = ((BitVerticalGroup)control).Invert;
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("Invert");
+            GUILayout.FlexibleSpace();
+            bool invert = GUILayout.Toggle(oldValue, "button", GUILayout.Width(10), GUILayout.Height(10));
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
             if (GUI.changed)
             {
                 ((AbstractBitLayoutGroup)control).Invert = invert;
@@ -374,7 +381,13 @@ public partial class BitControlEditor
         }
         if (control.GetType().IsAssignableFrom(typeof(BitHorizontalGroup)))
         {
-            bool invert = EditorGUILayout.BeginToggleGroup("Invert", ((BitHorizontalGroup)control).Invert);
+            bool oldValue = ((BitHorizontalGroup)control).Invert;
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("Invert");
+            GUILayout.FlexibleSpace();
+            bool invert = GUILayout.Toggle(oldValue, "button", GUILayout.Width(10), GUILayout.Height(10));
+            GUILayout.FlexibleSpace();
+            EditorGUILayout.EndHorizontal();
             if (GUI.changed)
             {
                 ((AbstractBitLayoutGroup)control).Invert = invert;
