@@ -2178,6 +2178,16 @@ public abstract partial class BitControl : MonoBehaviour
         return (T)control;
     }
 
+    protected virtual T InternalAddControl<T>(GameObject go) where T : BitControl
+    {
+        var control = (BitControl) go.GetComponent(typeof(BitControl));
+        control.Parent = this;
+        if (EditMode)
+            control.Awake();
+        control.Index = -1;
+        return (T)control;
+    }
+
     /// <summary>
     /// Adds an instantiated Control to hierarchy.
     /// </summary>
