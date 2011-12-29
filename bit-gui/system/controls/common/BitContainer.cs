@@ -256,6 +256,11 @@ public abstract class
         return InternalAddControl<T>(typeof(T).Name.Substring("Bit".Length));
     }
 
+    public T AddControl<T>(GameObject go) where T : BitControl
+    {
+       return InternalAddControl<T>(go);
+    }
+
     /// <summary>
     /// Removes the given Control from the hierarchy.
     /// </summary>
