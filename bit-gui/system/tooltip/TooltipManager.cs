@@ -80,7 +80,7 @@ public class TooltipManager : MonoBehaviour
     {
         //XXX Do not consider this BeginHover if the control is the same (for lists where this control is not the renderer).
         if ((BitGuiContext.Current.Data != null)
-            && (control != null) && (!(control.Parent is AbstractBitList<IListModel, IPopulator>))
+            && (control != null) && (!(control.Parent is AbstractBitList))
             && (_currentTooltipControl == control))
         {
             return;

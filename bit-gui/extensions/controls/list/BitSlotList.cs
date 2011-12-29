@@ -4,7 +4,7 @@ using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
-public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
+public class BitSlotList : AbstractBitList
 {
     #region Appearance
 
@@ -117,7 +117,7 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
 
         _rows = (Model == null)
                     ? (int)(ScrollRect.height / _stepy)
-                    : (int)Mathf.Max(Mathf.Ceil((Model.GetLastSlot() + 1) / (float)_cols) + (NoExtraRow ? 0 : 1), Mathf.Round(ScrollRect.height / _stepy));
+                    : (int)Mathf.Max(Mathf.Ceil((((ISlotListModel)Model).GetLastSlot() + 1) / (float)_cols) + (NoExtraRow ? 0 : 1), Mathf.Round(ScrollRect.height / _stepy));
 
         if ((LimitRows) && (MaximumSize.x > 0))
         {
@@ -164,7 +164,7 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
         ShowScroll = (ScrollView.height > ScrollRect.height);
     }
 
-    protected override void PopulateAndDraw(BitControl listRenderer, ISlotListModel model, IPopulator populator)
+    protected override void PopulateAndDraw(BitControl listRenderer, IListModel listModel, IPopulator populator)
     {
         //GUIStyle rendererStyle = Renderer.Style ?? Renderer.DefaultStyle;
         //GUIStyle slotStyle = SlotStyle ?? DefaultSlotStyle;
@@ -175,6 +175,8 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
         //        _slotSize.x - (rendererStyle.margin.horizontal+ slotStyle.padding.horizontal)*4, 
         //        _slotSize.y - (rendererStyle.margin.vertical + slotStyle.padding.vertical)*8);
         //}
+
+        var model = (ISlotListModel) listModel;
 
         _rx = (_slotSize.x - listRenderer.Position.width) / 2;
         _ry = (_slotSize.y - listRenderer.Position.height) / 2;
@@ -227,7 +229,7 @@ public class BitSlotList : AbstractBitList<ISlotListModel, IPopulator>
         if (index == -1)
             return null;
 
-        return Model.GetDataAtSlot(index);
+        return ((ISlotListModel)Model).GetDataAtSlot(index);
 
         //if (!AbsolutePosition.Contains(mousePosition))
         //{

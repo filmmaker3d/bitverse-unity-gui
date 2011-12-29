@@ -4,7 +4,7 @@ using Bitverse.Unity.Gui;
 using UnityEngine;
 
 
-public class BitGridList : AbstractBitList<IListModel, IPopulator>
+public class BitGridList : AbstractBitList
 {
     #region Data
 
