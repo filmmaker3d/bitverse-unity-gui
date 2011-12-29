@@ -3,7 +3,7 @@ using bitgui;
 using Bitverse.Unity.Gui;
 using UnityEngine;
 
-public class BitList : AbstractBitList<IListModel, IPopulator>
+public class BitList : AbstractBitList
 {
     #region Data
 

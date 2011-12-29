@@ -16,9 +16,7 @@ using UnityEngine;
 /// |  |  | <see cref="ScrollView"/>          |  |  |
 /// |__|__|___________________________________|__|__|
 /// </summary>
-public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelectableControl<object>
-    where TModel : IListModel
-    where TPopulator : IPopulator
+public abstract class AbstractBitList : BitContainer, ISelectableControl<object>
 {
 
     #region MonoBehaviour
@@ -103,12 +101,12 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
     }
 
 
-    protected TModel _model;
+    protected IListModel _model;
 
     /// <summary>
     /// List data.
     /// </summary>
-    public TModel Model
+    public IListModel Model
     {
         get { return _model; }
         set
@@ -118,12 +116,12 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
         }
     }
 
-    protected TPopulator _populator;
+    protected IPopulator _populator;
 
     /// <summary>
     /// Populator that populates the <see cref="Renderer"/> using <see cref="Model"/> data.
     /// </summary>
-    public TPopulator Populator
+    public IPopulator Populator
     {
         get { return _populator; }
         set
@@ -202,7 +200,7 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
     }
 
     // returns false if at least one of them is null
-    protected bool GetRendererModelAndPopulator(out BitControl listRenderer, out TModel model, out TPopulator populator)
+    protected bool GetRendererModelAndPopulator(out BitControl listRenderer, out IListModel model, out IPopulator populator)
     {
         listRenderer = Renderer;
         model = Model;
@@ -224,8 +222,8 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
         }
 
         BitControl listRenderer;
-        TModel model;
-        TPopulator populator;
+        IListModel model;
+        IPopulator populator;
 
         if (!GetRendererModelAndPopulator(out listRenderer, out model, out populator))
         {
@@ -251,7 +249,7 @@ public abstract class AbstractBitList<TModel, TPopulator> : BitContainer, ISelec
     /// <param name="listRenderer">A not-null list renderer.</param>
     /// <param name="model">A not-null list model.</param>
     /// <param name="populator">A not-null populator.</param>
-    protected abstract void PopulateAndDraw(BitControl listRenderer, TModel model, TPopulator populator);
+    protected abstract void PopulateAndDraw(BitControl listRenderer, IListModel model, IPopulator populator);
 
     private bool _rollDownScroll = false;
     private bool _rollUpScroll = false;
