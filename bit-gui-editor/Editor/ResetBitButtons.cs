@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 public class ResetBitButtons
 {
-	[MenuItem("Tools/GUI/Reset BitButtons")]
+    [MenuItem("BitGUI/Tools/GUI/Reset BitButtons")]
 	private static void RunResetBitButtons()
 	{
         Object[] selection = Selection.GetFiltered(typeof(Object), SelectionMode.TopLevel);

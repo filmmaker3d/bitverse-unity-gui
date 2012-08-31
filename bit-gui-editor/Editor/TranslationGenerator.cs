@@ -17,7 +17,7 @@ public class GuiTranslationGenerator
     private static string buttonusage = "DefaultTranslation.Usage.Button";
 
 
-    [MenuItem("Tools/GUI/Generate Translation Table from Selection")]
+    [MenuItem("BitGUI/Tools/GUI/Generate Translation Table from Selection")]
     private static void GenerateTranslation()
     {
         Object[] selections = Selection.GetFiltered(typeof(Object), SelectionMode.TopLevel);

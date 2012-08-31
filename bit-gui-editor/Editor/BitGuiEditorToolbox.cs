@@ -9,6 +9,61 @@ using Object = UnityEngine.Object;
 
 public partial class BitGuiEditorToolbox : EditorWindow
 {
+    private const float SpaceBetweenGroups = 5;
+
+    private static Dictionary<string, Texture2D> _buttonIcons;
+
+    private List<ButtonInfo> _buttonsInfo;
+    private Vector2 _scrollPos = new Vector2(0, 0);
+    private bool _componentsFoldout = true;
+
+    private GUIStyle _buttonStyle;
+
+    public static Type ControlTypeToCreate;
+    private static ControlInfo _controlToCreate;
+    private static bool _generateDefaultContent;
+
+    private static readonly Dictionary<Type, int> ControlsCount = new Dictionary<Type, int>();
+
+    private static readonly Regex NameRegex = new Regex(@"^([^\d]+)(\d+)$");
+
+    [MenuItem("BitGUI/Open Toolbox")]
+    public static void MenuOption()
+    {
+        BitGuiEditorToolbox window = (BitGuiEditorToolbox)GetWindow(typeof(BitGuiEditorToolbox));
+        window.autoRepaintOnSceneChange = true;
+        window.title = "BitGUI Toolbox";
+        window.Show();
+    }
+
+    private class ButtonInfo
+    {
+        public bool Foldout;
+        public readonly string Title;
+        public readonly List<ControlInfo> ControlInfos;
+
+        public ButtonInfo(bool foldout, string title)
+        {
+            Foldout = foldout;
+            Title = title;
+            ControlInfos = new List<ControlInfo>();
+        }
+
+        public ControlInfo AddComponent(Type type, bool generateDefaultContent)
+        {
+            var ci = new ControlInfo(type, false, generateDefaultContent, GetGUIContent(type));
+            ControlInfos.Add(ci);
+            return ci;
+        }
+
+        public ControlInfo AddSpecialComponent(Type type, bool generateDefaultContent)
+        {
+            var ci = new ControlInfo(type, true, generateDefaultContent, GetGUIContent(type));
+            ControlInfos.Add(ci);
+            return ci;
+        }
+    }
+
     private class ControlInfo
     {
         public readonly Type Type;
@@ -26,81 +81,15 @@ public partial class BitGuiEditorToolbox : EditorWindow
         }
     }
 
-
-    private class ButtonInfo
-    {
-        public bool Foldout;
-        public string Title;
-        public List<ControlInfo> Controls;
-
-        public ButtonInfo(bool foldout, string title)
-        {
-            Foldout = foldout;
-            Title = title;
-            Controls = new List<ControlInfo>();
-        }
-
-        public ControlInfo AddComponent(Type type, bool generateDefaultContent)
-        {
-            var ci = new ControlInfo(type, false, generateDefaultContent, GetGUIContent(type));
-            Controls.Add(ci);
-            return ci;
-        }
-
-        public ControlInfo AddSpecialComponent(Type type, bool generateDefaultContent)
-        {
-            var ci = new ControlInfo(type, true, generateDefaultContent, GetGUIContent(type));
-            Controls.Add(ci);
-            return ci;
-        }
-    }
-
-
-    private const float SpaceBetweenGroups = 5;
-
-    private List<ButtonInfo> _buttonsInfo;
-
-
-    [MenuItem("Window/BitGUI Toolbox")]
-    public static void MenuOption()
-    {
-        BitGuiEditorToolbox window = (BitGuiEditorToolbox)GetWindow(typeof(BitGuiEditorToolbox));
-        window.autoRepaintOnSceneChange = true;
-        window.title = "BitGUI Toolbox";
-        window.Show();
-    }
-
-    private static Dictionary<string, Texture2D> _buttonIcons;
-
-    private Vector2 _scrollPos = new Vector2(0, 0);
-    private bool _componentsFoldout = true;
-
     private static Dictionary<string, Texture2D> LoadTextures()
     {
         Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         Object[] allImages = Resources.LoadAll("bit-gui-editor-icons");
         foreach (Object o in allImages)
-        {
             textures.Add(o.name.ToLower(), (Texture2D)o);
-        }
+
         return textures;
     }
-
-    private static void BeginGroup()
-    {
-        GUILayout.BeginHorizontal();
-        GUILayout.Space(10f);
-        GUILayout.BeginVertical();
-    }
-
-    private static void EndGroup()
-    {
-        GUILayout.Space(SpaceBetweenGroups);
-        GUILayout.EndVertical();
-        GUILayout.EndHorizontal();
-    }
-
-    private GUIStyle _buttonStyle;
 
     public void OnGUI()
     {
@@ -222,9 +211,7 @@ public partial class BitGuiEditorToolbox : EditorWindow
     {
         _componentsFoldout = EditorGUILayout.Foldout(_componentsFoldout, "Controls");
         if (!_componentsFoldout)
-        {
             return;
-        }
 
         BeginGroup();
 
@@ -234,25 +221,34 @@ public partial class BitGuiEditorToolbox : EditorWindow
             if (_buttonsInfo[i].Foldout)
             {
                 BeginGroup();
-                foreach (ControlInfo controlInfo in _buttonsInfo[i].Controls)
+                foreach (ControlInfo controlInfo in _buttonsInfo[i].ControlInfos)
                 {
                     if (controlInfo.IsSpecial)
-                    {
                         AddSpecialComponent(controlInfo);
-                    }
                     else
-                    {
                         AddComponent(controlInfo);
-                    }
                 }
                 EndGroup();
             }
             else
-            {
                 GUILayout.Space(SpaceBetweenGroups);
-            }
         }
+
         EndGroup();
+    }
+
+    private static void BeginGroup()
+    {
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(10f);
+        GUILayout.BeginVertical();
+    }
+
+    private static void EndGroup()
+    {
+        GUILayout.Space(SpaceBetweenGroups);
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
     }
 
     //private void DrawOptions()
@@ -263,19 +259,12 @@ public partial class BitGuiEditorToolbox : EditorWindow
     //        BeginGroup();
     //        BitControlEditor.SnapToGrid = EditorGUILayout.BeginToggleGroup("Snap to grid", BitControlEditor.SnapToGrid);
     //        if (BitControlEditor.SnapToGrid)
-    //        {
     //            BitControlEditor.Grid = EditorGUILayout.Vector2Field("Grid", BitControlEditor.Grid);
-    //        }
-
     //        BitControlEditor.DrawPadding = GUILayout.Toggle(BitControlEditor.DrawPadding, "Draw Padding Rect");
     //        BitControlEditor.DrawMargin = GUILayout.Toggle(BitControlEditor.DrawMargin, "Draw Margin Rect");
     //        EndGroup();
     //    }
     //}
-
-    public static Type ControlTypeToCreate;
-    private static ControlInfo ControlToCreate;
-    private static bool _generateDefaultContent;
 
     private void AddComponent(ControlInfo info)
     {
@@ -286,16 +275,15 @@ public partial class BitGuiEditorToolbox : EditorWindow
 
         if (!GUI.changed)
             return;
+
         if (toggle)
         {
             ControlTypeToCreate = info.Type;
-            ControlToCreate = info;
+            _controlToCreate = info;
             _generateDefaultContent = info.GenerateDefaultContent;
         }
-        else
-        {
-            ControlTypeToCreate = null;
-        }
+        else ControlTypeToCreate = null;
+
         GUI.changed = false;
     }
 
@@ -315,9 +303,8 @@ public partial class BitGuiEditorToolbox : EditorWindow
                 {
                     control = parent.AddControl(info.Type, controlName);
                     if (info.GenerateDefaultContent)
-                    {
                         control.Content.text = controlName;
-                    }
+
                     Selection.activeGameObject = control.gameObject;
                 }
                 else
@@ -330,30 +317,27 @@ public partial class BitGuiEditorToolbox : EditorWindow
                     {
                         control = ((BitControl)c);
                         if (info.GenerateDefaultContent)
-                        {
                             control.Content.text = controlName;
-                        }
                     }
                     Selection.activeGameObject = go;
                 }
-                if (info.Size.Width != 0 && control!=null)
-                {
+
+                if (info.Size.Width != 0 && control != null)
                     control.Size = info.Size;
-                }
+
                 if (control != null)
-                {
                     EditorUtility.SetDirty(control);
-                }
+
                 AddControlCount(info.Type);
                 BitControlEditor.AddControl(control);
             }
             else
             {
                 EditorApplication.Beep();
-                EditorUtility.DisplayDialog("Error", "You must select a parent on Hierarchy panel to add this Control.",
-                                            "OK");
+                EditorUtility.DisplayDialog("Error", "You must select a parent on Hierarchy panel to add this Control.", "OK");
             }
         }
+
         GUILayout.FlexibleSpace();
         GUILayout.EndHorizontal();
     }
@@ -361,23 +345,19 @@ public partial class BitGuiEditorToolbox : EditorWindow
     public static BitControl CreateComponent(BitContainer parent, Vector2 mousePosition)
     {
         if (ControlTypeToCreate == null || parent == null)
-        {
             return null;
-        }
 
         string name = GenerateSecureName(ControlTypeToCreate);
         BitControl c = parent.AddControl(ControlTypeToCreate, name);
         Rect ap = c.AbsolutePosition;
         c.AbsolutePosition = new Rect(mousePosition.x, mousePosition.y, ap.width, ap.height);
         if (_generateDefaultContent)
-        {
             c.Content.text = name;
-        }
+
         Selection.activeGameObject = c.gameObject;
-        if (ControlToCreate.Type == ControlTypeToCreate && ControlToCreate.Size.Width != 0)
-        {
-            c.Size = ControlToCreate.Size;
-        }
+        if (_controlToCreate.Type == ControlTypeToCreate && _controlToCreate.Size.Width != 0)
+            c.Size = _controlToCreate.Size;
+
         EditorUtility.SetDirty(c);
 
         AddControlCount(ControlTypeToCreate);
@@ -392,38 +372,27 @@ public partial class BitGuiEditorToolbox : EditorWindow
         return new GUIContent(" " + controlName, _buttonIcons.ContainsKey(s) ? _buttonIcons[s] : null);
     }
 
-    private static readonly Dictionary<Type, int> ControlsCount = new Dictionary<Type, int>();
-
-    private static readonly Regex NameRegex = new Regex(@"^([^\d]+)(\d+)$");
-
     private static string GenerateSecureName(Type type)
     {
         string defaultName = DefaultName(type);
         Component parent = (Component)FindObjectOfType(typeof(BitStage));
         if (parent == null)
-        {
             return defaultName + "1";
-        }
 
         Component[] c = parent.GetComponentsInChildren(type);
         if (c == null || c.Length == 0)
-        {
             return defaultName + "1";
-        }
 
         int maxValue = 1;
         foreach (Component component in c)
         {
             Match m = NameRegex.Match(component.name);
             if (!m.Success || !m.Groups[1].ToString().Equals(defaultName))
-            {
                 continue;
-            }
+
             int value = int.Parse(m.Groups[2].ToString());
             if (value > maxValue)
-            {
                 maxValue = value;
-            }
         }
         SetControlCount(type, maxValue);
         return defaultName + (maxValue + 1);
@@ -434,28 +403,19 @@ public partial class BitGuiEditorToolbox : EditorWindow
         return type.Name.Substring("Bit".Length);
     }
 
-
     private static void SetControlCount(Type type, int value)
     {
         if (ControlsCount.ContainsKey(type))
-        {
             ControlsCount[type] = value;
-        }
         else
-        {
             ControlsCount.Add(type, value);
-        }
     }
 
     private static void AddControlCount(Type type)
     {
         if (ControlsCount.ContainsKey(type))
-        {
             ControlsCount[type]++;
-        }
         else
-        {
             ControlsCount.Add(type, 0);
-        }
     }
 }
