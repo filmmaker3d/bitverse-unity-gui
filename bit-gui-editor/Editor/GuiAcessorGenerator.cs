@@ -23,13 +23,13 @@ public class GuiAcessorGenerator
 {
     private static BitControl _root;
 
-    [MenuItem("Tools/GUI/Generate Gui Accessor and Translation from Selection")]
+    [MenuItem("BitGUI/Tools/GUI/Generate Gui Accessor and Translation from Selection")]
     public static void GenerateScreenAccessorAndTranslation()
     {
         GenerateScreenAccessorAndTranslation(HasTextToTranslate());
     }
 
-    [MenuItem("Tools/GUI/Generate Gui Accessor from Selection")]
+    [MenuItem("BitGUI/Tools/GUI/Generate Gui Accessor from Selection")]
     public static void GenerateScreenAccessor()
     {
         GenerateScreenAccessorAndTranslation(false);
